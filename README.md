@@ -157,7 +157,21 @@ opencode
 openclaude
 ```
 
-## 📁 Directory Structure
+## 📚 Documentation
+
+- **[Quick Start: Using Skills](./docs/QUICK_START_SKILLS.md)** - Get started in 5 minutes
+  - First time setup
+  - Your first feature workflow
+  - Common patterns
+  - Skill cheat sheet
+  - Pro tips
+
+- **[Software Engineering Workflow](./docs/SOFTWARE_ENGINEERING_WORKFLOW.md)** - Complete guide to proper AI-assisted development
+  - Planning & Design (The Grilling)
+  - Breaking Into Parts (Vertical Slices)
+  - Test-Driven Development (Red-Green-Refactor)
+  - Architecture & Deep Modules
+  - Complete workflow examples
 
 ```
 advanced-coding-agent/
