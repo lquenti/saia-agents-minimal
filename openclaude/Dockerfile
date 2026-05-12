@@ -44,7 +44,7 @@ RUN git clone --depth 1 https://github.com/mattpocock/skills.git /home/agent/.op
 RUN git clone --depth 1 https://github.com/addyosmani/agent-skills.git /home/agent/.openclaude/skills-addyosmani 2>/dev/null || echo "Addy Osmani skills clone attempted"
 
 # Set proper ownership for skills
-RUN chown -R agent:agent /home/agent/.openclaude/skills-*
+RUN find /home/agent/.openclaude -name "skills-*" -type d -exec chown -R agent:agent {} + 2>/dev/null || true
 
 # Switch to non-root user
 USER agent
