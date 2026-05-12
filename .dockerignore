@@ -1,0 +1,51 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.docker/
+
+# Environment
+.env
+.env.local
+*.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Test files
+test-*.txt
+*.test
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+node_modules/
+
+# Skills (already copied into image)
+skills/
+
+# Projects (mounted at runtime)
+projects/*
+!projects/.gitkeep
+
+# Documentation (optional)
+docs/*.pdf
+docs/*.zip
