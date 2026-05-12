@@ -9,8 +9,8 @@ LABEL description="Isolated OpenClaude agent environment with pre-installed skil
 LABEL version="1.0.0"
 LABEL platform="openclaude"
 
-# Security: Run as non-root user
-RUN groupadd -r agent && useradd -r -g agent -d /home/agent -m agent
+# Security: Run as non-root user (UID 1000 to match host user)
+RUN groupadd -r -g 1000 agent && useradd -r -g 1000 -d /home/agent -m agent -u 1000
 
 # Install system dependencies including Python and uv (as root)
 RUN apt-get update && apt-get install -y --no-install-recommends \
