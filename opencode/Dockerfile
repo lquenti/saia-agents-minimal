@@ -1,7 +1,7 @@
 # OpenCode Coding Agent - Isolated Docker Environment
 # Safe workspace for OpenCode AI coding agent
 
-FROM node:20-bookworm-slim
+FROM ubuntu:24.04
 
 # Labels
 LABEL maintainer="Gorbad Ironfist <gorbad@openclaw.ai>"
@@ -16,16 +16,21 @@ USER agent
 # Set working directory (isolated workspace)
 WORKDIR /home/agent/workspace
 
-# Install system dependencies
+# Install system dependencies including Python and uv
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     python3 \
     python3-pip \
+    python3-venv \
     build-essential \
     jq \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Install uv (fast Python package installer)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
+    && echo "uv installed successfully"
 
 # Install OpenCode CLI
 RUN curl -fsSL https://opencode.ai/install.sh | sh \
@@ -43,11 +48,11 @@ RUN mkdir -p /home/agent/workspace/{projects,docs,temp,logs} \
     && chmod -R 755 /home/agent/workspace
 
 # Set environment variables
-ENV NODE_ENV=production \
-    HOME=/home/agent \
+ENV HOME=/home/agent \
     WORKSPACE=/home/agent/workspace \
     OPCODE_HOME=/home/agent/.opencode \
-    PATH=/home/agent/.opencode/bin:$PATH
+    UV_BIN=~/.local/bin/uv \
+    PATH=/home/agent/.opencode/bin:/home/agent/.local/bin:$PATH
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
