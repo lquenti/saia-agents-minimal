@@ -11,12 +11,8 @@ LABEL platform="openclaude"
 
 # Security: Run as non-root user
 RUN groupadd -r agent && useradd -r -g agent -d /home/agent -m agent
-USER agent
 
-# Set working directory (isolated workspace)
-WORKDIR /home/agent/workspace
-
-# Install system dependencies including Python and uv
+# Install system dependencies including Python and uv (as root)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
@@ -28,9 +24,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv (fast Python package installer)
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
-    && echo "uv installed successfully"
+# Install uv (fast Python package installer) as root
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    chown -R agent:agent /home/agent/.local
+
+# Switch to non-root user
+USER agent
+
+# Set working directory (isolated workspace)
+WORKDIR /home/agent/workspace
 
 # Install OpenClaude CLI
 RUN curl -fsSL https://openclaude.ai/install.sh | sh \
