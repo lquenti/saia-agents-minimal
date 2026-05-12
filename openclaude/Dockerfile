@@ -37,11 +37,15 @@ RUN mkdir -p /home/agent/workspace/{projects,docs,temp,logs} && \
     chown -R agent:agent /home/agent/workspace
 
 # Install skills repositories as root
+# Configure git first
+RUN git config --global user.email "agent@openclaude.ai" && \
+    git config --global user.name "OpenClaude Agent"
+
 # Matt Pocock skills - Engineering skills for coding agents
-RUN git clone --depth 1 https://github.com/mattpocock/skills.git /home/agent/.openclaude/skills-mattpocock 2>/dev/null || echo "Matt Pocock skills clone attempted"
+RUN git clone https://github.com/mattpocock/skills.git /home/agent/.openclaude/skills-mattpocock
 
 # Agent skills collection
-RUN git clone --depth 1 https://github.com/addyosmani/agent-skills.git /home/agent/.openclaude/skills-addyosmani 2>/dev/null || echo "Addy Osmani skills clone attempted"
+RUN git clone https://github.com/addyosmani/agent-skills.git /home/agent/.openclaude/skills-addyosmani || true
 
 # Set proper ownership for skills
 RUN find /home/agent/.openclaude -name "skills-*" -type d -exec chown -R agent:agent {} + 2>/dev/null || true
