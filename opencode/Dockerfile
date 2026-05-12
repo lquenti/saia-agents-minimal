@@ -30,6 +30,10 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
     cp -r /root/.local/* /home/agent/.local/ && \
     chown -R agent:agent /home/agent/.local
 
+# Create workspace structure (as root, before switching to agent)
+RUN mkdir -p /home/agent/workspace/{projects,docs,temp,logs} && \
+    chown -R agent:agent /home/agent/workspace
+
 # Switch to non-root user
 USER agent
 
@@ -46,10 +50,6 @@ RUN mkdir -p /home/agent/.opencode
 # Copy configuration files
 COPY --chown=agent:agent .env.example /home/agent/.opencode/.env.example
 COPY --chown=agent:agent config.json /home/agent/.opencode/config.json
-
-# Create workspace structure
-RUN mkdir -p /home/agent/workspace/{projects,docs,temp,logs} \
-    && chmod -R 755 /home/agent/workspace
 
 # Set environment variables
 ENV HOME=/home/agent \
