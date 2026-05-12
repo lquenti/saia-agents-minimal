@@ -1,12 +1,12 @@
 # Advanced Coding Agent 🪓
 
-**Isolated Docker environment for safe coding agent operations**
+**Isolated Docker environments for safe AI coding agent operations**
 
-Built by Gorbad Ironfist - Safe coding, WAAAGH! 👊
+> Built by Gorbad Ironfist - Safe coding, WAAAGH! 👊
 
 ## 🎯 Purpose
 
-Create a **safe, isolated environment** where coding agents (OpenCode, OpenClaw, etc.) can work on projects **without touching host files**. Perfect for:
+Create **safe, isolated Docker containers** where AI coding agents (OpenCode, OpenClaude, etc.) can work on projects **without touching host files**. Perfect for:
 
 - ✅ Safe AI coding experiments
 - ✅ Pre-installed skills and tools
@@ -33,96 +33,225 @@ Only /home/agent/workspace is writable
 Everything else is read-only or blocked
 ```
 
+## 🤖 Available Agents
+
+### OpenCode Agent
+
+- **Primary LLM**: OpenAI (gpt-4o)
+- **Best For**: Fast coding tasks
+- **Image**: `opencode-agent-final`
+
+### OpenClaude Agent
+
+- **Primary LLM**: Anthropic (Claude 3.5)
+- **Best For**: Complex reasoning, memory
+- **Image**: `openclaude-agent-final`
+
 ## 🚀 Quick Start
 
-### 1. Clone & Build
+### Prerequisites
+
+- Docker installed
+- Git installed
+- API keys for your LLM provider (OpenAI, Anthropic, etc.)
+
+### 1. Clone Repository
 
 ```bash
-cd ~/advanced-coding-agent
-docker-compose build
+git clone https://github.com/yourusername/advanced-coding-agent.git
+cd advanced-coding-agent
 ```
 
-### 2. Start Agent
+### 2. Choose Your Agent
+
+#### For OpenCode:
 
 ```bash
-docker-compose up -d
+cd opencode
 ```
 
-### 3. Enter Workspace
+#### For OpenClaude:
 
 ```bash
-docker-compose exec coding-agent /bin/bash
+cd openclaude
 ```
 
-### 4. Start Coding
+### 3. Configure API Keys
 
 ```bash
-# Inside container
-openclaw agent
-# or
+# Copy example environment file
+cp .env.example .env
+
+# Edit with your API keys
+nano .env
+```
+
+**Required keys** (edit `.env`):
+
+```bash
+# OpenAI (for OpenCode)
+OPENAI_API_KEY=sk-your-openai-key-here
+
+# Anthropic (for OpenClaude)
+ANTHROPIC_API_KEY=sk-ant-your-key-here
+
+# Optional: GitHub token for private repos
+GITHUB_TOKEN=ghp-your-token-here
+```
+
+### 4. Build Docker Image
+
+```bash
+docker build -t coding-agent .
+```
+
+**Note**: This includes Node.js, Python, uv, and pre-installed skills (~1.2GB)
+
+### 5. Create Startup Script
+
+Create `start.sh` in the agent directory:
+
+```bash
+#!/bin/bash
+# Start Coding Agent
+
+docker run -d \
+  --name coding-agent \
+  --read-only \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges:true \
+  --tmpfs /tmp:rw,noexec,nosuid,size=100m \
+  --tmpfs /var/run:rw,noexec,nosuid,size=10m \
+  -v "$(pwd)/projects:/home/agent/workspace/projects:rw" \
+  -v "$(pwd)/.env:/home/agent/.opencode/.env:ro" \
+  --network none \
+  --memory 4g \
+  --cpus 2.0 \
+  coding-agent
+
+echo "✅ Container started!"
+echo "Enter: docker exec -it coding-agent /bin/bash"
+```
+
+Make executable:
+
+```bash
+chmod +x start.sh
+```
+
+### 6. Start Container
+
+```bash
+./start.sh
+```
+
+### 7. Use Your Agent
+
+```bash
+# Enter the container
+docker exec -it coding-agent /bin/bash
+
+# Start the agent
 opencode
+# or
+openclaude
 ```
-
-## 🛡️ Security Features
-
-### Filesystem Isolation
-- ✅ Read-only root filesystem
-- ✅ Only `/home/agent/workspace` is writable
-- ✅ Host files completely inaccessible
-- ✅ No access to `/etc`, `/root`, `/home/cloud`
-
-### Network Isolation
-- ✅ Internal-only network (no internet by default)
-- ✅ No external API calls unless explicitly allowed
-- ✅ Controlled DNS resolution
-
-### Resource Limits
-- ✅ CPU: 2 cores max
-- ✅ Memory: 4GB max
-- ✅ No privilege escalation
-
-### Command Blocking
-- ✅ Blocked: `rm -rf /`, `dd`, `mkfs`, `sudo`, etc.
-- ✅ Allowed: `git`, `npm`, `node`, safe shell commands
-- ✅ File size limits (100MB max)
-
-## 📦 Pre-installed Skills
-
-| Skill | Purpose | Status |
-|-------|---------|--------|
-| github | GitHub integration | ✅ Enabled |
-| git | Git operations | ✅ Enabled |
-| fileops | File operations | ✅ Enabled |
-| shell | Safe shell commands | ✅ Enabled |
-| web | Web fetching/searching | ✅ Enabled |
-| diffs | Generate shareable diffs | ✅ Enabled |
-| voice-call | Voice calls | ❌ Disabled |
-| browser-automation | Browser control | ❌ Disabled |
 
 ## 📁 Directory Structure
 
 ```
 advanced-coding-agent/
-├── Dockerfile              # Container definition
-├── docker-compose.yml      # Orchestration
-├── agents.json             # Agent configuration
-├── tools.md                # Tool documentation
-├── README.md               # This file
-├── .gitignore             # Git ignore rules
-├── projects/              # Writable project workspace
-│   └── .gitkeep
-├── docs/                  # Read-only documentation
-│   └── .gitkeep
-└── agents/                # Agent definitions
-    └── .gitkeep
+├── opencode/                    # OpenCode agent
+│   ├── Dockerfile              # Container definition
+│   ├── .env.example            # Environment template
+│   ├── config.json             # Agent configuration
+│   ├── skills/                 # Pre-installed skills
+│   │   ├── skills/             # Matt Pocock skills
+│   │   └── agent-skills/       # Addy Osmani skills
+│   ├── projects/               # Your code goes here
+│   └── docs/                   # Documentation
+│
+├── openclaude/                 # OpenClaude agent
+│   ├── Dockerfile              # Container definition
+│   ├── .env.example            # Environment template
+│   ├── config.json             # Agent configuration
+│   ├── skills/                 # Pre-installed skills
+│   │   ├── skills/             # Matt Pocock skills
+│   │   └── agent-skills/       # Addy Osmani skills
+│   ├── projects/               # Your code goes here
+│   └── docs/                   # Documentation
+│
+└── README.md                   # This file
 ```
+
+## 🛡️ Security Features
+
+| Feature | Protection |
+|---------|-----------|
+| **Read-only root** | Can't modify system files |
+| **Non-root user** | No privilege escalation |
+| **Network isolation** | No external access by default |
+| **Command blocking** | Blocks dangerous commands |
+| **Resource limits** | 2 CPU, 4GB RAM max |
+| **Volume control** | Only workspace is writable |
+
+### Blocked Commands
+
+```bash
+rm -rf /, dd, mkfs, fdisk, sudo, su, passwd
+shutdown, reboot, mount, umount
+```
+
+### Allowed Directories
+
+```bash
+✅ /home/agent/workspace/projects  (your code)
+✅ /home/agent/workspace/docs      (read-only docs)
+✅ /home/agent/workspace/temp      (ephemeral)
+❌ /home/cloud                     (host - blocked)
+❌ /etc                            (system - blocked)
+❌ /root                           (root - blocked)
+```
+
+## 📚 Pre-installed Skills
+
+### Matt Pocock Skills
+
+Engineering skills for real coding work:
+
+- `/grill-me` - Get interviewed about plans/designs
+- `/grill-with-docs` - Grilling + shared language docs
+- `/tdd` - Test-driven development loop
+- `/diagnose` - Bug diagnosis workflow
+- `/triage` - Issue triage state machine
+- `/improve-codebase-architecture` - Architecture refactoring
+- `/to-issues` - Break plans into GitHub issues
+- `/to-prd` - Turn conversation into PRD
+- `/zoom-out` - System-level code context
+- `/prototype` - Build throwaway prototypes
+- `/caveman` - Ultra-compressed communication
+- `/handoff` - Compact conversation for handoff
+- `/write-a-skill` - Create new skills
+
+### Addy Osmani Agent Skills
+
+Collection of agent skills and patterns for better AI-assisted development.
 
 ## 🔧 Configuration
 
-### Edit agents.json
+### Edit config.json
 
 ```json
 {
+  "llm": {
+    "providers": {
+      "openai": {
+        "enabled": true,
+        "default": true,
+        "model": "gpt-4o"
+      }
+    }
+  },
   "security": {
     "blockedCommands": ["your", "blocked", "commands"],
     "allowedDirectories": ["/path/to/allow"]
@@ -132,72 +261,76 @@ advanced-coding-agent/
 
 ### Mount External Projects
 
-Edit `docker-compose.yml`:
+Edit your `start.sh`:
 
-```yaml
-volumes:
-  - ./my-project:/home/agent/workspace/projects/my-project:rw
+```bash
+-v "$(pwd)/my-project:/home/agent/workspace/projects/my-project:rw"
 ```
 
 ## 🧪 Testing
 
+### Test Isolation
+
 ```bash
-# Test filesystem isolation
-docker-compose exec coding-agent ls /home/cloud
-# Should fail - no access!
+# Try to access host - should FAIL!
+docker exec coding-agent ls /home/cloud
+# Permission denied! ✅
 
-# Test network isolation
-docker-compose exec coding-agent curl google.com
-# Should fail - no internet!
-
-# Test allowed operations
-docker-compose exec coding-agent cd /home/agent/workspace/projects
-docker-compose exec coding-agent touch test.txt
-# Should work!
+# Try to work in workspace - should WORK!
+docker exec coding-agent touch /home/agent/workspace/projects/test.txt
+# Success! ✅
 ```
 
-## 🚨 Production Hardening
+### Test Tools
 
-Before deploying to production:
-
-1. **Enable seccomp profile** (remove `unconfined`)
-2. **Add network policies** (restrict outbound)
-3. **Enable image scanning** (Trivy, Snyk)
-4. **Set up logging/monitoring**
-5. **Rotate credentials regularly**
-6. **Enable container signing**
+```bash
+docker exec coding-agent node --version   # v18.19.1
+docker exec coding-agent npm --version    # 9.2.0
+docker exec coding-agent python3 --version  # Python 3.12.3
+docker exec coding-agent uv --version     # uv 0.11.14
+```
 
 ## 📊 Resource Usage
 
-- **Image Size:** ~500MB
-- **Memory:** 1-4GB (configurable)
-- **CPU:** 0.5-2 cores (configurable)
-- **Startup:** ~10 seconds
+- **Image Size**: ~1.2GB
+- **Memory**: 1-4GB (configurable)
+- **CPU**: 0.5-2 cores (configurable)
+- **Startup**: ~10 seconds
+
+## 🆚 OpenCode vs OpenClaude
+
+| Feature | OpenCode | OpenClaude |
+|---------|----------|------------|
+| **Primary LLM** | OpenAI | Anthropic (Claude) |
+| **Memory** | Basic | Advanced (daily notes) |
+| **Personality** | Standard | Configurable |
+| **Skills** | Core dev | Extended (obsidian, summarize) |
+| **Best For** | Fast coding | Complex reasoning |
 
 ## 🐛 Troubleshooting
 
 ### Permission Denied
 
 ```bash
-# Ensure files are owned by agent user
-sudo chown -R 1000:1000 ./projects ./docs
+# Ensure files are owned by correct user
+sudo chown -R 999:999 ./projects ./docs
 ```
 
 ### Container Won't Start
 
 ```bash
 # Check logs
-docker-compose logs coding-agent
+docker logs coding-agent
 
 # Rebuild
-docker-compose build --no-cache
+docker build -t coding-agent .
 ```
 
 ### Can't Access Files
 
 ```bash
 # Check volume mounts
-docker-compose config
+docker inspect coding-agent
 
 # Verify permissions
 ls -la ./projects
@@ -207,11 +340,20 @@ ls -la ./projects
 
 MIT License - Free to use and modify
 
-## 👊 Contributing
+## 🤝 Contributing
 
-Want to add skills or improve security? Fork and PR!
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-**Remember:** Security first! Test thoroughly before deploying.
+## 🙏 Acknowledgments
+
+- **Matt Pocock** - Engineering skills for coding agents
+- **Addy Osmani** - Agent skills collection
+- **OpenClaw** - Agent framework
+- **Astral** - uv package manager
 
 ---
 
