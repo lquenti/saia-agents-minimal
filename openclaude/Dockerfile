@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install uv (fast Python package installer) as root
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    mkdir -p /home/agent/.local && \
+    cp -r /root/.local/* /home/agent/.local/ && \
     chown -R agent:agent /home/agent/.local
 
 # Switch to non-root user
