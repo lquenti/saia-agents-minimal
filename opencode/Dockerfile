@@ -40,8 +40,8 @@ RUN mkdir -p /home/agent/workspace/{projects,docs,temp,logs} && \
 RUN mkdir -p /home/agent/.opencode/skills
 
 # Copy skills from build context
-COPY --chown=agent:agent ../skills/skills /home/agent/.opencode/skills-mattpocock
-COPY --chown=agent:agent ../skills/agent-skills /home/agent/.opencode/skills-addyosmani || true
+COPY --chown=agent:agent skills/skills /home/agent/.opencode/skills-mattpocock
+COPY --chown=agent:agent skills/agent-skills /home/agent/.opencode/skills-addyosmani
 
 # Switch to non-root user
 USER agent
