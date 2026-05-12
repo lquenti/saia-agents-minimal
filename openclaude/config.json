@@ -1,0 +1,161 @@
+{
+  "agent": {
+    "name": "OpenClaude Agent",
+    "version": "1.0.0",
+    "description": "Isolated OpenClaude coding agent with security hardening"
+  },
+  "llm": {
+    "providers": {
+      "anthropic": {
+        "enabled": true,
+        "default": true,
+        "model": "claude-3-5-sonnet-20241022",
+        "temperature": 0.7,
+        "max_tokens": 8192,
+        "top_p": 1.0
+      },
+      "openai": {
+        "enabled": true,
+        "default": false,
+        "model": "gpt-4o",
+        "temperature": 0.7,
+        "max_tokens": 8192
+      },
+      "gemini": {
+        "enabled": false,
+        "default": false,
+        "model": "gemini-1.5-pro",
+        "temperature": 0.7,
+        "max_tokens": 8192
+      },
+      "deepseek": {
+        "enabled": false,
+        "default": false,
+        "model": "deepseek-chat",
+        "temperature": 0.7,
+        "max_tokens": 8192
+      }
+    },
+    "fallback": {
+      "enabled": true,
+      "order": ["anthropic", "openai", "gemini"]
+    },
+    "thinking": {
+      "enabled": true,
+      "level": "medium"
+    }
+  },
+  "skills": {
+    "enabled": [
+      "git",
+      "github",
+      "fileops",
+      "shell",
+      "web",
+      "diffs",
+      "session-logs",
+      "npm",
+      "python",
+      "obsidian",
+      "summarize"
+    ],
+    "disabled": [
+      "voice-call",
+      "browser-automation",
+      "email"
+    ],
+    "custom": {
+      "path": "/home/agent/.openclaude/skills",
+      "autoInstall": true
+    }
+  },
+  "memory": {
+    "enabled": true,
+    "path": "/home/agent/workspace/memory",
+    "dailyNotes": true,
+    "longTermMemory": true,
+    "autoSave": true,
+    "maxSize": "500M"
+  },
+  "security": {
+    "allowExternalCalls": false,
+    "allowNetworkAccess": false,
+    "blockedCommands": [
+      "rm -rf /",
+      "rm -rf /*",
+      "dd if=",
+      "mkfs",
+      "fdisk",
+      "partition",
+      "chmod -R 777",
+      "chown -R root",
+      "sudo",
+      "su",
+      "passwd",
+      "shutdown",
+      "reboot",
+      "mkisofs",
+      "mount",
+      "umount"
+    ],
+    "allowedCommands": [
+      "git",
+      "npm",
+      "npx",
+      "node",
+      "python3",
+      "ls",
+      "cat",
+      "grep",
+      "find",
+      "sed",
+      "awk",
+      "curl",
+      "wget"
+    ],
+    "maxFileSize": 104857600,
+    "allowedDirectories": [
+      "/home/agent/workspace/projects",
+      "/home/agent/workspace/docs",
+      "/home/agent/workspace/temp",
+      "/home/agent/workspace/memory"
+    ],
+    "blockedDirectories": [
+      "/home/cloud",
+      "/etc",
+      "/root",
+      "/var",
+      "/usr",
+      "/bin",
+      "/sbin"
+    ]
+  },
+  "workspace": {
+    "defaultPath": "/home/agent/workspace/projects",
+    "maxProjects": 10,
+    "autoCommit": false,
+    "autoPush": false,
+    "requireConfirmation": true
+  },
+  "logging": {
+    "level": "info",
+    "path": "/home/agent/workspace/logs",
+    "maxSize": "100M",
+    "maxFiles": 10,
+    "format": "json"
+  },
+  "features": {
+    "codeCompletion": true,
+    "errorDetection": true,
+    "autoRefactor": true,
+    "testGeneration": true,
+    "documentation": true,
+    "memoryIntegration": true,
+    "personalityMode": true
+  },
+  "personality": {
+    "enabled": true,
+    "profile": "orc-warboss",
+    "voice": false
+  }
+}
