@@ -63,6 +63,10 @@ echo "📁 Mounting current directory as workspace:"
 echo "   ${PWD} → /home/agent/workspace/projects"
 echo ""
 
+# Fix ownership of mounted volumes to match container agent user (UID 1001)
+echo "🔧 Fixing volume permissions..."
+sudo chown -R 1001:1001 "${PWD}/projects" "${PWD}/docs" "${PWD}/memory" 2>/dev/null || true
+
 # Start container
 docker run -d \
     --name opencode-agent \
