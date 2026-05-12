@@ -36,19 +36,12 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
 RUN mkdir -p /home/agent/workspace/{projects,docs,temp,logs} && \
     chown -R agent:agent /home/agent/workspace
 
-# Configure git for skills clones
-RUN git config --global user.email "agent@opencode.ai" && \
-    git config --global user.name "OpenCode Agent"
+# Create skills directory
+RUN mkdir -p /home/agent/.opencode/skills
 
-# Install skills repositories as root
-# Matt Pocock skills - Engineering skills for coding agents
-RUN git clone https://github.com/mattpocock/skills.git /home/agent/.opencode/skills-mattpocock || echo "Matt Pocock skills clone failed"
-
-# Agent skills collection  
-RUN git clone https://github.com/addyosmani/agent-skills.git /home/agent/.opencode/skills-addyosmani || echo "Addy Osmani skills clone failed"
-
-# Set proper ownership for skills
-RUN find /home/agent/.opencode -name "skills-*" -type d -exec chown -R agent:agent {} + 2>/dev/null || true
+# Copy skills from build context
+COPY --chown=agent:agent ../skills/skills /home/agent/.opencode/skills-mattpocock
+COPY --chown=agent:agent ../skills/agent-skills /home/agent/.opencode/skills-addyosmani || true
 
 # Switch to non-root user
 USER agent

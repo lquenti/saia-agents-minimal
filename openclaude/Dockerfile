@@ -36,19 +36,12 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
 RUN mkdir -p /home/agent/workspace/{projects,docs,temp,logs} && \
     chown -R agent:agent /home/agent/workspace
 
-# Install skills repositories as root
-# Configure git first
-RUN git config --global user.email "agent@openclaude.ai" && \
-    git config --global user.name "OpenClaude Agent"
+# Create skills directory
+RUN mkdir -p /home/agent/.openclaude/skills
 
-# Matt Pocock skills - Engineering skills for coding agents
-RUN git clone https://github.com/mattpocock/skills.git /home/agent/.openclaude/skills-mattpocock
-
-# Agent skills collection
-RUN git clone https://github.com/addyosmani/agent-skills.git /home/agent/.openclaude/skills-addyosmani || true
-
-# Set proper ownership for skills
-RUN find /home/agent/.openclaude -name "skills-*" -type d -exec chown -R agent:agent {} + 2>/dev/null || true
+# Copy skills from build context
+COPY --chown=agent:agent ../skills/skills /home/agent/.openclaude/skills-mattpocock
+COPY --chown=agent:agent ../skills/agent-skills /home/agent/.openclaude/skills-addyosmani || true
 
 # Switch to non-root user
 USER agent
