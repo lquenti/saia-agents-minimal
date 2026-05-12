@@ -1,0 +1,52 @@
+{
+  "agent": {
+    "name": "Advanced Coding Agent",
+    "version": "1.0.0",
+    "description": "Isolated coding agent with pre-installed skills"
+  },
+  "skills": {
+    "enabled": [
+      "github",
+      "git",
+      "fileops",
+      "shell",
+      "web",
+      "diffs",
+      "session-logs"
+    ],
+    "disabled": [
+      "voice-call",
+      "browser-automation"
+    ]
+  },
+  "security": {
+    "allowExternalCalls": false,
+    "allowNetworkAccess": false,
+    "blockedCommands": [
+      "rm -rf /",
+      "dd",
+      "mkfs",
+      "fdisk",
+      "partition",
+      "chmod -R 777",
+      "chown -R root"
+    ],
+    "maxFileSize": 104857600,
+    "allowedDirectories": [
+      "/home/agent/workspace/projects",
+      "/home/agent/workspace/docs",
+      "/home/agent/workspace/temp"
+    ]
+  },
+  "workspace": {
+    "defaultPath": "/home/agent/workspace/projects",
+    "maxProjects": 10,
+    "autoCommit": false
+  },
+  "logging": {
+    "level": "info",
+    "path": "/home/agent/workspace/logs",
+    "maxSize": "100M",
+    "maxFiles": 10
+  }
+}
