@@ -63,9 +63,9 @@ echo "📁 Mounting current directory as workspace:"
 echo "   ${PWD} → /home/agent/workspace/projects"
 echo ""
 
-# Fix ownership of mounted volumes to match container agent user (UID 1001)
+# Fix ownership of mounted volumes to match container agent user (UID 999)
 echo "🔧 Fixing volume permissions..."
-sudo chown -R 1001:1001 "${PWD}/projects" "${PWD}/docs" "${PWD}/memory" 2>/dev/null || true
+sudo chown -R 999:999 "${PWD}/projects" "${PWD}/docs" "${PWD}/memory" 2>/dev/null || true
 
 # Start container
 docker run -d \
