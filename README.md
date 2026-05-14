@@ -69,6 +69,77 @@ exit  # Container auto-removes!
 
 ---
 
+## 🏗️ Usage Patterns
+
+### Basic Usage (Recommended)
+
+**Every time you work on a project:**
+
+```bash
+cd /path/to/your/project
+./start-opencode.sh
+opencode
+```
+
+That's it! The container mounts your project and provides all tools.
+
+### Shell Alias (For Convenience)
+
+Add to `~/.bashrc` or `~/.zshrc`:
+
+```bash
+alias start-agent='/path/to/advanced-coding-agent/start-opencode.sh'
+```
+
+Then use from anywhere:
+
+```bash
+cd /any/project
+start-agent
+opencode
+```
+
+### Working with Multiple Projects
+
+```bash
+# Project 1
+cd /projects/website
+./start-opencode.sh
+opencode
+
+# Project 2 (new terminal or tab)
+cd /projects/api
+./start-opencode.sh
+opencode
+```
+
+Each container is isolated and auto-removes on exit.
+
+### Debugging
+
+```bash
+# Enter running container
+docker exec -it advanced-coding-agent /bin/bash
+
+# View container logs
+docker logs -f advanced-coding-agent
+
+# Check container status
+docker ps
+```
+
+### Manual Docker Build
+
+```bash
+# OpenCode
+docker build -f Dockerfile.opencode -t advanced-coding-agent .
+
+# OpenClaude
+docker build -f Dockerfile.openclaude -t advanced-coding-agent:openclaude .
+```
+
+---
+
 ## ✅ Testing
 
 Automated tests validate scripts, configuration, and Docker builds.
@@ -187,46 +258,6 @@ Follow a **5-phase disciplined workflow**:
 ```
 
 **📖 Full workflow:** [docs/SOFTWARE_ENGINEERING_WORKFLOW.md](docs/SOFTWARE_ENGINEERING_WORKFLOW.md)
-
----
-
-## 🔧 Advanced Usage
-
-### Shell Alias (Recommended)
-
-Add to `~/.bashrc` or `~/.zshrc`:
-
-```bash
-alias start-agent='/path/to/advanced-coding-agent/start-opencode.sh'
-```
-
-Then use from anywhere:
-
-```bash
-cd /any/project
-start-agent
-opencode
-```
-
-### Build from Source
-
-```bash
-# OpenCode
-docker build -f Dockerfile.opencode -t advanced-coding-agent .
-
-# OpenClaude
-docker build -f Dockerfile.openclaude -t advanced-coding-agent:openclaude .
-```
-
-### Debug
-
-```bash
-# Enter container
-docker exec -it advanced-coding-agent /bin/bash
-
-# View logs
-docker logs -f advanced-coding-agent
-```
 
 ---
 
