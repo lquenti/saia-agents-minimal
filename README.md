@@ -55,13 +55,14 @@ RUNTIME=opencode    # or RUNTIME=openclaude
 ./start-openclaude.sh
 ```
 
-### 4. Enter the Container
+This will:
+- Build the Docker image (first time only)
+- Create `.agent-memory/` folder in your current directory (for persistent memory)
+- Start an **interactive bash shell** in the container
 
-```bash
-docker exec -it advanced-coding-agent /bin/bash
-```
+### 4. Start the Agent TUI
 
-### 5. Start the Agent TUI
+Once inside the container:
 
 ```bash
 # For OpenCode:
@@ -70,6 +71,14 @@ opencode
 # For OpenClaude:
 openclaude
 ```
+
+### 5. Exit (Container Auto-Removes)
+
+```bash
+exit  # or Ctrl+D
+```
+
+**The container automatically removes itself when you exit!** No stop script needed for normal use.
 
 ## 📁 Project Structure
 
@@ -93,35 +102,22 @@ advanced-coding-agent/
 
 ## 🔄 User Workflow
 
+```bash
+# 1. Go to your project directory
+cd /path/to/your-project
+
+# 2. Start the agent (from advanced-coding-agent folder)
+/path/to/advanced-coding-agent/start-opencode.sh
+
+# 3. You're now in an interactive bash shell
+# Start the agent:
+opencode
+
+# 4. When done, exit
+exit  # ← Container automatically removed!
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  1. Clone Repository                                            │
-│     git clone <repo> && cd advanced-coding-agent                │
-└─────────────────────────────────────────────────────────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  2. Choose Runtime                                              │
-│     cp .env.example .env                                        │
-│     Edit .env: RUNTIME=opencode (or openclaude)                 │
-└─────────────────────────────────────────────────────────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  3. Build & Start Container                                     │
-│     ./start-opencode.sh     # or ./start-openclaude.sh          │
-│     • Builds Docker image                                        │
-│     • Mounts current directory as workspace                      │
-│     • Starts container with security hardening                   │
-└─────────────────────────────────────────────────────────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  4. Enter Container & Start Agent                               │
-│     docker exec -it advanced-coding-agent /bin/bash             │
-│     opencode        # or openclaude                             │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+**Note:** The stop scripts (`stop-opencode.sh`, `stop-openclaude.sh`) are only needed if a container gets orphaned (rare). Normal use: container auto-removes when you exit bash.
 
 ## 🏗️ Architecture
 
@@ -280,7 +276,18 @@ uv run ruff check .
 | **session-logs** | Analyze conversation history |
 | **python** | Python development tools |
 
-## 💡 Usage Examples
+## 💾 Persistent Memory
+
+The agent stores memories in **`.agent-memory/`** folder in your project directory:
+
+```bash
+your-project/
+├── .agent-memory/     ← Persistent agent memory (survives container exit)
+├── your-code/
+└── ...
+```
+
+**Why this matters:** Your agent remembers things between sessions! Code preferences, project context, lessons learned - all stored locally in your project.
 
 ### Start a New Project
 
