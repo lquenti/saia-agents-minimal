@@ -8,72 +8,153 @@ import os
 import re
 
 def markdown_to_html(md_text):
-    """Simple markdown to HTML converter (basic support)."""
-    html = md_text
+    """Convert markdown to HTML with proper support for all features."""
+    lines = md_text.split('\n')
+    html_lines = []
+    in_code_block = False
+    in_list = False
+    in_table = False
+    code_block_lang = ''
     
-    # Headers
-    html = re.sub(r'^###### (.+)$', r'<h6>\1</h6>', html, flags=re.MULTILINE)
-    html = re.sub(r'^##### (.+)$', r'<h5>\1</h5>', html, flags=re.MULTILINE)
-    html = re.sub(r'^#### (.+)$', r'<h4>\1</h4>', html, flags=re.MULTILINE)
-    html = re.sub(r'^### (.+)$', r'<h3>\1</h3>', html, flags=re.MULTILINE)
-    html = re.sub(r'^## (.+)$', r'<h2>\1</h2>', html, flags=re.MULTILINE)
-    html = re.sub(r'^# (.+)$', r'<h1>\1</h1>', html, flags=re.MULTILINE)
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        
+        # Code blocks
+        if line.startswith('```'):
+            if not in_code_block:
+                in_code_block = True
+                code_block_lang = line[3:].strip()
+                html_lines.append(f'<pre><code class="language-{code_block_lang}">')
+            else:
+                in_code_block = False
+                html_lines.append('</code></pre>')
+            i += 1
+            continue
+        
+        if in_code_block:
+            html_lines.append(line)
+            i += 1
+            continue
+        
+        # Close list if we hit non-list content
+        if in_list and not line.startswith('- ') and not line.startswith('* ') and not re.match(r'^\d+\. ', line):
+            html_lines.append('</ul>')
+            in_list = False
+        
+        # Close table if we hit non-table content
+        if in_table and (not '|' in line or line.strip() == ''):
+            html_lines.append('</table>')
+            in_table = False
+        
+        # Empty line
+        if line.strip() == '':
+            i += 1
+            continue
+        
+        # Headers
+        if line.startswith('###### '):
+            html_lines.append(f'<h6>{line[7:]}</h6>')
+        elif line.startswith('##### '):
+            html_lines.append(f'<h5>{line[6:]}</h5>')
+        elif line.startswith('#### '):
+            html_lines.append(f'<h4>{line[5:]}</h4>')
+        elif line.startswith('### '):
+            html_lines.append(f'<h3>{line[4:]}</h3>')
+        elif line.startswith('## '):
+            html_lines.append(f'<h2>{line[3:]}</h2>')
+        elif line.startswith('# '):
+            html_lines.append(f'<h1>{line[2:]}</h1>')
+        
+        # Horizontal rule
+        elif line.strip() in ['---', '***', '___']:
+            html_lines.append('<hr>')
+        
+        # Table detection (starts with |)
+        elif line.strip().startswith('|') and in_table:
+            cells = [cell.strip() for cell in line.split('|')[1:-1]]
+            html_lines.append('</table>')
+            in_table = False
+        
+        # Table start
+        elif line.strip().startswith('|') and not in_table:
+            # Check if this is a header row (first row)
+            html_lines.append('<table><thead><tr>')
+            cells = [cell.strip() for cell in line.split('|')[1:-1]]
+            for cell in cells:
+                html_lines.append(f'<th>{process_inline(cell)}</th>')
+            html_lines.append('</tr></thead><tbody>')
+            in_table = True
+        
+        # Table separator row (skip it)
+        elif line.strip().startswith('|') and in_table and re.match(r'^\|[-\s|]+\|$', line):
+            pass
+        
+        # Table body
+        elif line.strip().startswith('|') and in_table:
+            cells = [cell.strip() for cell in line.split('|')[1:-1]]
+            html_lines.append('<tr>')
+            for cell in cells:
+                html_lines.append(f'<td>{process_inline(cell)}</td>')
+            html_lines.append('</tr>')
+        
+        # Unordered list
+        elif line.startswith('- ') or line.startswith('* '):
+            if not in_list:
+                html_lines.append('<ul>')
+                in_list = True
+            item = line[2:]
+            html_lines.append(f'<li>{process_inline(item)}</li>')
+        
+        # Ordered list
+        elif re.match(r'^\d+\. ', line):
+            if not in_list:
+                html_lines.append('<ol>')
+                in_list = True
+            item = re.sub(r'^\d+\. ', '', line)
+            html_lines.append(f'<li>{process_inline(item)}</li>')
+        
+        # Blockquote
+        elif line.startswith('> '):
+            html_lines.append(f'<blockquote>{process_inline(line[2:])}</blockquote>')
+        
+        # Regular paragraph
+        else:
+            html_lines.append(f'<p>{process_inline(line)}</p>')
+        
+        i += 1
     
-    # Bold and italic
-    html = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', html)
-    html = re.sub(r'\*(.+?)\*', r'<em>\1</em>', html)
+    # Close any open tags
+    if in_list:
+        html_lines.append('</ul></ol>')
+    if in_table:
+        html_lines.append('</tbody></table>')
+    if in_code_block:
+        html_lines.append('</code></pre>')
     
-    # Inline code
-    html = re.sub(r'`(.+?)`', r'<code>\1</code>', html)
+    return '\n'.join(html_lines)
+
+def process_inline(text):
+    """Process inline markdown elements."""
+    # Inline code (must be before bold/italic)
+    text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
     
-    # Code blocks
-    html = re.sub(r'```(\w*)\n(.*?)```', r'<pre><code>\2</code></pre>', html, flags=re.DOTALL)
+    # Bold (must be before italic)
+    text = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', text)
+    
+    # Italic
+    text = re.sub(r'\*([^*]+)\*', r'<em>\1</em>', text)
     
     # Links
-    html = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', html)
+    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
     
     # Images
-    html = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', r'<img src="\2" alt="\1">', html)
+    text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', r'<img src="\2" alt="\1">', text)
     
-    # Blockquotes
-    html = re.sub(r'^> (.+)$', r'<blockquote>\1</blockquote>', html, flags=re.MULTILINE)
+    # Inline code spans (multiple backticks)
+    text = re.sub(r'``([^`]+)``', r'<code>\1</code>', text)
     
-    # Unordered lists
-    html = re.sub(r'^- (.+)$', r'<li>\1</li>', html, flags=re.MULTILINE)
-    html = re.sub(r'^\* (.+)$', r'<li>\1</li>', html, flags=re.MULTILINE)
-    
-    # Ordered lists
-    html = re.sub(r'^\d+\. (.+)$', r'<li>\1</li>', html, flags=re.MULTILINE)
-    
-    # Horizontal rule
-    html = re.sub(r'^---$', r'<hr>', html, flags=re.MULTILINE)
-    
-    # Tables (basic)
-    def convert_table(match):
-        rows = match.group(1).strip().split('\n')
-        html_table = '<table>'
-        for i, row in enumerate(rows):
-            if i == 1:  # Skip separator row
-                continue
-            cells = [c.strip() for c in row.split('|')[1:-1]]
-            if i == 0:
-                html_table += '<thead><tr>' + ''.join(f'<th>{c}</th>' for c in cells) + '</tr></thead>'
-            else:
-                html_table += '<tr>' + ''.join(f'<td>{c}</td>' for c in cells) + '</tr>'
-        html_table += '</table>'
-        return html_table
-    
-    html = re.sub(r'\|(.+)\|\n\|[-\s|]+\|\n((?:\|.+\|\n?)+)', convert_table, html)
-    
-    # Line breaks
-    html = re.sub(r'  \n', r'<br>\n', html)
-    html = re.sub(r'\n\n', r'</p><p>', html)
-    
-    # Wrap in paragraphs if needed
-    if not html.strip().startswith('<'):
-        html = f'<p>{html}</p>'
-    
-    return html
+    return text
 
 def create_html_template(title, content):
     """Create full HTML page with navigation."""
@@ -91,6 +172,13 @@ def create_html_template(title, content):
     nav {{ background: #24292e; padding: 1rem; margin-bottom: 2rem; }}
     nav a {{ color: #fff; margin-right: 1rem; text-decoration: none; }}
     nav a:hover {{ text-decoration: underline; }}
+    pre {{ background: #f6f8fa; padding: 16px; overflow-x: auto; border-radius: 6px; }}
+    code {{ background: rgba(27,31,35,0.05); padding: 0.2em 0.4em; border-radius: 3px; }}
+    pre code {{ background: transparent; padding: 0; }}
+    table {{ border-collapse: collapse; width: 100%; margin: 16px 0; }}
+    th, td {{ border: 1px solid #dfe2e5; padding: 6px 13px; }}
+    th {{ background: #f6f8fa; font-weight: bold; }}
+    tr:nth-child(2n) {{ background: #f6f8fa; }}
   </style>
 </head>
 <body>

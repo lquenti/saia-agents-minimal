@@ -55,6 +55,8 @@ exit  # Container auto-removes!
 
 ## 📚 Documentation
 
+**🌐 [View Documentation Online](https://jdecker.pages-ce.gwdg.de/advanced-coding-agent/)**
+
 | Guide | Description |
 |-------|-------------|
 | [**Configuration**](docs/CONFIGURATION.md) | API keys, models, providers, environment variables |
