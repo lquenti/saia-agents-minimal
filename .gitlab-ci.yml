@@ -1,7 +1,7 @@
 # GitLab CI/CD Pipeline for Advanced Coding Agent
 # Renders documentation as HTML and deploys to GitLab Pages
 
-image: node:20-bookworm
+image: python:3.11-slim
 
 # Allow manual pipeline triggers from web UI
 workflow:
@@ -14,23 +14,18 @@ workflow:
 pages:
   stage: deploy
   script:
-    # Install markdown-to-html converter
-    - npm install -g markdown-it
-
-    # Build HTML using the conversion script
-    - npm run build
-
+    # Generate HTML pages (pure Python, no dependencies)
+    - python scripts/generate-pages.py
   artifacts:
     paths:
       - public
     expire_in: 1 week
-
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE == 'web'
     - if: $CI_PIPELINE_SOURCE == 'schedule'
 
-# Optional: Lint markdown files (MR only or manual)
+# Optional: Lint markdown files
 lint:
   stage: test
   script:
@@ -43,20 +38,7 @@ lint:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_LINT == "true"
 
-# Optional: Build test (MR only or manual)
-build:
-  stage: build
-  script:
-    - echo "Building documentation..."
-    - npm install -g markdown-it
-    - mkdir -p test-public
-    - node scripts/convert-to-html.js
-    - test -d test-public && echo "Build successful"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_BUILD == "true"
-
-# Manual trigger jobs (click to run from CI/CD -> Pipelines -> Run pipeline)
+# Manual trigger jobs
 manual_lint:
   stage: test
   script:
@@ -71,28 +53,12 @@ manual_lint:
   when: manual
   allow_failure: true
 
-manual_build:
-  stage: build
-  script:
-    - echo "=== MANUAL BUILD TRIGGERED ==="
-    - echo "Building documentation..."
-    - npm install -g markdown-it
-    - mkdir -p test-manual
-    - node scripts/convert-to-html.js
-    - test -d test-manual && echo "✅ Build successful"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'web'
-  when: manual
-  allow_failure: true
-
 manual_pages_deploy:
   stage: deploy
   script:
     - echo "=== MANUAL PAGES DEPLOY TRIGGERED ==="
-    - npm install -g markdown-it
-    - node scripts/convert-to-html.js
+    - python scripts/generate-pages.py
     - echo "✅ Pages built successfully"
-    - echo "Deploying to GitLab Pages..."
   rules:
     - if: $CI_PIPELINE_SOURCE == 'web'
   when: manual
