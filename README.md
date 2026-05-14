@@ -148,6 +148,69 @@ exit  # ← Container auto-removes
 
 ---
 
+## 🧠 Persistent Memory
+
+### ⚠️ OpenCode Sessions Are Stateless by Default
+
+Each OpenCode session starts **fresh** - it doesn't remember previous conversations unless you add memory.
+
+### Two Approaches to Memory
+
+#### Option 1: AGENTS.md (Simple, Recommended)
+
+Create `AGENTS.md` in your project root. OpenCode **automatically reads** this file on every session.
+
+```markdown
+# Project: Your Project
+
+## Current State
+- Status: In progress
+- Last task: Implement feature X
+
+## Progress
+✅ Done
+⏳ In progress
+❌ Blocked
+
+## Architecture Decisions
+- Decision 1: Why we chose X
+- Decision 2: Why we avoided Y
+```
+
+**Benefits:**
+- ✅ No external dependencies
+- ✅ Git-tracked and shareable
+- ✅ Works out of the box
+
+**See [tools.md](tools.md#memory--persistence) for complete guide.**
+
+#### Option 2: Hindsight Plugin (Advanced)
+
+For **vector search** and **automatic recall**, use the [Hindsight plugin](https://hindsight.vectorize.io/sdks/integrations/opencode).
+
+```json
+// opencode.json
+{
+  "plugin": ["@vectorize-io/opencode-hindsight"]
+}
+```
+
+**Benefits:**
+- ✅ Automatic recall/retain
+- ✅ Vector search across conversations
+- ✅ Survives context compaction
+
+**Requires:** Hindsight server (local or cloud)
+
+### Memory Folder
+
+The `.agent-memory/` folder is **mounted** but **not automatically used** by OpenCode. Use it for:
+- Storing `AGENTS.md` (symlink to project root)
+- Custom scripts
+- Project-specific persistence
+
+---
+
 ## 🧠 Pre-Installed Skills
 
 The agent comes with **45+ production-grade skills** from two curated collections:
