@@ -67,5 +67,5 @@ USER agent
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD pgrep -x openclaude || exit 1
 
-# Default command - keep container running
-CMD ["/bin/bash", "-c", "cd /home/agent/workspace && exec tail -f /dev/null"]
+# Default command - interactive bash shell
+CMD ["/bin/bash"]
