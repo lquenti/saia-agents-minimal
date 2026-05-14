@@ -7,7 +7,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env"
 CONTAINER_NAME="advanced-coding-agent"
-DOCKERFILE="Dockerfile.opencode"
+DOCKERFILE="${SCRIPT_DIR}/Dockerfile.opencode"
 
 # Colors for output
 RED='\033[0;31m'
