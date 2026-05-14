@@ -69,6 +69,35 @@ exit  # Container auto-removes!
 
 ---
 
+## ✅ Testing
+
+Automated tests validate scripts, configuration, and Docker builds.
+
+```bash
+# Run all tests
+./tests/run_tests.sh
+
+# Script tests only (28 tests)
+./tests/run_tests.sh scripts
+
+# Docker tests only (requires Docker)
+./tests/run_tests.sh docker
+```
+
+**Test Coverage:**
+- ✅ Script syntax and permissions
+- ✅ File existence and configuration
+- ✅ Template completeness
+- ✅ Documentation presence
+- ✅ GitLab CI/CD configuration
+- ✅ Docker builds (optional)
+
+**CI/CD Integration:** Tests run automatically on merge requests.
+
+See [Testing Guide](docs/TESTING.md) for complete documentation.
+
+---
+
 ## 📚 Documentation
 
 **🌐 [View Documentation Online](https://jdecker.pages-ce.gwdg.de/advanced-coding-agent/)**
@@ -78,6 +107,7 @@ exit  # Container auto-removes!
 | [**Configuration**](docs/CONFIGURATION.md) | API keys, models, providers, environment variables |
 | [**Skills Reference**](docs/SKILLS.md) | Complete list of 45+ pre-installed skills |
 | [**Security**](docs/SECURITY.md) | Container hardening, access control, best practices |
+| [**Testing Guide**](docs/TESTING.md) | Automated tests, CI/CD integration, test coverage |
 | [**Software Engineering Workflow**](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) | 5-phase disciplined development process |
 | [**Tools & Security**](tools.md) | Tool definitions, memory configuration, security rules |
 
