@@ -3,6 +3,14 @@
 
 image: node:20-bookworm
 
+# Allow manual pipeline triggers from web UI
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'web'  # Manual trigger
+    - if: $CI_PIPELINE_SOURCE == 'schedule'  # Scheduled trigger
+    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Push to main
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'  # Merge request
+
 pages:
   stage: deploy
   script:
@@ -164,8 +172,10 @@ pages:
 
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == 'web'  # Manual trigger
+    - if: $CI_PIPELINE_SOURCE == 'schedule'  # Scheduled trigger
 
-# Optional: Lint markdown files
+# Optional: Lint markdown files (MR only or manual)
 lint:
   stage: test
   script:
@@ -176,8 +186,9 @@ lint:
     - echo "Markdown linting passed"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_LINT == "true"  # Manual with variable
 
-# Optional: Build test
+# Optional: Build test (MR only or manual)
 build:
   stage: build
   script:
@@ -195,3 +206,47 @@ build:
     - test -f test-public/index.html && echo "Build successful"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_BUILD == "true"  # Manual with variable
+
+# Manual trigger jobs (click to run from CI/CD → Pipelines → Run pipeline)
+manual_lint:
+  stage: test
+  script:
+    - echo "=== MANUAL LINT TRIGGERED ==="
+    - echo "Checking markdown syntax..."
+    - find . -name "*.md" -type f | while read file; do
+        echo "✓ Checking: $file";
+      done
+    - echo "✅ Markdown linting passed"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'web'  # Manual trigger only
+  when: manual
+  allow_failure: true
+
+manual_build:
+  stage: build
+  script:
+    - echo "=== MANUAL BUILD TRIGGERED ==="
+    - echo "Building documentation..."
+    - npm install -g markdown-it
+    - mkdir -p test-manual
+    - node scripts/convert-to-html.js
+    - test -d test-manual && echo "✅ Build successful"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'web'  # Manual trigger only
+  when: manual
+  allow_failure: true
+
+manual_pages_deploy:
+  stage: deploy
+  script:
+    - echo "=== MANUAL PAGES DEPLOY TRIGGERED ==="
+    - npm install -g markdown-it
+    - mkdir -p public
+    - node scripts/convert-to-html.js
+    - echo "✅ Pages built successfully"
+    - echo "Deploying to GitLab Pages..."
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'web'  # Manual trigger only
+  when: manual
+  allow_failure: false

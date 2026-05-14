@@ -38,12 +38,55 @@ The `.gitlab-ci.yml` file is already configured to:
 
 The pipeline automatically runs when you push to the default branch (`main`).
 
-### Manual Trigger
+### Automatic Triggers
+
+| Trigger | When | Jobs Run |
+|---------|------|----------|
+| Push to `main` | Code changes | `pages` (deploy) |
+| Merge Request | MR created | `lint`, `build` |
+
+### Manual Triggers
+
+You can also manually trigger the pipeline:
+
+#### Option 1: Run Full Pipeline Manually
 
 1. Go to **CI/CD** → **Pipelines**
 2. Click **Run pipeline**
 3. Select branch: `main`
 4. Click **Run pipeline**
+
+This runs all jobs automatically.
+
+#### Option 2: Selective Manual Jobs
+
+For more control, you can choose specific jobs:
+
+1. Go to **CI/CD** → **Pipelines**
+2. Click **Run pipeline**
+3. Select branch: `main`
+4. **Toggle specific jobs** (click the play button next to each):
+   - `manual_lint` - Check markdown syntax
+   - `manual_build` - Build documentation
+   - `manual_pages_deploy` - Deploy to Pages
+5. Click **Run pipeline**
+
+This is useful for:
+- Testing changes before full deploy
+- Running specific checks
+- Re-deploying without code changes
+
+### Using Pipeline Variables
+
+You can also use variables to control behavior:
+
+```bash
+# In Run pipeline dialog:
+Variable: MANUAL_LINT
+Value: true
+
+# This will run the lint job automatically
+```
 
 ## Step 4: Access Your Pages
 
