@@ -26,6 +26,19 @@ else
     exit 1
 fi
 
+# Validate required environment variables
+if [[ -z "${OPENCLAUDE_API_KEY}" ]]; then
+    echo -e "${RED}✗ ERROR: OPENCLAUDE_API_KEY not set in .env${NC}"
+    echo -e "${YELLOW}  Please set your API key in .env file${NC}"
+    exit 1
+fi
+
+if [[ -z "${MODEL}" ]]; then
+    echo -e "${RED}✗ ERROR: MODEL not set in .env${NC}"
+    echo -e "${YELLOW}  Please set your model in .env file${NC}"
+    exit 1
+fi
+
 # Check if Docker is running
 if ! docker info &>/dev/null; then
     echo -e "${RED}✗ ERROR: Docker is not running${NC}"

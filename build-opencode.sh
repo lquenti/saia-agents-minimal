@@ -20,6 +20,12 @@ if ! docker info &>/dev/null; then
     exit 1
 fi
 
+# Check if Dockerfile exists
+if [[ ! -f "${DOCKERFILE}" ]]; then
+    echo -e "${RED}✗ ERROR: Dockerfile not found: ${DOCKERFILE}${NC}"
+    exit 1
+fi
+
 # Build the image
 echo -e "${GREEN}🔨 Building OpenCode Docker image...${NC}"
 echo -e "${YELLOW}  Dockerfile: ${DOCKERFILE}${NC}"

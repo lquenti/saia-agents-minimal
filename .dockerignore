@@ -1,55 +1,56 @@
-# Environment files
-.env
-.env.*
-
 # Git
 .git
 .gitignore
+.gitattributes
 
-# Docker
-Dockerfile*
-docker-compose*.yml
-.docker/
+# Documentation (not needed in container)
+docs/
+*.md
+!README.md
 
-# Projects (will be mounted at runtime)
-projects/
-memory/
+# Tests (not needed in container)
+tests/
+*.test.*
+*.spec.*
 
-# Logs
-logs/
-*.log
+# Templates (not needed in container)
+templates/
 
-# OS files
-.DS_Store
-Thumbs.db
+# Scripts (not needed in container - only generate-pages.py is used)
+scripts/*.js
 
-# Editor files
+# Build artifacts
+public/
+dist/
+build/
+
+# Development
+node_modules/
+.env
+.env.*
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Temporary files
-tmp/
-temp/
-*.tmp
+# OS
+.DS_Store
+Thumbs.db
 
-# Build artifacts
-dist/
-build/
+# Logs
+logs/
+*.log
 
-# Python
-__pycache__/
-*.py[cod]
-.venv/
-venv/
+# Docker
+Dockerfile*
+.dockerignore
+docker-compose*.yml
 
-# Node
-node_modules/
+# CI/CD
+.gitlab-ci.yml
+.github/
 
-# Test coverage
-coverage/
-
-# Old files (no longer used)
-openclaude/
-opencode/
+# Documentation source (HTML is generated)
+*.md

@@ -32,13 +32,12 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
     && mv /root/.local/bin/uv /usr/local/bin/ \
     && mv /root/.local/bin/uvx /usr/local/bin/
 
-# Install OpenClaude CLI (placeholder - replace with actual installation)
-# Note: OpenClaude installation method may vary - adjust based on actual package name
-RUN npm install -g openclaude-cli 2>/dev/null || \
-    echo "OpenClaude CLI installation - adjust based on actual package name"
+# Note: Agent CLI (opencode/openclaude) must be installed separately
+# This container provides the base environment with tools and skills
+# Install the CLI after container starts or use a different base image
 
 # Create agent configuration directories
-RUN mkdir -p /home/agent/.openclaude/{config,skills,workspace} \
+RUN mkdir -p /home/agent/.openclaude/{config,skills,workspace,memory} \
     && chown -R agent:agent /home/agent
 
 # Pre-install essential skills from curated repos
@@ -51,8 +50,8 @@ COPY --chown=agent:agent agents.json /home/agent/.openclaude/
 COPY --chown=agent:agent tools.md /home/agent/.openclaude/workspace/
 
 # Copy pre-installed skills
-COPY --chown=agent:agent skills/matt-pocock/skills /home/agent/.openclaude/workspace/skills/matt-pocock
-COPY --chown=agent:agent skills/addy-osmani/skills /home/agent/.openclaude/workspace/skills/addy-osmani
+COPY --chown=agent:agent skills/matt-pocock /home/agent/.openclaude/skills/matt-pocock
+COPY --chown=agent:agent skills/addy-osmani /home/agent/.openclaude/skills/addy-osmani
 
 # Create safe workspace structure
 RUN mkdir -p /home/agent/workspace/{projects,docs,temp,logs} \
@@ -68,9 +67,9 @@ ENV NODE_ENV=production \
 # Switch to non-root user
 USER agent
 
-# Health check
+# Health check - check if shell is responsive
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD pgrep -x openclaude || exit 1
+    CMD ["/bin/bash", "-c", "echo 'healthy'"]
 
 # Default command - interactive bash shell
 CMD ["/bin/bash"]

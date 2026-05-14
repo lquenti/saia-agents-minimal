@@ -50,19 +50,12 @@ yarn-error.log*
 coverage/
 .nyc_output/
 
-# Docker compose (not used)
-docker-compose.override.yml
-
 # Generated HTML (build output)
 public/
 *.html
 
-# Package lock (optional, can be committed)
-# package-lock.json
-
-# Project templates (not in .gitignore, but AGENTS.md is)
-# templates/  # Keep this in git
-AGENTS.md  # Your project's AGENTS.md (not the template)
+# Project-specific files (templates are kept in git)
+AGENTS.md
 
 # Test artifacts
 tests/__pycache__/
