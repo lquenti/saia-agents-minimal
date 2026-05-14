@@ -30,7 +30,7 @@ The Advanced Coding Agent uses a **single-container Docker architecture** with p
 │  │  │         Agent CLI                            │  │   │
 │  │  ├──────────────────────────────────────────────┤  │   │
 │  │  │  /home/agent/.cache/                         │  │   │
-│  │  │         Skills, npm packages, Python deps    │  │   │
+│  │  │         Skills, Python dependencies          │  │   │
 │  │  └──────────────────────────────────────────────┘  │   │
 │  └─────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
@@ -53,7 +53,6 @@ Container Root (/)
 │   │   ├── skills/                # Pre-installed skills
 │   │   └── config.json            # Runtime config
 │   └── .cache/                     # Cached dependencies
-│       ├── npm/                   # npm packages
 │       └── uv/                    # Python packages
 ├── /usr/local/bin/
 │   ├── opencode or openclaude     # Agent CLI

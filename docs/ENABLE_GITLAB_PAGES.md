@@ -21,7 +21,7 @@ This guide explains how to enable GitLab Pages for the Advanced Coding Agent rep
 
 The `.gitlab-ci.yml` file is already configured to:
 
-1. Convert all `.md` files to HTML
+1. Convert all `.md` files to HTML using pure Python
 2. Add navigation across all pages
 3. Use GitHub Markdown CSS for styling
 4. Deploy to `public/` directory
@@ -30,9 +30,9 @@ The `.gitlab-ci.yml` file is already configured to:
 
 | Stage | Purpose |
 |-------|---------|
-| `build` | Test documentation builds (MR only) |
+| `test` | Run test suite (MR only) |
 | `lint` | Check markdown syntax (MR only) |
-| `deploy` | Deploy to GitLab Pages (default branch only) |
+| `pages` | Deploy to GitLab Pages (default branch only) |
 
 ## Step 3: Trigger Pipeline
 
@@ -107,7 +107,7 @@ After the pipeline completes successfully:
 4. Review the error message
 
 **Common issues:**
-- `npm install` fails → Check Node.js version in Docker image
+- `python scripts/generate-pages.py` fails → Check Python 3.6+ is installed
 - `public/` directory missing → Script creates it automatically
 - HTML conversion fails → Check markdown syntax
 
@@ -152,19 +152,18 @@ When you update `.md` files:
 Test the conversion locally before pushing:
 
 ```bash
-# Install dependencies
-npm install -g markdown-it
-
-# Run conversion
-node scripts/convert-to-html.js
+# Run conversion (pure Python, no dependencies needed)
+python3 scripts/generate-pages.py
 
 # View locally
 cd public
 python3 -m http.server 8080
 
 # Open in browser
-open http://localhost:8080
+# http://localhost:8080
 ```
+
+**No npm or Node.js required!** The Python script uses only standard library modules.
 
 ## Security Notes
 

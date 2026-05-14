@@ -44,8 +44,7 @@ advanced-coding-agent/
 │   └── README.md                # Test documentation
 │
 ├── scripts/                     # Utility scripts
-│   ├── generate-pages.py        # GitLab Pages HTML generator
-│   └── convert-to-html.js       # Node.js HTML converter
+│   └── generate-pages.py        # GitLab Pages HTML generator
 │
 ├── templates/                   # AGENTS.md templates
 │   ├── AGENTS.md                # Generic template
@@ -497,19 +496,6 @@ nano .env
 - Markdown to HTML
 - Color themes
 - Navigation
-
-**Size:** ~2KB
-
----
-
-### scripts/convert-to-html.js
-
-**Purpose:** Node.js HTML converter (alternative)
-
-**Features:**
-- Markdown to HTML
-- Syntax highlighting
-- Theme support
 
 **Size:** ~2KB
 
