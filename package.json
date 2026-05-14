@@ -1,0 +1,21 @@
+{
+  "name": "advanced-coding-agent-docs",
+  "version": "2.0.0",
+  "description": "Documentation build tools for Advanced Coding Agent",
+  "scripts": {
+    "build": "node scripts/convert-to-html.js",
+    "serve": "cd public && python3 -m http.server 8080",
+    "dev": "npm run build && npm run serve"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "documentation",
+    "gitlab-pages",
+    "markdown"
+  ],
+  "author": "Gorbad Ironfist <gorbad@openclaw.ai>",
+  "license": "MIT"
+}

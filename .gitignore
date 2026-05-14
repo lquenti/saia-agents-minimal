@@ -52,3 +52,10 @@ coverage/
 
 # Docker compose (not used)
 docker-compose.override.yml
+
+# Generated HTML (build output)
+public/
+*.html
+
+# Package lock (optional, can be committed)
+# package-lock.json
