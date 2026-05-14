@@ -2,7 +2,11 @@
   "agent": {
     "name": "Advanced Coding Agent",
     "version": "1.0.0",
-    "description": "Isolated coding agent with pre-installed skills"
+    "description": "Isolated coding agent with pre-installed skills - supports OpenCode and OpenClaude runtimes"
+  },
+  "runtime": {
+    "supported": ["opencode", "openclaude"],
+    "default": "opencode"
   },
   "skills": {
     "enabled": [
@@ -12,7 +16,8 @@
       "shell",
       "web",
       "diffs",
-      "session-logs"
+      "session-logs",
+      "python"
     ],
     "disabled": [
       "voice-call",
@@ -29,7 +34,10 @@
       "fdisk",
       "partition",
       "chmod -R 777",
-      "chown -R root"
+      "chown -R root",
+      "sudo",
+      "su",
+      "passwd"
     ],
     "maxFileSize": 104857600,
     "allowedDirectories": [
@@ -48,5 +56,15 @@
     "path": "/home/agent/workspace/logs",
     "maxSize": "100M",
     "maxFiles": 10
+  },
+  "python": {
+    "manager": "uv",
+    "version": "3.11",
+    "packages": [
+      "pytest",
+      "black",
+      "ruff",
+      "mypy"
+    ]
   }
 }

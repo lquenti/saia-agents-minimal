@@ -1,328 +1,391 @@
 # Advanced Coding Agent 🦾
 
-> An isolated, secure coding agent environment with pre-installed development skills. Built for safe, productive AI-assisted software development.
+> An isolated, secure coding agent environment. Choose your runtime: **OpenCode** or **OpenClaude**.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+![Version](https://img.shields.io/badge/version-2.0.0-green.svg)
 
 ## 🎯 Overview
 
-The **Advanced Coding Agent** is a self-contained Docker-based environment that provides:
+The **Advanced Coding Agent** provides a secure, isolated Docker environment for AI-assisted coding. Unlike previous versions, this iteration:
 
-- **Isolated workspace** - Agent operates in a sandboxed container with restricted filesystem access
-- **Pre-installed skills** - Ready-to-use tools for Git, GitHub, file operations, web fetching, and more
-- **Security hardening** - Non-root user, network isolation, command restrictions, and resource limits
-- **Multi-agent support** - Works with OpenClaw, OpenClaude, and OpenCode agent runtimes
+- **Supports multiple runtimes** - Choose between OpenCode or OpenClaude
+- **No docker-compose** - Simple `docker build` and `docker run` via shell scripts
+- **Mounts your project** - Current directory is automatically mounted as workspace
+- **Pre-configured tools** - Python via `uv`, Git, and essential development skills
+- **Security-first** - Non-root user, read-only filesystem, network isolation
 
 Perfect for:
 - AI-assisted coding tasks
-- Automated code reviews
+- Safe experimentation with coding agents
 - CI/CD integration
-- Safe experimentation with AI coding agents
+- Isolated development environments
+
+## 🚀 Quick Start
+
+### 1. Clone the Repository
+
+```bash
+git clone https://gitlab-ce.gwdg.de/jdecker/advanced-coding-agent.git
+cd advanced-coding-agent
+```
+
+### 2. Configure Your Runtime
+
+Copy the environment file and choose your runtime:
+
+```bash
+cp .env.example .env
+nano .env  # or vim, code, etc.
+```
+
+Edit `.env` and set:
+
+```bash
+RUNTIME=opencode    # or RUNTIME=openclaude
+```
+
+### 3. Build and Start
+
+```bash
+# For OpenCode runtime:
+./start-opencode.sh
+
+# For OpenClaude runtime:
+./start-openclaude.sh
+```
+
+### 4. Enter the Container
+
+```bash
+docker exec -it advanced-coding-agent /bin/bash
+```
+
+### 5. Start the Agent TUI
+
+```bash
+# For OpenCode:
+opencode
+
+# For OpenClaude:
+openclaude
+```
+
+## 📁 Project Structure
+
+```
+advanced-coding-agent/
+├── .env.example              # Environment configuration template
+├── Dockerfile.opencode       # OpenCode runtime Dockerfile
+├── Dockerfile.openclaude     # OpenClaude runtime Dockerfile
+├── agents.json               # Agent configuration & skills
+├── tools.md                  # Tool definitions & security rules
+├── start-opencode.sh         # OpenCode start script
+├── start-openclaude.sh       # OpenClaude start script
+├── stop-opencode.sh          # OpenCode stop script
+├── stop-openclaude.sh        # OpenClaude stop script
+├── docs/                     # Documentation (read-only)
+│   ├── QUICK_START_SKILLS.md
+│   └── SOFTWARE_ENGINEERING_WORKFLOW.md
+└── projects/                 # Project templates (optional)
+    └── .gitkeep
+```
+
+## 🔄 User Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  1. Clone Repository                                            │
+│     git clone <repo> && cd advanced-coding-agent                │
+└─────────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  2. Choose Runtime                                              │
+│     cp .env.example .env                                        │
+│     Edit .env: RUNTIME=opencode (or openclaude)                 │
+└─────────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  3. Build & Start Container                                     │
+│     ./start-opencode.sh     # or ./start-openclaude.sh          │
+│     • Builds Docker image                                        │
+│     • Mounts current directory as workspace                      │
+│     • Starts container with security hardening                   │
+└─────────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  4. Enter Container & Start Agent                               │
+│     docker exec -it advanced-coding-agent /bin/bash             │
+│     opencode        # or openclaude                             │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Host System                               │
-│  /home/cloud/advanced-coding-agent/                          │
-│  ├─ agents.json      (agent configuration)                  │
-│  ├─ tools.md         (tool definitions)                     │
-│  ├─ docker-compose.yml                                       │
-│  ├─ Dockerfile                                               │
-│  ├─ projects/        (writable workspace)                   │
-│  └─ docs/            (read-only documentation)              │
+│  /home/user/advanced-coding-agent/                           │
+│  ├─ .env                 (your configuration)               │
+│  ├─ agents.json          (agent settings)                   │
+│  ├─ tools.md             (tool definitions)                 │
+│  ├─ Dockerfile.opencode                                       │
+│  ├─ Dockerfile.openclaude                                     │
+│  └─ start-*.sh          (launch scripts)                    │
 └─────────────────────────────────────────────────────────────┘
                             │
+                            │ docker run -v $(pwd):...
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │              advanced-coding-agent (Docker)                  │
 │  ┌───────────────────────────────────────────────────────┐  │
 │  │  User: agent (non-root)                               │  │
 │  │  FS: Read-only root + mounted volumes                 │  │
-│  │  Network: Internal (isolated)                         │  │
+│  │  Network: Isolated (no external access)               │  │
 │  │                                                       │  │
 │  │  /home/agent/workspace/                               │  │
-│  │  ├─ projects/  (RW - working directory)              │  │
-│  │  ├─ docs/      (RO - documentation)                  │  │
-│  │  ├─ temp/      (RW - ephemeral)                      │  │
-│  │  └─ logs/      (RW - agent logs)                     │  │
+│  │  ├─ projects/your-project/  (RW - your code!)        │  │
+│  │  ├─ docs/                     (RO - documentation)   │  │
+│  │  ├─ temp/                     (RW - ephemeral)       │  │
+│  │  └─ logs/                     (RW - agent logs)      │  │
+│  │                                                       │  │
+│  │  Pre-installed:                                       │  │
+│  │  • OpenCode or OpenClaude CLI                         │  │
+│  │  • Python via uv                                      │  │
+│  │  • Git, npm, essential tools                          │  │
 │  └───────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Docker & Docker Compose installed
-- Git configured (for agent operations)
-- At least 4GB RAM available
-
-### Installation
-
-1. **Clone or navigate to the repository:**
-   ```bash
-   cd /home/cloud/advanced-coding-agent
-   ```
-
-2. **Build the Docker image:**
-   ```bash
-   docker-compose build
-   ```
-
-3. **Start the agent:**
-   ```bash
-   docker-compose up -d
-   ```
-
-4. **Verify it's running:**
-   ```bash
-   docker-compose ps
-   ```
-
-5. **Enter the container:**
-   ```bash
-   docker-compose exec coding-agent /bin/bash
-   ```
-
-## 📁 Project Structure
-
-```
-advanced-coding-agent/
-├── agents.json              # Agent configuration & skills
-├── tools.md                 # Tool definitions & security rules
-├── docker-compose.yml       # Container orchestration
-├── Dockerfile               # Container image definition
-├── .dockerignore            # Docker build exclusions
-├── .gitignore               # Git exclusions
-├── LICENSE                  # MIT License
-├── CONTRIBUTING.md          # Contribution guidelines
-├── README.md                # This file
-├── start-openclaude.sh      # OpenClaude runtime launcher
-├── start-opencode.sh        # OpenCode runtime launcher
-├── stop-openclaude.sh       # OpenClaude shutdown script
-├── stop-opencode.sh         # OpenCode shutdown script
-├── docs/                    # Documentation (read-only)
-│   ├── QUICK_START_SKILLS.md
-│   └── SOFTWARE_ENGINEERING_WORKFLOW.md
-└── projects/                # Workspace (writable)
-    └── .gitkeep             # Directory placeholder
-```
-
 ## 🔧 Configuration
 
-### Agent Configuration (`agents.json`)
+### Environment Variables (.env)
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `RUNTIME` | Choose: `opencode` or `openclaude` | `opencode` |
+| `CONTAINER_NAME` | Docker container name | `advanced-coding-agent` |
+| `MAX_FILE_SIZE` | Max file size (bytes) | `104857600` (100MB) |
+| `LOG_LEVEL` | Logging level | `info` |
+| `ALLOW_NETWORK` | Allow network access | `false` |
+| `MODEL` | LLM model to use | (runtime default) |
+
+### agents.json
+
+Configures agent behavior:
 
 ```json
 {
   "agent": {
     "name": "Advanced Coding Agent",
-    "version": "1.0.0",
-    "description": "Isolated coding agent with pre-installed skills"
+    "version": "2.0.0"
   },
   "skills": {
-    "enabled": ["github", "git", "fileops", "shell", "web", "diffs", "session-logs"],
+    "enabled": ["github", "git", "fileops", "shell", "web", "diffs", "python"],
     "disabled": ["voice-call", "browser-automation"]
   },
   "security": {
     "allowExternalCalls": false,
     "allowNetworkAccess": false,
-    "blockedCommands": ["rm -rf /", "dd", "mkfs", "fdisk"],
-    "maxFileSize": 104857600,
-    "allowedDirectories": [
-      "/home/agent/workspace/projects",
-      "/home/agent/workspace/docs",
-      "/home/agent/workspace/temp"
-    ]
+    "blockedCommands": ["rm -rf /", "dd", "mkfs", "sudo", "passwd"]
   }
 }
 ```
 
-### Resource Limits
-
-| Resource | Limit | Reservation |
-|----------|-------|-------------|
-| CPU | 2.0 cores | 0.5 cores |
-| Memory | 4GB | 1GB |
-
 ## 🔒 Security Features
 
-### User Isolation
-- **Non-root user** (`agent`) - Prevents privilege escalation
-- **Read-only root filesystem** - Only mounted volumes are writable
-- **No new privileges** - `no-new-privileges:true` security flag
+### Container Hardening
 
-### Network Isolation
-- **Internal network** - No external internet access by default
-- **Blocked external calls** - Agent cannot make arbitrary network requests
+| Feature | Description |
+|---------|-------------|
+| **Non-root user** | Runs as `agent` user (UID 1000) |
+| **Read-only filesystem** | Root filesystem is read-only |
+| **No new privileges** | `no-new-privileges:true` |
+| **Dropped capabilities** | All capabilities removed except essentials |
+| **Memory limits** | 4GB max, prevents runaway processes |
+| **CPU limits** | 2 cores max |
+| **Network isolation** | No external network access |
 
-### Command Restrictions
-**Blocked commands:**
+### Filesystem Access
+
+| Path | Access | Purpose |
+|------|--------|---------|
+| `/home/agent/workspace/projects/` | **RW** | Your mounted project |
+| `/home/agent/workspace/docs/` | **RO** | Documentation |
+| `/home/agent/workspace/temp/` | **RW** | Ephemeral workspace |
+| `/home/agent/workspace/logs/` | **RW** | Agent logs |
+| `/home/cloud/` | **❌** | No access (host system) |
+| `/etc/` | **❌** | No access (system config) |
+
+### Blocked Commands
+
 ```bash
 rm -rf /, dd, mkfs, fdisk, partition
 chmod -R 777, chown -R root
 sudo, su, passwd
 ```
 
-**Allowed commands:**
-```bash
-git status, git add, git commit, git push, git pull
-npm install, npm run, npm test
-python3, node, npx
-ls, cat, grep, find, sed (safe patterns)
-```
-
-### Filesystem Access
-
-| Path | Access | Purpose |
-|------|--------|---------|
-| `/home/agent/workspace/projects/` | **RW** | Working directory |
-| `/home/agent/workspace/docs/` | **RO** | Documentation |
-| `/home/agent/workspace/temp/` | **RW** | Ephemeral workspace |
-| `/home/agent/workspace/logs/` | **RW** | Agent logs |
-| `/home/cloud/` | **❌** | No access (host system) |
-| `/etc/` | **❌** | No access (system config) |
-| `/root/` | **❌** | No access (root home) |
-
 ## 🛠️ Available Tools
 
-### Core Development
-| Tool | Description |
-|------|-------------|
+### Pre-installed
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Node.js** | 20.x | JavaScript/TypeScript runtime |
+| **Python** | 3.11 | Python runtime |
+| **uv** | Latest | Fast Python package manager |
+| **Git** | Latest | Version control |
+| **npm** | Latest | Node package manager |
+
+### Python Development
+
+Python is available via `uv` (ultra-fast Python package manager):
+
+```bash
+# Create virtual environment
+uv venv
+
+# Activate
+source .venv/bin/activate
+
+# Add dependencies
+uv add pytest black ruff mypy
+
+# Run Python
+uv run python script.py
+
+# Run tests
+uv run pytest
+
+# Format code
+uv run black .
+
+# Lint code
+uv run ruff check .
+```
+
+### Skills
+
+| Skill | Description |
+|-------|-------------|
 | **github** | GitHub integration (issues, PRs, repos) |
 | **git** | Git operations (commit, push, pull, branch) |
 | **fileops** | File operations (read, write, edit, search) |
-| **shell** | Safe shell commands (limited subset) |
+| **shell** | Safe shell commands |
 | **web** | Web fetching and searching |
-
-### Code Quality
-| Tool | Description |
-|------|-------------|
 | **diffs** | Generate shareable code diffs |
 | **session-logs** | Analyze conversation history |
-
-### Disabled (Security)
-- **voice-call** - Voice calls (disabled for security)
-- **browser-automation** - Browser control (disabled for security)
+| **python** | Python development tools |
 
 ## 💡 Usage Examples
 
-### Basic Operations
+### Start a New Project
 
 ```bash
-# Start the agent
-docker-compose up -d
+# Create project directory
+mkdir my-ai-project && cd my-ai-project
 
-# View logs
-docker-compose logs -f
+# Initialize git repo
+git init
 
-# Enter the container
-docker-compose exec coding-agent /bin/bash
+# Copy agent configuration
+cp -r /path/to/advanced-coding-agent/* .
 
-# Run a specific command
-docker-compose exec coding-agent git status
+# Configure and start
+cp .env.example .env
+nano .env  # Set RUNTIME=opencode
 
-# Stop the agent
-docker-compose down
-```
-
-### Working with Projects
-
-```bash
-# Create a new project
-docker-compose exec coding-agent mkdir -p /home/agent/workspace/projects/my-project
-
-# Clone a repository
-docker-compose exec coding-agent git clone https://github.com/user/repo.git /home/agent/workspace/projects/my-project
-
-# View project files
-docker-compose exec coding-agent ls -la /home/agent/workspace/projects/
-```
-
-### Using Skills
-
-```bash
-# Git operations
-docker-compose exec coding-agent git commit -m "Your message"
-
-# File operations
-docker-compose exec coding-agent cat /home/agent/workspace/projects/file.txt
-
-# Web fetching
-docker-compose exec coding-agent curl -s https://api.example.com/data
-```
-
-## 🔄 Runtime Options
-
-### OpenClaude Runtime
-
-```bash
-# Start with OpenClaude
-./start-openclaude.sh
-
-# Stop OpenClaude
-./stop-openclaude.sh
-```
-
-### OpenCode Runtime
-
-```bash
-# Start with OpenCode
 ./start-opencode.sh
-
-# Stop OpenCode
-./stop-opencode.sh
+docker exec -it advanced-coding-agent /bin/bash
+opencode
 ```
+
+### Work on Existing Project
+
+```bash
+cd /path/to/existing/project
+
+# Start agent container (mounts current directory)
+/path/to/advanced-coding-agent/start-opencode.sh
+
+# Enter container
+docker exec -it advanced-coding-agent /bin/bash
+
+# Start agent
+opencode
+```
+
+### View Logs
+
+```bash
+docker logs -f advanced-coding-agent
+```
+
+### Stop Container
+
+```bash
+./stop-opencode.sh      # or ./stop-openclaude.sh
+```
+
+## 🔄 Runtime Comparison
+
+### OpenCode
+
+- Open-source coding agent
+- Community-driven
+- Flexible configuration
+- Good for experimentation
+
+### OpenClaude
+
+- Claude-based agent
+- Strong reasoning capabilities
+- Better for complex tasks
+- May require API key
+
+Choose based on your needs and availability.
 
 ## 📚 Documentation
 
-- [Quick Start Skills](docs/QUICK_START_SKILLS.md) - Getting started with agent skills
-- [Software Engineering Workflow](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) - Best practices for AI-assisted development
+- [Tools & Security](tools.md) - Complete tool reference and security rules
+- [Quick Start Skills](docs/QUICK_START_SKILLS.md) - Getting started with skills
+- [Software Engineering Workflow](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) - Best practices
 
 ## 🧪 Development
 
-### Building from Source
+### Build from Source
 
 ```bash
-# Build the image
-docker-compose build --no-cache
+# OpenCode runtime
+docker build -f Dockerfile.opencode -t advanced-coding-agent .
 
-# Run tests
-docker-compose exec coding-agent npm test  # If applicable
-
-# Run linting
-docker-compose exec coding-agent npm run lint  # If applicable
+# OpenClaude runtime
+docker build -f Dockerfile.openclaude -t advanced-coding-agent .
 ```
 
-### Debugging
+### Debug
 
 ```bash
-# Enter container with debug shell
-docker-compose exec coding-agent /bin/bash
+# Enter container without starting agent
+docker exec -it advanced-coding-agent /bin/bash
 
-# View agent logs
-docker-compose logs -f coding-agent
+# Check container status
+docker ps -a | grep advanced-coding-agent
 
-# Check resource usage
-docker stats coding-agent
+# View resource usage
+docker stats advanced-coding-agent
 ```
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
-
-### Development Setup
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests
-5. Submit a pull request
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) for details.
 
 ## 🙏 Acknowledgments
 

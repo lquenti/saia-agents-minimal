@@ -1,17 +1,26 @@
 #!/bin/bash
-# Stop OpenClaude Agent Container
+# Advanced Coding Agent - Stop Script (OpenClaude Runtime)
 
-echo "🛑 Stopping OpenClaude Agent..."
-echo ""
+set -e
 
-if [ "$(docker ps -q -f name=^openclaude-agent$)" ]; then
-    docker stop openclaude-agent
-    docker rm openclaude-agent
-    echo "✅ Container stopped and removed"
-else
-    echo "⚠️  Container not running"
+CONTAINER_NAME="advanced-coding-agent"
+
+echo -e "🛑 Stopping Advanced Coding Agent (OpenClaude)..."
+
+# Check if container exists
+if ! docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    echo -e "⚠ Container '${CONTAINER_NAME}' not found"
+    exit 0
 fi
 
-echo ""
-echo "📊 Remaining containers:"
-docker ps --format "table {{.Names}}\t{{.Status}}"
+# Stop the container
+if docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    echo -e "Stopping container..."
+    docker stop "${CONTAINER_NAME}"
+fi
+
+# Remove the container
+echo -e "Removing container..."
+docker rm "${CONTAINER_NAME}"
+
+echo -e "✓ Container stopped and removed"
