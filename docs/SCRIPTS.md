@@ -128,6 +128,7 @@ Starts the OpenCode container with your project mounted.
 **What it does:**
 - Checks if Docker image exists
 - Creates `.agent-memory/` directory in current project
+- **Offers to create `AGENTS.md` from template if missing**
 - Starts container with all volumes mounted
 - Runs interactive bash shell
 
@@ -182,6 +183,7 @@ Starts the OpenClaude container with your project mounted.
 **What it does:**
 - Checks if Docker image exists
 - Creates `.agent-memory/` directory in current project
+- **Offers to create `AGENTS.md` from template if missing**
 - Starts container with all volumes mounted
 - Runs interactive bash shell
 
@@ -230,6 +232,34 @@ Next steps:
 ---
 
 ## Troubleshooting
+
+### AGENTS.md Template
+
+**Question appears:**
+```
+⚠ No AGENTS.md found in project root
+  AGENTS.md provides persistent memory across sessions
+
+Create from template? (y/n)
+```
+
+**Answer 'y' (recommended):**
+- Creates `AGENTS.md` from `templates/AGENTS.md`
+- Includes memory instructions, progress tracking, workflow guidelines
+- Edit to customize for your project
+
+**Answer 'n':**
+- Skips creation
+- You can create `AGENTS.md` manually later
+- Start script won't ask again
+
+**Manual creation:**
+```bash
+cp templates/AGENTS.md AGENTS.md
+nano AGENTS.md
+```
+
+---
 
 ### "Docker image not found"
 
