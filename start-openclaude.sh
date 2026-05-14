@@ -1,13 +1,13 @@
 #!/bin/bash
 # Advanced Coding Agent - Start Script (OpenClaude Runtime)
-# Builds and starts the OpenClaude container with current directory mounted
+# Starts the OpenClaude container with current directory mounted
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env"
 CONTAINER_NAME="advanced-coding-agent"
-DOCKERFILE="${SCRIPT_DIR}/Dockerfile.openclaude"
+IMAGE_TAG="openclaude"
 
 # Colors for output
 RED='\033[0;31m'
@@ -32,25 +32,22 @@ if ! docker info &>/dev/null; then
     exit 1
 fi
 
+# Check if image exists
+if ! docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${CONTAINER_NAME}:${IMAGE_TAG}$"; then
+    echo -e "${RED}✗ ERROR: Docker image not found${NC}"
+    echo -e "${YELLOW}  Build the image first:${NC}"
+    echo -e "${YELLOW}  ./build-openclaude.sh${NC}"
+    exit 1
+fi
+
 # Check if container already exists
 if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     echo -e "${YELLOW}⚠ Container '${CONTAINER_NAME}' already exists${NC}"
-    echo -e "${YELLOW}  Removing old container (it won't persist after stop)${NC}"
+    echo -e "${YELLOW}  Removing old container...${NC}"
     docker stop "${CONTAINER_NAME}" &>/dev/null || true
     docker rm "${CONTAINER_NAME}" &>/dev/null || true
     echo -e "${GREEN}✓ Removed existing container${NC}"
 fi
-
-# Build the image
-echo -e "${GREEN}🔨 Building Docker image...${NC}"
-docker build -f "${DOCKERFILE}" -t "${CONTAINER_NAME}:latest" "${SCRIPT_DIR}"
-
-if [[ $? -ne 0 ]]; then
-    echo -e "${RED}✗ ERROR: Docker build failed${NC}"
-    exit 1
-fi
-
-echo -e "${GREEN}✓ Image built successfully${NC}"
 
 # Get current directory for mounting
 CURRENT_DIR="$(pwd)"
@@ -62,7 +59,9 @@ mkdir -p "${MEMORY_DIR}"
 echo -e "${GREEN}✓ Memory directory created: ${MEMORY_DIR}${NC}"
 
 # Start the container
-echo -e "${GREEN}🚀 Starting container...${NC}"
+echo -e "${GREEN}🚀 Starting OpenClaude container...${NC}"
+echo ""
+
 docker run -it --rm \
     --name "${CONTAINER_NAME}" \
     --hostname coding-agent \
@@ -87,7 +86,7 @@ docker run -it --rm \
     -e OPENCLAUDE_HOME=/home/agent/.openclaude \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
     -e LOG_LEVEL="${LOG_LEVEL:-info}" \
-    "${CONTAINER_NAME}:latest"
+    "${CONTAINER_NAME}:${IMAGE_TAG}"
 
 if [[ $? -ne 0 ]]; then
     echo -e "${RED}✗ ERROR: Failed to start container${NC}"

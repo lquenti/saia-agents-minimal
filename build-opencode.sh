@@ -1,0 +1,40 @@
+#!/bin/bash
+# Advanced Coding Agent - Build Script (OpenCode Runtime)
+# Builds the OpenCode Docker image
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOCKERFILE="${SCRIPT_DIR}/Dockerfile.opencode"
+CONTAINER_NAME="advanced-coding-agent"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Check if Docker is running
+if ! docker info &>/dev/null; then
+    echo -e "${RED}✗ ERROR: Docker is not running${NC}"
+    exit 1
+fi
+
+# Build the image
+echo -e "${GREEN}🔨 Building OpenCode Docker image...${NC}"
+echo -e "${YELLOW}  Dockerfile: ${DOCKERFILE}${NC}"
+echo -e "${YELLOW}  Image: ${CONTAINER_NAME}:latest${NC}"
+echo ""
+
+docker build -f "${DOCKERFILE}" -t "${CONTAINER_NAME}:latest" "${SCRIPT_DIR}"
+
+if [[ $? -ne 0 ]]; then
+    echo -e "${RED}✗ ERROR: Docker build failed${NC}"
+    exit 1
+fi
+
+echo ""
+echo -e "${GREEN}✓ OpenCode image built successfully${NC}"
+echo -e "${GREEN}  Image: ${CONTAINER_NAME}:latest${NC}"
+echo ""
+echo -e "${GREEN}Next: Run ./start-opencode.sh to start the container${NC}"
