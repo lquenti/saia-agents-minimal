@@ -29,7 +29,17 @@ cp .env.example .env
 nano .env  # Set API key and MODEL
 ```
 
-### 2. Start Agent
+### 2. Build Image (Once)
+
+```bash
+# For OpenCode:
+./build-opencode.sh
+
+# For OpenClaude:
+./build-openclaude.sh
+```
+
+### 3. Start Container
 
 ```bash
 # For OpenCode:
@@ -39,17 +49,19 @@ nano .env  # Set API key and MODEL
 ./start-openclaude.sh
 ```
 
-### 3. Run Agent
+### 4. Run Agent
 
 ```bash
 opencode    # or openclaude
 ```
 
-### 4. Exit
+### 5. Exit
 
 ```bash
 exit  # Container auto-removes!
 ```
+
+> **💡 Pro Tip:** Build once, start multiple times. The image is cached, so subsequent starts are fast!
 
 ---
 
