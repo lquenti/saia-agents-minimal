@@ -115,28 +115,7 @@ opencode
 
 Each container is isolated and auto-removes on exit.
 
-### Debugging
-
-```bash
-# Enter running container
-docker exec -it advanced-coding-agent /bin/bash
-
-# View container logs
-docker logs -f advanced-coding-agent
-
-# Check container status
-docker ps
-```
-
-### Manual Docker Build
-
-```bash
-# OpenCode
-docker build -f Dockerfile.opencode -t advanced-coding-agent .
-
-# OpenClaude
-docker build -f Dockerfile.openclaude -t advanced-coding-agent:openclaude .
-```
+**📖 More:** [Usage Guide](docs/USAGE.md)
 
 ---
 
@@ -165,7 +144,7 @@ Automated tests validate scripts, configuration, and Docker builds.
 
 **CI/CD Integration:** Tests run automatically on merge requests.
 
-See [Testing Guide](docs/TESTING.md) for complete documentation.
+**📖 More:** [Testing Guide](docs/TESTING.md)
 
 ---
 
@@ -176,29 +155,16 @@ See [Testing Guide](docs/TESTING.md) for complete documentation.
 | Guide | Description |
 |-------|-------------|
 | [**Configuration**](docs/CONFIGURATION.md) | API keys, models, providers, environment variables |
+| [**Usage Guide**](docs/USAGE.md) | Usage patterns, workflows, shell aliases |
 | [**Skills Reference**](docs/SKILLS.md) | Complete list of 45+ pre-installed skills |
 | [**Security**](docs/SECURITY.md) | Container hardening, access control, best practices |
-| [**Testing Guide**](docs/TESTING.md) | Automated tests, CI/CD integration, test coverage |
-| [**Software Engineering Workflow**](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) | 5-phase disciplined development process |
-| [**Tools & Security**](tools.md) | Tool definitions, memory configuration, security rules |
-
----
-
-## 🏗️ Architecture
-
-```
-Host System
-├── .env (your config)
-├── start-*.sh (launch scripts)
-└── Dockerfile.* (build configs)
-        │
-        │ docker run -v $(pwd):...
-        ▼
-Container (agent user, read-only root)
-├── /home/agent/workspace/projects/  ← Your mounted code (RW)
-├── /home/agent/.opencode/ or .openclaude/  ← Runtime config (RO)
-└── Pre-installed: Node.js, Python, uv, Git, 45+ skills
-```
+| [**Testing**](docs/TESTING.md) | Automated tests, CI/CD integration |
+| [**Debugging**](docs/DEBUGGING.md) | Troubleshooting, container inspection |
+| [**Architecture**](docs/ARCHITECTURE.md) | System design, security, runtime architecture |
+| [**Project Structure**](docs/PROJECT_STRUCTURE.md) | Repository layout, file descriptions |
+| [**Runtime Comparison**](docs/RUNTIME_COMPARISON.md) | OpenCode vs OpenClaude comparison |
+| [**Software Engineering Workflow**](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) | 5-phase disciplined development |
+| [**Scripts**](docs/SCRIPTS.md) | Build/start workflow documentation |
 
 ---
 
@@ -273,28 +239,25 @@ Follow a **5-phase disciplined workflow**:
 
 ---
 
-## 📁 Project Structure
+## 📁 Quick Reference
+
+### Project Structure
 
 ```
 advanced-coding-agent/
-├── Dockerfile.opencode       # OpenCode runtime
-├── Dockerfile.openclaude     # OpenClaude runtime
-├── start-opencode.sh         # OpenCode launcher
-├── start-openclaude.sh       # OpenClaude launcher
-├── .env.example              # Configuration template
-├── agents.json               # Agent configuration
-├── tools.md                  # Tool definitions & security
-├── README.md                 # This file
-├── docs/                     # Documentation
-│   ├── CONFIGURATION.md      # Complete config guide
-│   ├── SKILLS.md             # All 45+ skills
-│   ├── SECURITY.md           # Security hardening
-│   ├── SOFTWARE_ENGINEERING_WORKFLOW.md  # 5-phase workflow
-│   └── QUICK_START_SKILLS.md # Getting started
-└── skills/                   # Pre-installed skills (git submodules)
-    ├── matt-pocock/          # 12+ engineering skills
-    └── addy-osmani/          # 23 agent skills
+├── Dockerfile.*          # Build configs
+├── start-*.sh            # Launch scripts
+├── build-*.sh            # Build scripts
+├── .env.example          # Config template
+├── agents.json           # Agent config
+├── tools.md              # Tools & security
+├── docs/                 # Documentation
+├── tests/                # Test suite
+├── templates/            # AGENTS.md templates
+└── skills/               # Pre-installed skills
 ```
+
+**📖 Full structure:** [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)
 
 ---
 
@@ -303,9 +266,11 @@ advanced-coding-agent/
 | Feature | OpenCode | OpenClaude |
 |---------|----------|------------|
 | Runtime | Open-source | Claude-based |
-| Best for | Experimentation | Complex tasks |
+| Best for | General coding | Complex tasks |
 | API Key | OpenAI-compatible | Anthropic |
 | Start Script | `start-opencode.sh` | `start-openclaude.sh` |
+
+**📖 Detailed comparison:** [docs/RUNTIME_COMPARISON.md](docs/RUNTIME_COMPARISON.md)
 
 ---
 
