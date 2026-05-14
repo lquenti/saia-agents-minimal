@@ -70,6 +70,46 @@ Any command accessing /home/cloud outside workspace
 | **Filesystem** | Read-only root + mounted volumes |
 | **Python** | uv package manager |
 
+## Memory & Persistence
+
+### How Memory Works
+
+The agent stores memories in **`.agent-memory/`** folder in your project directory:
+
+```
+your-project/
+├── .agent-memory/
+│   ├── context.md       # Current session context
+│   ├── memories/        # Individual memory files
+│   │   ├── 2026-05-14.md
+│   │   └── ...
+│   └── project-notes.md # Project-specific notes
+└── your-code/
+```
+
+### Memory Mount Points
+
+| Runtime | Memory Path | Host Location |
+|---------|-------------|---------------|
+| **OpenCode** | `/home/agent/.opencode/memory` | `./agent-memory/` |
+| **OpenClaude** | `/home/agent/.openclaude/memory` | `./agent-memory/` |
+
+### Memory Behavior
+
+- **Auto-save**: Agent automatically saves important context and decisions
+- **Persistence**: Memories survive container restarts (stored on host)
+- **Project-scoped**: Each project has its own `.agent-memory/` folder
+- **Format**: Markdown files for human readability
+
+### Reading/Writing Memory
+
+The agent will:
+1. **Read** existing memories on startup to understand project context
+2. **Write** new memories when making decisions or completing tasks
+3. **Update** project-notes.md with ongoing work summaries
+
+**You can manually edit memory files** to guide the agent or add context.
+
 ## Python Development
 
 Python is available via `uv` (fast Python package manager):

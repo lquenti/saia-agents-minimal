@@ -51,6 +51,13 @@
     "maxProjects": 10,
     "autoCommit": false
   },
+  "memory": {
+    "enabled": true,
+    "path": "/home/agent/.opencode/memory",
+    "format": "markdown",
+    "autoSave": true,
+    "maxContextTokens": 2000
+  },
   "logging": {
     "level": "info",
     "path": "/home/agent/workspace/logs",
