@@ -1,7 +1,7 @@
 {
   "agent": {
     "name": "Advanced Coding Agent",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Isolated coding agent with pre-installed skills - supports OpenCode and OpenClaude runtimes"
   },
   "runtime": {

@@ -23,6 +23,17 @@ test:
     - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_TEST == 'true'
   allow_failure: false
 
+# Optional: Lint markdown files (MR only)
+lint:
+  stage: test
+  script:
+    - echo 'Checking markdown syntax...'
+    - find . -name '*.md' -type f | head -10
+    - echo 'Markdown linting passed'
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  allow_failure: true
+
 pages:
   stage: deploy
   script:
@@ -37,18 +48,7 @@ pages:
     - if: $CI_PIPELINE_SOURCE == 'web'
     - if: $CI_PIPELINE_SOURCE == 'schedule'
 
-# Optional: Lint markdown files
-lint:
-  stage: test
-  script:
-    - echo 'Checking markdown syntax...'
-    - find . -name '*.md' -type f | head -10
-    - echo 'Markdown linting passed'
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_LINT == 'true'
-
-# Manual trigger jobs
+# Manual trigger jobs (only when explicitly triggered)
 manual_lint:
   stage: test
   script:
@@ -57,7 +57,7 @@ manual_lint:
     - find . -name '*.md' -type f
     - echo 'Markdown linting passed'
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'web'
+    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_LINT == 'true'
   when: manual
   allow_failure: true
 
@@ -68,6 +68,6 @@ manual_pages_deploy:
     - python scripts/generate-pages.py
     - echo 'Pages built successfully'
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'web'
+    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_PAGES_DEPLOY == 'true'
   when: manual
   allow_failure: false
