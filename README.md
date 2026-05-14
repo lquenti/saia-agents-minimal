@@ -156,9 +156,13 @@ Each OpenCode session starts **fresh** - it doesn't remember previous conversati
 
 ### Two Approaches to Memory
 
-#### Option 1: AGENTS.md (Simple, Recommended)
+#### Option 1: CLAUDE.md / AGENTS.md (Simple, Recommended)
 
-Create `AGENTS.md` in your project root. OpenCode **automatically reads** this file on every session.
+**For OpenClaude:** Create `CLAUDE.md` in project root (or `.claude/CLAUDE.md`)
+
+**For OpenCode:** Create `AGENTS.md` in project root
+
+Both files are **automatically read** by their respective runtimes on every session.
 
 ```markdown
 # Project: Your Project

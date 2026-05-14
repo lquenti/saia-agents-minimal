@@ -72,28 +72,46 @@ Any command accessing /home/cloud outside workspace
 
 ## Memory & Persistence
 
-### ⚠️ Important: OpenCode Does NOT Have Built-in Persistent Memory
+### ⚠️ OpenCode Sessions Are Stateless by Default
 
-OpenCode sessions are **stateless by default**. Each session starts fresh without knowledge of previous conversations.
+Each OpenCode session starts **fresh** - it doesn't remember previous conversations unless you add memory.
+
+### ⚠️ OpenClaude Sessions Are Stateless by Default
+
+Same as OpenCode - **no built-in persistent memory**.
 
 ### How to Add Persistent Memory
 
-There are **two approaches** to add memory:
+There are **two approaches** to add memory (works for both OpenCode and OpenClaude):
 
 ---
 
-## Option 1: AGENTS.md (Simple, No External Dependencies)
+## Option 1: CLAUDE.md / AGENTS.md (Simple, No External Dependencies)
+
+### For OpenClaude: Use CLAUDE.md
+
+Create a `CLAUDE.md` file in your project root. This file is **automatically read** by OpenClaude on every session start.
+
+**Alternative locations:**
+- `.claude/CLAUDE.md` - Keep project root clean
+- `.claude/rules/*.md` - Topic-scoped rules with conditional loading
+
+### For OpenCode: Use AGENTS.md
 
 Create an `AGENTS.md` file in your project root. This file is **automatically read** by OpenCode on every session start.
 
-### What AGENTS.md Does
+**Alternative locations:**
+- `.opencode/AGENTS.md` - Keep project root clean
+- `.opencode/rules/*.md` - Topic-scoped rules
+
+### What CLAUDE.md / AGENTS.md Does
 
 - **Reads on every session** - Instructions are injected into the system prompt
-- **Project-specific** - Each project can have its own AGENTS.md
+- **Project-specific** - Each project can have its own file
 - **Git-tracked** - Can be committed and shared with your team
 - **No external dependencies** - Works out of the box
 
-### Example AGENTS.md
+### Example CLAUDE.md (for OpenClaude)
 
 ```markdown
 # Project: Simple HTTP Webserver
@@ -118,17 +136,53 @@ Create an `AGENTS.md` file in your project root. This file is **automatically re
 - Use ES modules ("type": "module" in package.json)
 ```
 
-### How to Create AGENTS.md
+### Example AGENTS.md (for OpenCode)
+
+```markdown
+# Project: Simple HTTP Webserver
+
+## Current State
+- Created: 2026-05-14
+- Status: In progress
+- Last task: Implement /api/status endpoint
+
+## Architecture Decisions
+- Using native Node.js http module (no Express)
+- Port 3000 for HTTP server
+- JSON responses for API endpoints
+
+## Progress
+✅ Home page at `/` - Returns "Hello, World!"
+⏳ API endpoint at `/api/status` - In progress
+⏳ README with instructions - Pending
+
+## Notes
+- Server should handle errors gracefully
+- Use ES modules ("type": "module" in package.json)
+```
+
+### How to Create CLAUDE.md / AGENTS.md
 
 ```bash
-# Option 1: Use OpenCode's /init command
-opencode
+# For OpenClaude:
+# Option 1: Create manually
+cat > CLAUDE.md << 'EOF'
+# Your project instructions here
+EOF
+
+# Option 2: Use OpenClaude's /init command (if available)
+openclaude
 > /init
 
-# Option 2: Create manually
+# For OpenCode:
+# Option 1: Create manually
 cat > AGENTS.md << 'EOF'
 # Your project instructions here
 EOF
+
+# Option 2: Use OpenCode's /init command (if available)
+opencode
+> /init
 ```
 
 ### Best Practices
@@ -212,13 +266,15 @@ export HINDSIGHT_DYNAMIC_BANK_ID=true
 
 ## Comparison
 
-| Feature | AGENTS.md | Hindsight Plugin |
-|---------|-----------|------------------|
+| Feature | CLAUDE.md / AGENTS.md | Hindsight Plugin |
+|---------|----------------------|------------------|
 | **Setup** | Manual file | Plugin + server |
 | **Persistence** | Manual updates | Automatic |
 | **Search** | Text only | Vector search |
 | **External deps** | None | Hindsight server |
 | **Best for** | Simple projects | Complex, long-term work |
+| **OpenCode** | ✅ AGENTS.md | ✅ Supported |
+| **OpenClaude** | ✅ CLAUDE.md | ✅ Supported |
 
 ---
 
@@ -246,7 +302,13 @@ your-project/
 
 ### For Simple Projects
 
+**OpenCode:**
 1. Create `AGENTS.md` in project root
+2. Update manually after each session
+3. Keep it concise and structured
+
+**OpenClaude:**
+1. Create `CLAUDE.md` in project root (or `.claude/CLAUDE.md`)
 2. Update manually after each session
 3. Keep it concise and structured
 
@@ -255,7 +317,7 @@ your-project/
 1. Install Hindsight plugin
 2. Set up local or cloud Hindsight server
 3. Let plugin handle auto-recall/retain
-4. Use `AGENTS.md` for project-specific rules
+4. Use `AGENTS.md` (OpenCode) or `CLAUDE.md` (OpenClaude) for project-specific rules
 5. Use Hindsight for conversation history
 
 ## Python Development
