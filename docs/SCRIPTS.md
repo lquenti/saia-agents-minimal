@@ -233,31 +233,42 @@ Next steps:
 
 ## Troubleshooting
 
-### AGENTS.md Template
+### AGENTS.md Template Selection
 
 **Question appears:**
 ```
 ⚠ No AGENTS.md found in project root
   AGENTS.md provides persistent memory across sessions
 
-Create from template? (y/n)
+Choose template:
+  1) Generic project template
+  2) Python/uv project template (includes ruff, mypy, pytest)
+  n) Skip (create later)
+
+Selection [1/2/n]:
 ```
 
-**Answer 'y' (recommended):**
-- Creates `AGENTS.md` from `templates/AGENTS.md`
-- Includes memory instructions, progress tracking, workflow guidelines
-- Edit to customize for your project
+**Option 1 - Generic template:**
+- Suitable for any project type
+- Includes memory instructions, progress tracking
+- Workflow guidelines for general use
 
-**Answer 'n':**
-- Skips creation
-- You can create `AGENTS.md` manually later
-- Start script won't ask again
+**Option 2 - Python/uv template (recommended for Python projects):**
+- Includes uv package manager commands
+- Ruff linting and formatting
+- Mypy type checking
+- Pytest testing workflow
+- Project structure template
+- Configuration templates (pyproject.toml, .ruff.toml)
 
-**Manual creation:**
-```bash
-cp templates/AGENTS.md AGENTS.md
-nano AGENTS.md
-```
+**Option n - Skip:**
+- No AGENTS.md created
+- You can create manually later:
+  ```bash
+  cp templates/AGENTS.md AGENTS.md
+  # or
+  cp templates/AGENTS.md-python AGENTS.md
+  ```
 
 ---
 

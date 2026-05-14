@@ -63,15 +63,31 @@ if [[ ! -f "${CURRENT_DIR}/AGENTS.md" ]]; then
     echo -e "${YELLOW}⚠ No AGENTS.md found in project root${NC}"
     echo -e "${YELLOW}  AGENTS.md provides persistent memory across sessions${NC}"
     echo ""
-    read -p "  Create from template? (y/n) " -n 1 -r
+    echo -e "${YELLOW}Choose template:${NC}"
+    echo -e "  ${GREEN}1${NC}) Generic project template"
+    echo -e "  ${GREEN}2${NC}) Python/uv project template (includes ruff, mypy, pytest)"
+    echo -e "  ${GREEN}n${NC}) Skip (create later)"
+    echo ""
+    read -p "  Selection [1/2/n]: " -n 1 -r
     echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        cp "${SCRIPT_DIR}/templates/AGENTS.md" "${CURRENT_DIR}/AGENTS.md"
-        echo -e "${GREEN}✓ Created AGENTS.md from template${NC}"
-        echo -e "${YELLOW}  Edit AGENTS.md to customize for your project${NC}"
-    else
-        echo -e "${YELLOW}  Skipping (you can create AGENTS.md later)${NC}"
-    fi
+    case $REPLY in
+        [1])
+            cp "${SCRIPT_DIR}/templates/AGENTS.md" "${CURRENT_DIR}/AGENTS.md"
+            echo -e "${GREEN}✓ Created AGENTS.md (generic template)${NC}"
+            echo -e "${YELLOW}  Edit AGENTS.md to customize for your project${NC}"
+            ;;
+        [2])
+            cp "${SCRIPT_DIR}/templates/AGENTS.md-python" "${CURRENT_DIR}/AGENTS.md"
+            echo -e "${GREEN}✓ Created AGENTS.md (Python/uv template)${NC}"
+            echo -e "${YELLOW}  Edit AGENTS.md to customize for your project${NC}"
+            ;;
+        [nN]|"")
+            echo -e "${YELLOW}  Skipping (you can create AGENTS.md later)${NC}"
+            ;;
+        *)
+            echo -e "${YELLOW}  Invalid selection, skipping${NC}"
+            ;;
+    esac
     echo ""
 fi
 

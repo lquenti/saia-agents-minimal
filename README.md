@@ -49,7 +49,9 @@ nano .env  # Set API key and MODEL
 ./start-openclaude.sh
 ```
 
-> **💡 Optional:** If no `AGENTS.md` exists in your project, the start script will offer to create one from a template. This provides persistent memory across sessions!
+> **💡 Optional:** If no `AGENTS.md` exists in your project, the start script will offer to create one from a template:
+> - **Generic template** - For any project type
+> - **Python/uv template** - Includes uv, ruff, mypy, pytest workflows
 
 ### 4. Run Agent
 
