@@ -26,14 +26,6 @@ else
     exit 1
 fi
 
-# Validate runtime
-if [[ "${RUNTIME}" != "openclaude" ]]; then
-    echo -e "${RED}✗ ERROR: RUNTIME must be 'openclaude' for this script${NC}"
-    echo -e "${RED}   Current: ${RUNTIME}${NC}"
-    echo -e "${RED}   Use ./start-opencode.sh for OpenCode runtime${NC}"
-    exit 1
-fi
-
 # Check if Docker is running
 if ! docker info &>/dev/null; then
     echo -e "${RED}✗ ERROR: Docker is not running${NC}"
