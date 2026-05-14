@@ -72,49 +72,48 @@ Any command accessing /home/cloud outside workspace
 
 ## Memory & Persistence
 
-### ⚠️ OpenCode Sessions Are Stateless by Default
+### ⚠️ Both OpenCode and OpenClaude Sessions Are Stateless by Default
 
-Each OpenCode session starts **fresh** - it doesn't remember previous conversations unless you add memory.
+Each session starts **fresh** - no built-in persistent memory.
 
-### ⚠️ OpenClaude Sessions Are Stateless by Default
+### ✅ Universal Solution: AGENTS.md (Works for Both Runtimes)
 
-Same as OpenCode - **no built-in persistent memory**.
+**AGENTS.md is read by BOTH OpenCode and OpenClaude**, making it the universal choice:
 
-### How to Add Persistent Memory
+| Runtime | Reads AGENTS.md? | Reads CLAUDE.md? |
+|---------|------------------|------------------|
+| **OpenCode** | ✅ **Primary** | ⚠️ Fallback only |
+| **OpenClaude** | ✅ **Yes** | ✅ **Primary** |
 
-There are **two approaches** to add memory (works for both OpenCode and OpenClaude):
+**If both AGENTS.md and CLAUDE.md exist, OpenCode uses AGENTS.md only!**
+
+**Recommendation:** Use **AGENTS.md only** - works for both runtimes, no duplication needed.
 
 ---
 
-## Option 1: CLAUDE.md / AGENTS.md (Simple, No External Dependencies)
+## Option 1: AGENTS.md (Universal - Works for Both Runtimes)
 
-### For OpenClaude: Use CLAUDE.md
+Create an `AGENTS.md` file in your project root. **Both OpenCode and OpenClaude automatically read this file** on every session start.
 
-Create a `CLAUDE.md` file in your project root. This file is **automatically read** by OpenClaude on every session start.
+### What AGENTS.md Does
 
-**Alternative locations:**
-- `.claude/CLAUDE.md` - Keep project root clean
-- `.claude/rules/*.md` - Topic-scoped rules with conditional loading
-
-### For OpenCode: Use AGENTS.md
-
-Create an `AGENTS.md` file in your project root. This file is **automatically read** by OpenCode on every session start.
-
-**Alternative locations:**
-- `.opencode/AGENTS.md` - Keep project root clean
-- `.opencode/rules/*.md` - Topic-scoped rules
-
-### What CLAUDE.md / AGENTS.md Does
-
-- **Reads on every session** - Instructions are injected into the system prompt
-- **Project-specific** - Each project can have its own file
-- **Git-tracked** - Can be committed and shared with your team
+- **Reads on every session** - Instructions injected into system prompt
+- **Universal** - Works for both OpenCode and OpenClaude
+- **Project-specific** - Each project can have its own AGENTS.md
+- **Git-tracked** - Committed and shared with your team
 - **No external dependencies** - Works out of the box
 
-### Example CLAUDE.md (for OpenClaude)
+### Example AGENTS.md with Memory Instructions
 
 ```markdown
 # Project: Simple HTTP Webserver
+
+## Memory Usage Instructions
+CRITICAL: Use .agent-memory/ folder for persistent notes between sessions.
+
+- Read .agent-memory/session-notes.md at the START of each session
+- Update .agent-memory/session-notes.md with progress and decisions
+- Store context in .agent-memory/context.md for complex tasks
 
 ## Current State
 - Created: 2026-05-14
@@ -134,53 +133,19 @@ Create an `AGENTS.md` file in your project root. This file is **automatically re
 ## Notes
 - Server should handle errors gracefully
 - Use ES modules ("type": "module" in package.json)
+- Keep code clean and readable
 ```
 
-### Example AGENTS.md (for OpenCode)
-
-```markdown
-# Project: Simple HTTP Webserver
-
-## Current State
-- Created: 2026-05-14
-- Status: In progress
-- Last task: Implement /api/status endpoint
-
-## Architecture Decisions
-- Using native Node.js http module (no Express)
-- Port 3000 for HTTP server
-- JSON responses for API endpoints
-
-## Progress
-✅ Home page at `/` - Returns "Hello, World!"
-⏳ API endpoint at `/api/status` - In progress
-⏳ README with instructions - Pending
-
-## Notes
-- Server should handle errors gracefully
-- Use ES modules ("type": "module" in package.json)
-```
-
-### How to Create CLAUDE.md / AGENTS.md
+### How to Create AGENTS.md
 
 ```bash
-# For OpenClaude:
-# Option 1: Create manually
-cat > CLAUDE.md << 'EOF'
-# Your project instructions here
-EOF
-
-# Option 2: Use OpenClaude's /init command (if available)
-openclaude
-> /init
-
-# For OpenCode:
-# Option 1: Create manually
+# Create manually
 cat > AGENTS.md << 'EOF'
 # Your project instructions here
+# Include memory usage instructions!
 EOF
 
-# Option 2: Use OpenCode's /init command (if available)
+# Or use /init command (if available in your runtime)
 opencode
 > /init
 ```
@@ -191,6 +156,7 @@ opencode
 2. **Keep it concise** - Focus on what future sessions need to know
 3. **Use clear structure** - Headings, bullet points, checkboxes
 4. **Track decisions** - Document WHY, not just WHAT
+5. **Instruct agent to use memory folder** - Tell it to read/write .agent-memory/
 
 ---
 
@@ -266,58 +232,91 @@ export HINDSIGHT_DYNAMIC_BANK_ID=true
 
 ## Comparison
 
-| Feature | CLAUDE.md / AGENTS.md | Hindsight Plugin |
-|---------|----------------------|------------------|
-| **Setup** | Manual file | Plugin + server |
+| Feature | AGENTS.md + Memory Folder | Hindsight Plugin |
+|---------|--------------------------|------------------|
+| **Setup** | Manual file + instructions | Plugin + server |
 | **Persistence** | Manual updates | Automatic |
 | **Search** | Text only | Vector search |
 | **External deps** | None | Hindsight server |
 | **Best for** | Simple projects | Complex, long-term work |
 | **OpenCode** | ✅ AGENTS.md | ✅ Supported |
-| **OpenClaude** | ✅ CLAUDE.md | ✅ Supported |
+| **OpenClaude** | ✅ AGENTS.md | ✅ Supported |
 
 ---
 
-## Memory Folder (Infrastructure Only)
+## Memory Folder Usage (.agent-memory/)
 
-The `.agent-memory/` folder is **mounted** in the container but **not automatically used** by OpenCode.
+The `.agent-memory/` folder is **mounted** in the container and **can be used** by the agent if instructed.
+
+### How to Make Agent Use Memory Folder
+
+Add instructions to `AGENTS.md` telling the agent to:
+
+```markdown
+## Memory Usage Instructions
+CRITICAL: Use .agent-memory/ folder for persistent notes between sessions.
+
+- Read .agent-memory/session-notes.md at the START of each session
+- Update .agent-memory/session-notes.md with progress and decisions  
+- Store context in .agent-memory/context.md for complex tasks
+- Store ADRs in .agent-memory/adr/ directory
+```
+
+### Memory Folder Structure
 
 ```
 your-project/
-├── .agent-memory/        ← Mounted but unused by default
-│   └── (you can use this for AGENTS.md or custom scripts)
+├── AGENTS.md              ← ✅ Read by both runtimes
+├── .agent-memory/         ← ✅ Use this for notes (if instructed in AGENTS.md)
+│   ├── session-notes.md   ← Progress, decisions, next steps
+│   ├── context.md         ← Complex task context
+│   └── adr/               ← Architecture Decision Records
 └── your-code/
 ```
 
-**You can:**
-- Store `AGENTS.md` here (then symlink to project root)
-- Write custom scripts to manage memory
-- Use it for any project-specific persistence
+### Example: session-notes.md
 
-**But OpenCode won't automatically read/write this folder.**
+```markdown
+# Session Notes - Simple HTTP Webserver
+
+## 2026-05-14
+
+### Completed
+- Created server.js with basic HTTP server
+- Added / endpoint returning "Hello, World!"
+
+### In Progress
+- /api/status endpoint - implementing now
+
+### Decisions
+- Using native http module (no Express)
+- Port 3000, ES modules
+
+### Next Steps
+- Add /api/status endpoint
+- Create README
+- Test server
+```
+
+**The agent will only use this folder if you tell it to in AGENTS.md!**
 
 ---
 
 ## Recommended Workflow
 
-### For Simple Projects
+### For Simple Projects (Recommended)
 
-**OpenCode:**
 1. Create `AGENTS.md` in project root
-2. Update manually after each session
-3. Keep it concise and structured
-
-**OpenClaude:**
-1. Create `CLAUDE.md` in project root (or `.claude/CLAUDE.md`)
-2. Update manually after each session
-3. Keep it concise and structured
+2. **Add memory usage instructions** telling agent to use `.agent-memory/` folder
+3. Update manually after each session (or let agent update it)
+4. Keep it concise and structured
 
 ### For Complex Projects
 
 1. Install Hindsight plugin
 2. Set up local or cloud Hindsight server
 3. Let plugin handle auto-recall/retain
-4. Use `AGENTS.md` (OpenCode) or `CLAUDE.md` (OpenClaude) for project-specific rules
+4. Use `AGENTS.md` for project-specific rules + memory folder instructions
 5. Use Hindsight for conversation history
 
 ## Python Development

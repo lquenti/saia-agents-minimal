@@ -156,16 +156,19 @@ Each OpenCode session starts **fresh** - it doesn't remember previous conversati
 
 ### Two Approaches to Memory
 
-#### Option 1: CLAUDE.md / AGENTS.md (Simple, Recommended)
+#### Option 1: AGENTS.md (Universal - Recommended)
 
-**For OpenClaude:** Create `CLAUDE.md` in project root (or `.claude/CLAUDE.md`)
+**AGENTS.md works for BOTH OpenCode and OpenClaude!** Create it in your project root.
 
-**For OpenCode:** Create `AGENTS.md` in project root
-
-Both files are **automatically read** by their respective runtimes on every session.
+**Bonus:** Include instructions to use `.agent-memory/` folder for persistent notes!
 
 ```markdown
 # Project: Your Project
+
+## Memory Usage
+CRITICAL: Use .agent-memory/ folder for persistent notes.
+- Read .agent-memory/session-notes.md at session start
+- Update with progress and decisions
 
 ## Current State
 - Status: In progress
@@ -174,17 +177,16 @@ Both files are **automatically read** by their respective runtimes on every sess
 ## Progress
 ✅ Done
 ⏳ In progress
-❌ Blocked
 
 ## Architecture Decisions
 - Decision 1: Why we chose X
-- Decision 2: Why we avoided Y
 ```
 
 **Benefits:**
+- ✅ Universal (both runtimes)
 - ✅ No external dependencies
 - ✅ Git-tracked and shareable
-- ✅ Works out of the box
+- ✅ Agent can update memory folder automatically
 
 **See [tools.md](tools.md#memory--persistence) for complete guide.**
 
