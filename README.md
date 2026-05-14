@@ -158,8 +158,7 @@ advanced-coding-agent/
 ├── docs/                     # Documentation (read-only)
 │   ├── QUICK_START_SKILLS.md
 │   └── SOFTWARE_ENGINEERING_WORKFLOW.md
-└── projects/                 # Project templates (optional)
-    └── .gitkeep
+└── README.md                 # This file
 ```
 
 ## 🔄 User Workflow
