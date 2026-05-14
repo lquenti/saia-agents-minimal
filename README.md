@@ -32,19 +32,16 @@ cd advanced-coding-agent
 
 ### 2. Configure Your Runtime
 
-Copy the environment file and choose your runtime:
+Copy the environment file:
 
 ```bash
 cp .env.example .env
 nano .env  # or vim, code, etc.
 ```
 
-**Edit `.env` and configure:**
+**Edit `.env` and configure your API keys and model:**
 
 ```bash
-# Choose runtime
-RUNTIME=opencode    # or RUNTIME=openclaude
-
 # Set your API key and model
 OPENCODE_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxxxxx
 MODEL=gpt-4o
@@ -55,6 +52,10 @@ MODEL=gpt-4o
 > - Anthropic, DeepSeek, Groq, and more
 > - Custom self-hosted providers
 > - Advanced settings (temperature, timeouts, etc.)
+
+> **💡 Note:** The runtime is determined by which start script you use:
+> - `./start-opencode.sh` → OpenCode runtime
+> - `./start-openclaude.sh` → OpenClaude runtime
 
 ### 3. Build and Start
 
