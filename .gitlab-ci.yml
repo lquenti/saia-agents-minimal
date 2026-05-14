@@ -11,9 +11,22 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
+# Run tests before deploying
+test:
+  stage: test
+  script:
+    - echo 'Running test suite...'
+    - chmod +x tests/*.sh
+    - bash tests/test_scripts.sh
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_TEST == 'true'
+  allow_failure: false
+
 pages:
   stage: deploy
   script:
+    # Generate HTML pages (pure Python, no dependencies)
     - python scripts/generate-pages.py
   artifacts:
     paths:

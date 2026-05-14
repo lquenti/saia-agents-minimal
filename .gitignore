@@ -63,3 +63,11 @@ public/
 # Project templates (not in .gitignore, but AGENTS.md is)
 # templates/  # Keep this in git
 AGENTS.md  # Your project's AGENTS.md (not the template)
+
+# Test artifacts
+tests/__pycache__/
+tests/*.pyc
+tests/.pytest_cache/
+.coverage
+htmlcov/
+.pytest_cache/
