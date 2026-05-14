@@ -39,11 +39,22 @@ cp .env.example .env
 nano .env  # or vim, code, etc.
 ```
 
-Edit `.env` and set:
+**Edit `.env` and configure:**
 
 ```bash
+# Choose runtime
 RUNTIME=opencode    # or RUNTIME=openclaude
+
+# Set your API key and model
+OPENCODE_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxxxxx
+MODEL=gpt-4o
 ```
+
+> **📖 Detailed Configuration Guide:** See [.env.example](.env.example) for **complete documentation** with examples for:
+> - OpenAI, Azure, Ollama, LM Studio, vLLM
+> - Anthropic, DeepSeek, Groq, and more
+> - Custom self-hosted providers
+> - Advanced settings (temperature, timeouts, etc.)
 
 ### 3. Build and Start
 
