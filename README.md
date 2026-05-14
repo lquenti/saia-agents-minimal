@@ -49,6 +49,8 @@ nano .env  # Set API key and MODEL
 ./start-openclaude.sh
 ```
 
+> **💡 Optional:** If no `AGENTS.md` exists in your project, the start script will offer to create one from a template. This provides persistent memory across sessions!
+
 ### 4. Run Agent
 
 ```bash

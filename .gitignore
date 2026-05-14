@@ -59,3 +59,7 @@ public/
 
 # Package lock (optional, can be committed)
 # package-lock.json
+
+# Project templates (not in .gitignore, but AGENTS.md is)
+# templates/  # Keep this in git
+AGENTS.md  # Your project's AGENTS.md (not the template)

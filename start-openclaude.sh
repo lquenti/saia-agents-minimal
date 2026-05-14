@@ -58,6 +58,23 @@ MEMORY_DIR="${CURRENT_DIR}/.agent-memory"
 mkdir -p "${MEMORY_DIR}"
 echo -e "${GREEN}✓ Memory directory created: ${MEMORY_DIR}${NC}"
 
+# Check if AGENTS.md exists, offer to create from template
+if [[ ! -f "${CURRENT_DIR}/AGENTS.md" ]]; then
+    echo -e "${YELLOW}⚠ No AGENTS.md found in project root${NC}"
+    echo -e "${YELLOW}  AGENTS.md provides persistent memory across sessions${NC}"
+    echo ""
+    read -p "  Create from template? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        cp "${SCRIPT_DIR}/templates/AGENTS.md" "${CURRENT_DIR}/AGENTS.md"
+        echo -e "${GREEN}✓ Created AGENTS.md from template${NC}"
+        echo -e "${YELLOW}  Edit AGENTS.md to customize for your project${NC}"
+    else
+        echo -e "${YELLOW}  Skipping (you can create AGENTS.md later)${NC}"
+    fi
+    echo ""
+fi
+
 # Start the container
 echo -e "${GREEN}🚀 Starting OpenClaude container...${NC}"
 echo ""
