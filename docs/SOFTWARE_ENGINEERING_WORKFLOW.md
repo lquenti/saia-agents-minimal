@@ -1,756 +1,873 @@
-# Software Engineering Workflow with AI Agents 🪓
+# Software Engineering Workflow 🦾
 
-**A complete guide to proper software engineering using AI coding agents**
+> A disciplined, skill-driven approach to AI-assisted software development.
 
-> Based on Matt Pocock's engineering skills - Real engineering, not vibe coding!
-
-## 📋 Table of Contents
-
-1. [The Problem with AI Coding](#the-problem-with-ai-coding)
-2. [The Solution: Structured Workflow](#the-solution-structured-workflow)
-3. [Phase 1: Planning & Design (The Grilling)](#phase-1-planning--design-the-grilling)
-4. [Phase 2: Breaking Into Parts](#phase-2-breaking-into-parts)
-5. [Phase 3: Test-Driven Development](#phase-3-test-driven-development)
-6. [Phase 4: Architecture & Deep Modules](#phase-4-architecture--deep-modules)
-7. [Complete Workflow Example](#complete-workflow-example)
-8. [Skill Reference](#skill-reference)
+**Principles:**
+1. **Shared understanding first** - Never code until you and the agent agree on what to build
+2. **Simple interfaces, deep modules** - Design clean boundaries, implement complex logic inside
+3. **Test-driven development** - Tests as specification and safety net
 
 ---
 
-## The Problem with AI Coding
+## 📋 Workflow Overview
 
-Most people use AI agents wrong:
-
-❌ **Wrong Approach:**
 ```
-User: "Build me a todo app"
-AI: *starts coding immediately*
-User: "No, that's not what I meant"
-AI: *changes code*
-User: "Also add this..."
-AI: *spaghetti code accumulates*
-Result: Broken, unmaintainable code
+┌─────────────────────────────────────────────────────────────────┐
+│                    SOFTWARE DEVELOPMENT                          │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+    ┌───────────────────────────────────────────────────────┐
+    │  PHASE 1: SHARED UNDERSTANDING                         │
+    │  ──────────────────────────────                        │
+    │  • Interview to clarify requirements                   │
+    │  • Build shared language (CONTEXT.md)                 │
+    │  • Write spec (PRD) before code                       │
+    │                                                        │
+    │  Skills: /interview-me, /grill-with-docs, /spec       │
+    └───────────────────────────────────────────────────────┘
+                              │
+                              ▼
+    ┌───────────────────────────────────────────────────────┐
+    │  PHASE 2: MODULE & INTERFACE DESIGN                    │
+    │  ───────────────────────────────────                   │
+    │  • Split into modules (high cohesion)                 │
+    │  • Design simple interfaces (low coupling)            │
+    │  • Document architecture (ADR)                        │
+    │                                                        │
+    │  Skills: /plan, /api-and-interface-design             │
+    └───────────────────────────────────────────────────────┘
+                              │
+                              ▼
+    ┌───────────────────────────────────────────────────────┐
+    │  PHASE 3: TEST-DRIVEN IMPLEMENTATION                   │
+    │  ──────────────────────────────────                    │
+    │  • Write test first (red)                             │
+    │  • Implement minimum code (green)                     │
+    │  • Refactor while keeping tests green                 │
+    │                                                        │
+    │  Skills: /test, /build, /tdd                          │
+    └───────────────────────────────────────────────────────┘
+                              │
+                              ▼
+    ┌───────────────────────────────────────────────────────┐
+    │  PHASE 4: REVIEW & SIMPLIFY                            │
+    │  ──────────────────────                                │
+    │  • Code review (5-axis)                               │
+    │  • Simplify complexity                                │
+    │  • Security & performance checks                      │
+    │                                                        │
+    │  Skills: /review, /code-simplify, /security           │
+    └───────────────────────────────────────────────────────┘
+                              │
+                              ▼
+    ┌───────────────────────────────────────────────────────┐
+    │  PHASE 5: SHIP                                         │
+    │  ─────                                                 │
+    │  • Pre-launch checklist                               │
+    │  • Feature flags                                      │
+    │  • Documentation                                      │
+    │                                                        │
+    │  Skills: /ship, /documentation                        │
+    └───────────────────────────────────────────────────────┘
 ```
-
-**Why it fails:**
-- No clear requirements
-- No design before coding
-- No tests to verify behavior
-- No architecture planning
-- AI guesses what you want
 
 ---
 
-## The Solution: Structured Workflow
+## 🎯 Phase 1: Shared Understanding
 
-✅ **Right Approach:**
+**Goal:** Ensure you and the agent have the **exact same mental model** before writing code.
 
-```
-┌─────────────────────────────────────────────────────────┐
-│ 1. GRILLING PHASE                                       │
-│    AI asks questions until design is ABSOLUTELY CLEAR  │
-│    → No coding yet!                                     │
-└─────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────┐
-│ 2. SPLITTING PHASE                                      │
-│    Break design into independent vertical slices        │
-│    → Create issues/tasks                                │
-└─────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────┐
-│ 3. TDD PHASE (per task)                                 │
-│    Write failing test → Make pass → Refactor           │
-│    → Clear interfaces, deep modules                     │
-└─────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────┐
-│ 4. ARCHITECTURE CHECK                                   │
-│    Regular review to prevent entropy                    │
-│    → Keep codebase clean                                │
-└─────────────────────────────────────────────────────────┘
-```
+### Why This Matters
 
----
+> "No-one knows exactly what they want" - *The Pragmatic Programmer*
 
-## Phase 1: Planning & Design (The Grilling)
+The most common failure mode: **misalignment**. You think the agent understands, but it builds something completely different.
 
-### Goal: Absolute Clarity Before Coding
+**Solution:** Grilling sessions + shared language.
 
-**Never start coding until you've answered every question.**
+### Step 1.1: Interview / Grill
 
-### How to Use `/grill-me`
+**Use when:** Starting a new feature, project, or major change.
 
-```bash
-# In your AI agent, run:
-/grill-me
-```
+**Skills:**
+- **Matt Pocock:** `/grill-me` or `/grill-with-docs`
+- **Addy Osmani:** `/interview-me`
 
 **What happens:**
-1. AI describes what you want to build
-2. AI asks HARD questions about your design
-3. You answer until EVERY ambiguity is gone
-4. AI creates a clear specification
+- Agent asks you **one question at a time**
+- Extracts requirements until ~95% confidence
+- Uncovers edge cases you didn't think of
+- Documents assumptions
 
-### Example Grilling Session
-
-**User:** "I want to build a task management app"
-
-**AI (grilling):**
-```
-Let me understand what you're building:
-
-1. Who are the users?
-   - Single user or multi-user?
-   - Do users need accounts/authentication?
-   - Can users share tasks with others?
-
-2. What task properties do you need?
-   - Just title and description?
-   - Due dates? Priority levels? Tags?
-   - Subtasks or nested tasks?
-   - Attachments or file uploads?
-
-3. What are the core workflows?
-   - Create, read, update, delete tasks?
-   - Search and filter?
-   - Reminders or notifications?
-   - Recurring tasks?
-
-4. Where will data be stored?
-   - Local file? Database? Cloud?
-   - Do you need offline support?
-   - Sync across devices?
-
-5. What's your tech stack preference?
-   - Frontend framework?
-   - Backend language?
-   - Database choice?
-
-6. What does "done" look like?
-   - MVP features?
-   - Timeline?
-   - Success metrics?
-```
-
-**You answer ALL questions:**
-```
-1. Multi-user with accounts. Users can share tasks.
-2. Title, description, due date, priority (low/med/high), tags, subtasks.
-3. CRUD, search by tag/priority, email reminders, no recurring yet.
-4. PostgreSQL database, cloud-hosted, no offline needed.
-5. React frontend, Node.js backend, Tailwind CSS.
-6. MVP: core CRUD + sharing + reminders. 2 weeks timeline.
-```
-
-**AI confirms understanding:**
-```
-✅ CONFIRMED SPECIFICATION:
-
-Task Management App (MVP)
-- Multi-user with authentication
-- Tasks: title, description, due date, priority, tags, subtasks
-- Features: CRUD, search/filter, task sharing, email reminders
-- Stack: React + Node.js + PostgreSQL + Tailwind
-- Timeline: 2 weeks
-
-Should I create a PRD (Product Requirements Document)?
-```
-
-**You:** "Yes, create the PRD"
-
-### Using `/grill-with-docs`
-
-For more thorough planning:
-
+**Example:**
 ```bash
+# Inside the agent TUI:
+/interview-me
+
+# OR
+/grill-me
+
+# OR (recommended - builds shared language too)
 /grill-with-docs
 ```
 
-**What it adds:**
-- Creates `CONTEXT.md` with shared language
-- Documents decisions in ADRs (Architecture Decision Records)
-- Builds domain model for consistent terminology
+**Output:**
+- Clear requirements document
+- List of edge cases
+- Known unknowns (things to clarify later)
 
-**Example CONTEXT.md:**
+---
+
+### Step 1.2: Build Shared Language
+
+**Use when:** After grilling, before planning.
+
+**Skill:**
+- **Matt Pocock:** `/grill-with-docs` (includes this automatically)
+
+**What happens:**
+- Creates `CONTEXT.md` with project terminology
+- Documents domain-specific jargon
+- Establishes naming conventions
+- Creates glossary of terms
+
+**Example `CONTEXT.md`:**
 ```markdown
-# Context: Task Management App
+# Context: E-Commerce Platform
 
-## Domain Language
+## Shared Language
 
-- **Workspace**: A collection of tasks shared by users
-- **Task**: A unit of work with properties
-- **Assignment**: Linking a task to a user
-- **Share**: Granting another user access to a workspace
+| Term | Meaning | Example |
+|------|---------|---------|
+| Materialization | Making a lesson visible to students | "Materialize this lesson" |
+| Materialization Cascade | When one change triggers multiple visibility updates | "Fix the materialization cascade bug" |
+| Section | Group of lessons in a course | "Move lesson to another section" |
 
-## Key Concepts
+## Naming Conventions
 
-### Materialization
-When a draft task becomes "real" (saved to database)
-
-### Priority Levels
-- `LOW`: Can be delayed
-- `MEDIUM`: Standard priority
-- `HIGH`: Needs attention soon
+- Functions: `camelCase` (e.g., `materializeLesson`)
+- Components: `PascalCase` (e.g., `LessonCard`)
+- Files: `kebab-case` (e.g., `lesson-card.tsx`)
 
 ## Architecture Decisions
 
-### ADR-001: Database Choice
-**Decision**: PostgreSQL
-**Reason**: Relational data, ACID compliance, mature ecosystem
+- **ADR-001:** Using PostgreSQL over MongoDB for relational data
+- **ADR-002:** JWT for authentication, stored in HTTP-only cookies
 ```
+
+**Why this matters:**
+- Agent uses **consistent terminology** throughout
+- Reduces token usage (shorter words = fewer tokens)
+- Code is more readable (consistent naming)
+- Future sessions start with context already loaded
 
 ---
 
-## Phase 2: Breaking Into Parts
+### Step 1.3: Write Spec (PRD)
 
-### Goal: Independent, Grabbable Tasks
+**Use when:** Requirements are clear, before any planning or coding.
 
-**Never build everything at once!**
-
-### Using `/to-issues`
-
-```bash
-/to-issues
-```
+**Skill:**
+- **Addy Osmani:** `/spec` or `/spec-driven-development`
 
 **What happens:**
-1. AI takes your PRD/specification
-2. Breaks it into **vertical slices** (not layers!)
-3. Creates independent GitHub issues
-4. Each issue is a complete, testable feature
+- Creates Product Requirements Document (PRD)
+- Defines objectives, scope, boundaries
+- Specifies code style, testing approach
+- Documents what's **out of scope**
 
-### What is a Vertical Slice?
-
-❌ **Wrong (Layer-based):**
-```
-- Task 1: Database schema
-- Task 2: API endpoints
-- Task 3: Frontend components
-- Task 4: Tests
-```
-**Problem**: Can't test anything until ALL done!
-
-✅ **Right (Vertical Slice):**
-```
-- Issue 1: Create task (DB + API + UI + Tests)
-- Issue 2: Read tasks list (DB + API + UI + Tests)
-- Issue 3: Update task (DB + API + UI + Tests)
-- Issue 4: Delete task (DB + API + UI + Tests)
-```
-**Benefit**: Each issue is shippable!
-
-### Example Issue Output
-
+**Example PRD structure:**
 ```markdown
-## Issue: Create Task
+# Product Requirements Document: User Authentication
 
-**Story**: As a user, I can create a new task so I can track my work.
+## Objectives
+- Allow users to sign up with email/password
+- Enable secure login with JWT tokens
+- Implement password reset flow
 
-**Acceptance Criteria**:
-- [ ] User can enter task title (required)
-- [ ] User can add description (optional)
-- [ ] User can set due date (optional)
-- [ ] User can set priority (low/medium/high)
-- [ ] Task is saved to database
-- [ ] User sees confirmation
-- [ ] Task appears in task list
+## Scope
+✅ Email/password authentication
+✅ JWT token-based sessions
+✅ Password reset via email
+❌ OAuth (Google, GitHub) - out of scope for v1
+❌ Two-factor authentication - out of scope for v1
 
-**Technical Notes**:
-- Endpoint: `POST /api/tasks`
-- Request: `{ title, description?, dueDate?, priority? }`
-- Response: `{ id, ...task, created_at }`
-- Database: `tasks` table
+## Technical Requirements
+- Backend: Node.js with Express
+- Database: PostgreSQL
+- Token expiry: 24 hours
+- Password: min 8 chars, 1 number, 1 special char
 
-**Tests Required**:
-- [ ] Test: Can create task with minimal fields
-- [ ] Test: Title is required
-- [ ] Test: Priority defaults to MEDIUM
-- [ ] Test: Task persists to database
+## Testing
+- Unit tests for password validation
+- Integration tests for login flow
+- E2E test for complete sign-up → login flow
 
-**Dependencies**: None (can do first)
+## Code Style
+- TypeScript with strict mode
+- ESLint + Prettier
+- Test naming: `should [expected behavior] when [condition]`
 ```
 
-### Using `/to-prd`
-
-If you've been chatting but haven't created a PRD:
-
-```bash
-/to-prd
-```
-
-**What it does:**
-- Synthesizes your conversation into a PRD
-- Creates it as a GitHub issue
-- No need to write it yourself!
+**Key principle:** **Spec before code.** Never start planning or coding until the spec is written and agreed upon.
 
 ---
 
-## Phase 3: Test-Driven Development
+## 🏗️ Phase 2: Module & Interface Design
 
-### Goal: Clear Feedback Loops
+**Goal:** Split the system into **modules with simple interfaces** and **deep internal logic**.
 
-**TDD is the heartbeat of quality code.**
+### Why This Matters
 
-### Using `/tdd`
+> "Simple interfaces, deep modules" - *The Art of Lean*
 
-```bash
-/tdd
-```
+**Good design:**
+- ✅ Interface is obvious what it does
+- ✅ Implementation can be complex (that's okay!)
+- ✅ Modules are independent (low coupling)
+- ✅ Modules have single responsibility (high cohesion)
+
+**Bad design:**
+- ❌ Interface is complex (5+ parameters)
+- ❌ Implementation is simple (but that's not the problem)
+- ❌ Modules depend on each other's internals
+- ❌ Modules do too many things
+
+### Step 2.1: Plan & Break Down
+
+**Use when:** Spec is complete, before implementation.
+
+**Skill:**
+- **Addy Osmani:** `/plan` or `/planning-and-task-breakdown`
+- **Matt Pocock:** `/to-issues` (if using GitHub issues)
 
 **What happens:**
-1. AI understands the issue you're working on
-2. Writes a **failing test** first
-3. You verify the test fails (red)
-4. AI writes minimum code to pass (green)
-5. You verify the test passes
-6. AI **refactors** for clarity
-7. Repeat for next test
+- Decomposes spec into **small, verifiable tasks**
+- Orders tasks by dependencies
+- Creates acceptance criteria for each task
+- Estimates complexity
 
-### The Red-Green-Refactor Loop
+**Example task breakdown:**
+```markdown
+# Implementation Plan: User Authentication
 
+## Phase 1: Foundation
+- [ ] Set up project structure
+  - [ ] Initialize Node.js project
+  - [ ] Configure TypeScript
+  - [ ] Set up ESLint + Prettier
+  - ✅ Acceptance: `npm run lint` passes with no errors
+
+- [ ] Set up database
+  - [ ] Create PostgreSQL connection pool
+  - [ ] Define User schema
+  - [ ] Create migrations
+  - ✅ Acceptance: Can insert and query users
+
+## Phase 2: Core Features
+- [ ] Password validation module
+  - [ ] Implement validation rules
+  - [ ] Write unit tests
+  - ✅ Acceptance: 100% test coverage on validation logic
+
+- [ ] User registration API
+  - [ ] POST /register endpoint
+  - [ ] Password hashing with bcrypt
+  - [ ] Integration tests
+  - ✅ Acceptance: Can register a new user
+
+[... continues for all features ...]
 ```
-┌─────────────────────────────────────────────────────────┐
-│ RED                                                     │
-│ Write a failing test that defines desired behavior     │
-│ "What should this code DO?"                            │
-└─────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────┐
-│ GREEN                                                   │
-│ Write minimum code to make test pass                   │
-│ "How do I make this work?" (no optimization yet!)      │
-└─────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────┐
-│ REFACTOR                                                │
-│ Improve code quality while tests stay green            │
-│ "How can I make this cleaner?"                         │
-└─────────────────────────────────────────────────────────┘
-                           ↓
-                    Repeat for next test
-```
 
-### Example TDD Session
+---
 
-**Issue**: Create Task
+### Step 2.2: Design Interfaces
 
-**AI (TDD mode):**
-```
-## Step 1: Write Failing Test
+**Use when:** Planning tasks, before implementation.
 
+**Skill:**
+- **Addy Osmani:** `/api-and-interface-design`
+
+**What happens:**
+- Designs **API contracts** before implementation
+- Defines function signatures
+- Documents input/output types
+- Identifies error cases
+
+**Example interface design:**
 ```typescript
-// tasks.test.ts
-describe('createTask', () => {
-  it('should create a task with minimal fields', async () => {
-    const task = await createTask({ title: 'Test Task' });
-    
-    expect(task).toBeDefined();
-    expect(task.title).toBe('Test Task');
-    expect(task.id).toBeDefined();
-    expect(task.priority).toBe('MEDIUM'); // default
+// BEFORE implementation - design first!
+
+// Interface: SIMPLE (obvious what it does)
+interface UserRepository {
+  /**
+   * Create a new user
+   * @throws UserAlreadyExistsError if email exists
+   * @throws InvalidPasswordError if password doesn't meet requirements
+   */
+  create(email: string, password: string): Promise<User>;
+  
+  /**
+   * Find user by email
+   * @returns User or null if not found
+   */
+  findByEmail(email: string): Promise<User | null>;
+  
+  /**
+   * Verify password for a user
+   * @returns true if password matches, false otherwise
+   */
+  verifyPassword(userId: string, password: string): Promise<boolean>;
+}
+
+// Implementation: DEEP (can be complex inside)
+class PostgresUserRepository implements UserRepository {
+  constructor(
+    private pool: Pool,
+    private passwordHasher: PasswordHasher,
+    private emailValidator: EmailValidator
+  ) {}
+  
+  async create(email: string, password: string): Promise<User> {
+    // Deep implementation:
+    // - Validate email format
+    // - Check for existing user (with transaction)
+    // - Hash password with bcrypt (10 rounds)
+    // - Insert into database
+    // - Handle connection errors
+    // - Log audit trail
+    // - Emit domain event
+    // ... 100+ lines of complex logic ...
+  }
+  
+  // ... other methods ...
+}
+```
+
+**Key principle:** **Interface should be simple enough to understand in 5 seconds.** Implementation can be as complex as needed.
+
+---
+
+### Step 2.3: Document Architecture
+
+**Use when:** Major design decisions made.
+
+**Skill:**
+- **Addy Osmani:** `/documentation-and-adrs`
+
+**What happens:**
+- Creates Architecture Decision Records (ADRs)
+- Documents **why** not just **what**
+- Records alternatives considered
+- Makes trade-offs explicit
+
+**Example ADR:**
+```markdown
+# ADR-001: Use PostgreSQL over MongoDB
+
+## Status
+✅ Accepted
+
+## Context
+We need a database for user data and authentication. Options:
+- PostgreSQL (relational)
+- MongoDB (document)
+- Redis (key-value, not suitable)
+
+## Decision
+Choose **PostgreSQL**.
+
+## Rationale
+1. **Data structure**: User data is highly structured (email, password hash, timestamps)
+2. **ACID compliance**: Authentication requires transactional guarantees
+3. **Maturity**: PostgreSQL has better tooling for our stack
+4. **Team expertise**: Team has more PostgreSQL experience
+
+## Alternatives Considered
+- **MongoDB**: Flexible schema not needed for this use case
+- **SQLite**: Not suitable for production, lacks concurrent writes
+
+## Consequences
+✅ Pros:
+- Strong consistency
+- Better query capabilities
+- Mature ecosystem
+
+⚠️ Cons:
+- Schema migrations required
+- Less flexible for rapid prototyping
+```
+
+---
+
+## 🧪 Phase 3: Test-Driven Implementation
+
+**Goal:** Implement features with tests as specification and safety net.
+
+### Why TDD?
+
+> "Tests are the first line of defense" - *Addy Osmani*
+
+**Benefits:**
+- ✅ Tests as documentation (specification)
+- ✅ Catch regressions immediately
+- ✅ Design emerges from testability
+- ✅ Confidence to refactor
+
+### Step 3.1: Red-Green-Refactor Loop
+
+**Use when:** Implementing any feature or fixing bugs.
+
+**Skills:**
+- **Addy Osmani:** `/test` or `/test-driven-development`
+- **Matt Pocock:** `/tdd`
+
+**What happens:**
+1. **Red:** Write failing test first
+2. **Green:** Write minimum code to pass
+3. **Refactor:** Improve code while keeping tests green
+
+**Example TDD cycle:**
+```bash
+# Step 1: RED - Write test first
+cat > test/password-validator.test.ts << 'EOF'
+import { validatePassword } from '../src/password-validator';
+
+describe('validatePassword', () => {
+  it('should reject passwords shorter than 8 characters', () => {
+    expect(validatePassword('abc123')).toBe(false);
+  });
+  
+  it('should reject passwords without numbers', () => {
+    expect(validatePassword('abcdefgh')).toBe(false);
+  });
+  
+  it('should accept valid passwords', () => {
+    expect(validatePassword('abc123!@#')).toBe(true);
   });
 });
-```
+EOF
 
-**Run test:**
-```bash
-npm test -- tasks.test.ts
-```
+# Run test - it fails!
+npm test -- password-validator.test.ts
+# ❌ FAIL: validatePassword is not defined
 
-**Expected**: ❌ FAIL (function doesn't exist yet)
-
----
-
-## Step 2: Make Test Pass
-
-```typescript
-// tasks.ts
-export async function createTask(input: { title: string }) {
-  return {
-    id: Date.now(),
-    title: input.title,
-    priority: 'MEDIUM',
-    created_at: new Date()
-  };
+# Step 2: GREEN - Write minimum code
+cat > src/password-validator.ts << 'EOF'
+export function validatePassword(password: string): boolean {
+  if (password.length < 8) return false;
+  if (!/\d/.test(password)) return false;
+  if (!/[!@#$%^&*]/.test(password)) return false;
+  return true;
 }
-```
+EOF
 
-**Run test:**
-```bash
-npm test -- tasks.test.ts
-```
+# Run test - it passes!
+npm test -- password-validator.test.ts
+# ✅ PASS
 
-**Expected**: ✅ PASS
+# Step 3: REFACTOR - Improve code
+cat > src/password-validator.ts << 'EOF'
+const PASSWORD_REQUIREMENTS = {
+  minLength: 8,
+  requiresNumber: true,
+  requiresSpecialChar: true,
+};
 
----
-
-## Step 3: Refactor
-
-```typescript
-// tasks.ts
-type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
-
-interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  dueDate?: Date;
-  priority: Priority;
-  created_at: Date;
-}
-
-interface CreateTaskInput {
-  title: string;
-  description?: string;
-  dueDate?: Date;
-  priority?: Priority;
-}
-
-export async function createTask(input: CreateTaskInput): Promise<Task> {
-  const task: Task = {
-    id: generateId(),
-    title: input.title,
-    description: input.description,
-    dueDate: input.dueDate,
-    priority: input.priority ?? 'MEDIUM',
-    created_at: new Date()
-  };
+export function validatePassword(password: string): boolean {
+  if (password.length < PASSWORD_REQUIREMENTS.minLength) {
+    return false;
+  }
   
-  await saveToDatabase(task);
+  if (PASSWORD_REQUIREMENTS.requiresNumber && !/\d/.test(password)) {
+    return false;
+  }
   
-  return task;
-}
-
-function generateId(): string {
-  return crypto.randomUUID();
-}
-
-async function saveToDatabase(_task: Task): Promise<void> {
-  // TODO: Implement database save
-}
-```
-
-**Tests still pass**: ✅
-
----
-
-Next test: Validate title is required...
-```
-
-### Why TDD Works
-
-1. **Clear requirements**: Tests define "done"
-2. **No regressions**: Old tests stay green
-3. **Better design**: Tests force clean interfaces
-4. **Documentation**: Tests show how to use code
-5. **Confidence**: Safe to refactor
-
----
-
-## Phase 4: Architecture & Deep Modules
-
-### Goal: Prevent Software Entropy
-
-**Codebases rot. Fight back!**
-
-### Deep vs Shallow Modules
-
-**Shallow Module** (bad):
-```typescript
-// Does too much, hard to use
-export function processOrder(order) {
-  validate(order);
-  calculateTotal(order);
-  saveToDatabase(order);
-  sendEmail(order.customer);
-  updateInventory(order.items);
-  logActivity(order);
-  return order;
-}
-```
-**Problem**: One function does everything, can't test parts, hard to change
-
-**Deep Module** (good):
-```typescript
-// Clear interface, lots of power
-export function processOrder(order: Order): ProcessedOrder {
-  const validated = validateOrder(order);
-  const calculated = calculateOrderTotal(validated);
-  const saved = saveOrder(calculated);
-  notifyCustomer(saved);
-  updateStock(saved.items);
+  if (PASSWORD_REQUIREMENTS.requiresSpecialChar && !/[!@#$%^&*]/.test(password)) {
+    return false;
+  }
   
-  return saved;
+  return true;
 }
+EOF
 
-// Each function is testable, reusable, clear
-export function validateOrder(order: Order): ValidatedOrder { ... }
-export function calculateOrderTotal(order: Order): CalculatedOrder { ... }
-export function saveOrder(order: Order): SavedOrder { ... }
-export function notifyCustomer(order: SavedOrder): void { ... }
-export function updateStock(items: OrderItem[]): void { ... }
-```
-**Benefit**: Clear interface, easy to test, easy to change
-
-### Using `/improve-codebase-architecture`
-
-```bash
-/improve-codebase-architecture
-```
-
-**What it does:**
-1. Scans your codebase
-2. Finds shallow modules (too much logic)
-3. Finds coupling problems
-4. Suggests refactoring opportunities
-5. Uses CONTEXT.md for domain language
-
-**Example Output:**
-```
-## Architecture Issues Found
-
-### 1. Shallow Module: `services/order.js`
-**Problem**: 500 lines, does validation, DB, email, inventory
-**Suggestion**: Split into:
-- `services/order/validation.js`
-- `services/order/calculations.js`
-- `services/order/persistence.js`
-- `services/order/notifications.js`
-
-### 2. Tight Coupling: `components/TodoList`
-**Problem**: Depends on direct API calls
-**Suggestion**: Inject API as dependency
-```
-
-### Using `/zoom-out`
-
-When stuck in code details:
-
-```bash
-/zoom-out
-```
-
-**What it does:**
-- Explains code in system context
-- Shows how it fits the whole picture
-- Helps understand dependencies
-- Prevents local optimizations that break global design
-
----
-
-## Complete Workflow Example
-
-### Scenario: Build a Blog Platform
-
----
-
-### Step 1: Grilling
-
-```
-User: /grill-me
-
-AI: What are you building?
-
-User: A blog platform where writers can publish posts
-
-AI: [asks 20+ questions about features, users, tech stack, etc.]
-
-User: [answers all questions]
-
-AI: Here's my understanding:
-- Multi-user blog platform
-- Writers can create, edit, publish posts
-- Readers can view posts, comment
-- Tags and categories
-- Markdown support
-- Stack: Next.js, PostgreSQL, Tailwind
-- MVP in 3 weeks
-
-Create PRD?
-
-User: Yes
+# Run test - still passes!
+npm test -- password-validator.test.ts
+# ✅ PASS
 ```
 
 ---
 
-### Step 2: Splitting
+### Step 3.2: Build Vertical Slices
 
+**Use when:** Implementing features that span multiple layers.
+
+**Skill:**
+- **Addy Osmani:** `/build` or `/incremental-implementation`
+
+**What happens:**
+- Implements **one feature at a time** (vertical slice)
+- Goes from UI → API → Database
+- Tests at each layer
+- Commits when slice is complete
+
+**Example vertical slice:**
 ```
-User: /to-issues
+Feature: User Registration
 
-AI: [creates 12 GitHub issues]
+✅ Slice 1: Password Validation (backend)
+   - Test: validatePassword() function
+   - Code: password-validator.ts
+   - ✅ Test passes
 
-Issue #1: User Authentication (can do first)
-Issue #2: Create Draft Post
-Issue #3: List Draft Posts
-Issue #4: Edit Draft Post
-Issue #5: Publish Post
-Issue #6: View Published Post
-Issue #7: List Published Posts
-Issue #8: Add Tags to Post
-Issue #9: Comment on Post
-Issue #10: Markdown Rendering
-Issue #11: Search Posts
-Issue #12: Admin Dashboard
+✅ Slice 2: User Repository (data layer)
+   - Test: UserRepository.create()
+   - Code: user-repository.ts
+   - ✅ Test passes
 
-All issues are independent vertical slices!
+✅ Slice 3: Auth Service (business logic)
+   - Test: AuthService.register()
+   - Code: auth-service.ts
+   - ✅ Test passes
+
+✅ Slice 4: API Endpoint (interface)
+   - Test: POST /register
+   - Code: auth-routes.ts
+   - ✅ Test passes
+
+✅ Slice 5: Integration Test (full flow)
+   - Test: Complete registration flow
+   - Code: auth-integration.test.ts
+   - ✅ Test passes
+
+🎉 Feature complete! Commit and move to next feature.
 ```
+
+**Key principle:** **One slice at a time.** Don't start Slice 2 until Slice 1 is tested and committed.
 
 ---
 
-### Step 3: TDD on Each Issue
+### Step 3.3: Test Pyramid
 
+**Use when:** Writing tests for any feature.
+
+**Skill:**
+- **Addy Osmani:** `/test` (includes test pyramid guidance)
+
+**What happens:**
+- Follows **80/15/5** test distribution:
+  - 80% Unit tests (fast, isolated)
+  - 15% Integration tests (module interactions)
+  - 5% E2E tests (full system)
+
+**Example test distribution:**
 ```
-User: [selects Issue #2: Create Draft Post]
-User: /tdd
-
-AI: [runs TDD loop]
-
-RED: Write test for createDraftPost()
-GREEN: Implement minimum code
-REFACTOR: Clean up types and structure
-
-RED: Write test for validation
-GREEN: Add validation logic
-REFACTOR: Extract validation rules
-
-RED: Write test for database persistence
-GREEN: Add database save
-REFACTOR: Create repository pattern
-
-[Repeat until all tests pass]
-
-✅ Issue #2 complete!
+User Registration Feature
+├── Unit Tests (80%)
+│   ├── password-validator.test.ts (10 tests)
+│   ├── email-validator.test.ts (5 tests)
+│   └── token-generator.test.ts (8 tests)
+│
+├── Integration Tests (15%)
+│   ├── user-repository.test.ts (3 tests)
+│   └── auth-service.test.ts (4 tests)
+│
+└── E2E Tests (5%)
+    └── registration-flow.test.ts (1 test)
 ```
+
+**Why this matters:**
+- Unit tests are **fast** (run in milliseconds)
+- Integration tests catch **interface bugs**
+- E2E tests catch **system-level issues**
+- **Don't over-test E2E** (slow, fragile)
 
 ---
 
-### Step 4: Architecture Check
+## 🔍 Phase 4: Review & Simplify
 
-```
-User: [after completing 5 issues]
-User: /improve-codebase-architecture
+**Goal:** Improve code quality before merging.
 
-AI: [finds issues]
+### Step 4.1: Code Review
 
-1. Shallow module in `pages/api/posts.js`
-   → Split into separate route handlers
+**Use when:** Feature complete, before merge.
 
-2. Missing error handling layer
-   → Add error boundary component
+**Skill:**
+- **Addy Osmani:** `/review` or `/code-review-and-quality`
 
-3. Database queries duplicated
-   → Create repository pattern
+**What happens:**
+- Five-axis review:
+  1. **Correctness** - Does it work?
+  2. **Security** - Any vulnerabilities?
+  3. **Performance** - Is it efficient?
+  4. **Readability** - Is it clear?
+  5. **Maintainability** - Easy to change?
 
-User: [accepts suggestions, refactors]
-```
+**Example review output:**
+```markdown
+# Code Review: User Registration
 
----
+## ✅ Correctness (5/5)
+- All tests pass
+- Edge cases handled
+- Error messages clear
 
-## Skill Reference
+## ✅ Security (5/5)
+- Password hashing with bcrypt
+- SQL injection prevented (parameterized queries)
+- XSS protection (output encoding)
 
-### Core Workflow Skills
+## ⚠️ Performance (3/5)
+- ISSUE: Password validation runs 3 times
+- FIX: Cache validation result
+- SEVERITY: Medium (affects UX)
 
-| Skill | When to Use | What It Does |
-|-------|-------------|--------------|
-| `/grill-me` | Starting new feature | AI asks questions until design is clear |
-| `/grill-with-docs` | Starting complex feature | Grilling + creates CONTEXT.md and ADRs |
-| `/to-prd` | After planning chat | Turns conversation into PRD issue |
-| `/to-issues` | After PRD is ready | Breaks into independent GitHub issues |
-| `/tdd` | Working on an issue | Runs red-green-refactor loop |
-| `/diagnose` | Stuck on a bug | Systematic bug diagnosis |
-| `/improve-codebase-architecture` | After several features | Finds architecture issues |
-| `/zoom-out` | Lost in code details | Shows system-level context |
+## ✅ Readability (5/5)
+- Clear naming
+- Good comments
+- Consistent style
 
-### Supporting Skills
-
-| Skill | When to Use | What It Does |
-|-------|-------------|--------------|
-| `/caveman` | Communicating with AI | Ultra-compressed mode (saves tokens) |
-| `/handoff` | Switching agents | Compacts conversation for another agent |
-| `/prototype` | Exploring design | Builds throwaway prototype |
-| `/triage` | Managing issues | Triage state machine for issues |
-
----
-
-## Best Practices
-
-### ✅ DO
-
-1. **Always grill first** - Never code without clear requirements
-2. **Write tests first** - Red-green-refactor every time
-3. **Vertical slices** - Each task should be shippable
-4. **Refactor regularly** - Don't let entropy accumulate
-5. **Use shared language** - CONTEXT.md keeps terminology consistent
-6. **Zoom out often** - Keep system perspective
-
-### ❌ DON'T
-
-1. **Don't start coding immediately** - Plan first!
-2. **Don't build layers** - Build vertical slices
-3. **Don't skip tests** - TDD is non-negotiable
-4. **Don't wait for "later"** - Refactor now
-5. **Don't work in silos** - Keep architecture in mind
-6. **Don't guess** - Ask AI to clarify
-
----
-
-## Common Patterns
-
-### Pattern 1: New Feature
-
-```
-1. /grill-me → Clarify requirements
-2. /to-issues → Split into tasks
-3. Pick one issue
-4. /tdd → Implement with tests
-5. Commit when done
-6. Repeat for next issue
-7. /improve-codebase-architecture → After 3-4 issues
-```
-
-### Pattern 2: Bug Fix
-
-```
-1. /diagnose → Understand the bug
-2. Write failing test that reproduces bug
-3. /tdd → Fix the bug
-4. Verify tests pass
-5. /zoom-out → Check for side effects
-```
-
-### Pattern 3: Refactoring
-
-```
-1. /zoom-out → Understand current architecture
-2. /improve-codebase-architecture → Find issues
-3. Create issues for refactoring work
-4. /tdd → Refactor (tests ensure no regressions)
-```
-
----
+## ⚠️ Maintainability (4/5)
+- ISSUE: Hardcoded regex in validator
+- FIX: Extract to constant
+- SEVERITY: Low (minor refactor)
 
 ## Summary
-
-**The Golden Path:**
-
+✅ Ready to merge after fixes
 ```
-Grill → Split → TDD → Refactor → Repeat
-```
-
-**Key Principles:**
-
-1. **Clarity before code** - Grilling eliminates ambiguity
-2. **Small feedback loops** - TDD gives constant feedback
-3. **Vertical slices** - Each task is complete and shippable
-4. **Deep modules** - Clear interfaces, lots of power
-5. **Regular maintenance** - Architecture check prevents rot
-
-**Remember:**
-
-> "Developing real applications is hard. The gap between what you want and what you get is filled with decisions. Make them explicit before coding."
 
 ---
 
-**WAAAGH! Now go build something awesome!** 👊🪓
+### Step 4.2: Simplify Code
+
+**Use when:** Code works but feels complex.
+
+**Skill:**
+- **Addy Osmani:** `/code-simplify`
+
+**What happens:**
+- Identifies unnecessary complexity
+- Suggests simplifications
+- Preserves behavior
+- Reduces cognitive load
+
+**Example simplification:**
+```typescript
+// BEFORE: Overly complex
+function validateUser(user) {
+  if (user == null) return false;
+  if (typeof user !== 'object') return false;
+  if (user.email == null) return false;
+  if (typeof user.email !== 'string') return false;
+  if (user.email.length === 0) return false;
+  if (!user.email.includes('@')) return false;
+  if (user.password == null) return false;
+  if (typeof user.password !== 'string') return false;
+  if (user.password.length < 8) return false;
+  return true;
+}
+
+// AFTER: Simplified
+function validateUser(user: User): boolean {
+  return (
+    user != null &&
+    isValidEmail(user.email) &&
+    isValidPassword(user.password)
+  );
+}
+
+function isValidEmail(email: string): boolean {
+  return email.includes('@') && email.length > 0;
+}
+
+function isValidPassword(password: string): boolean {
+  return password.length >= 8;
+}
+```
+
+---
+
+## 🚀 Phase 5: Ship
+
+**Goal:** Deploy with confidence.
+
+### Step 5.1: Pre-Launch Checklist
+
+**Use when:** Ready to deploy.
+
+**Skill:**
+- **Addy Osmani:** `/ship`
+
+**What happens:**
+- Runs pre-launch checklist
+- Verifies feature flags
+- Checks documentation
+- Confirms rollback plan
+
+**Example checklist:**
+```markdown
+# Pre-Launch Checklist: User Registration
+
+## ✅ Testing
+- [x] All unit tests pass
+- [x] Integration tests pass
+- [x] E2E tests pass
+- [x] Performance tests within budget
+
+## ✅ Security
+- [x] Password hashing verified
+- [x] SQL injection prevented
+- [x] XSS protection enabled
+- [x] Rate limiting configured
+
+## ✅ Documentation
+- [x] API documentation updated
+- [x] README updated
+- [x] Changelog entry added
+
+## ✅ Deployment
+- [x] Feature flag configured
+- [x] Rollback plan documented
+- [x] Monitoring alerts set up
+
+## ✅ Go/No-Go Decision
+🟢 READY TO SHIP
+```
+
+---
+
+## 🎬 Complete Workflow Example
+
+**Scenario:** Build user authentication feature
+
+```bash
+# Start agent in your project
+cd /path/to/project
+./start-opencode.sh
+opencode
+
+# PHASE 1: Shared Understanding
+/interview-me
+# → Agent asks questions, clarifies requirements
+
+/grill-with-docs
+# → Creates CONTEXT.md with shared language
+
+/spec
+# → Writes PRD with scope, requirements, testing approach
+
+# PHASE 2: Module & Interface Design
+/plan
+# → Breaks down into tasks with acceptance criteria
+
+/api-and-interface-design
+# → Designs simple interfaces for each module
+
+/documentation-and-adrs
+# → Documents major architecture decisions
+
+# PHASE 3: TDD Implementation
+/test
+# → Starts TDD cycle for first task
+
+/build
+# → Implements vertical slice (UI → API → DB)
+
+# Repeat /test + /build for each task...
+
+# PHASE 4: Review & Simplify
+/review
+# → Five-axis code review
+
+/code-simplify
+# → Reduces complexity
+
+# PHASE 5: Ship
+/ship
+# → Pre-launch checklist
+
+# Deploy! 🚀
+```
+
+---
+
+## 📚 Skill Reference
+
+### Matt Pocock Skills
+
+| Skill | Phase | Purpose |
+|-------|-------|---------|
+| `/grill-me` | 1 | Clarify requirements |
+| `/grill-with-docs` | 1 | Clarify + build shared language |
+| `/interview-me` | 1 | One-question-at-a-time extraction |
+| `/to-issues` | 2 | Break into GitHub issues |
+| `/tdd` | 3 | Test-driven development |
+| `/diagnose` | 3 | Debug hard bugs |
+| `/prototype` | 2 | Explore designs quickly |
+
+### Addy Osmani Skills
+
+| Skill | Phase | Purpose |
+|-------|-------|---------|
+| `/interview-me` | 1 | Requirements extraction |
+| `/idea-refine` | 1 | Turn vague ideas into concrete plans |
+| `/spec` | 1 | Write PRD before code |
+| `/plan` | 2 | Decompose into tasks |
+| `/api-and-interface-design` | 2 | Design simple interfaces |
+| `/documentation-and-adrs` | 2 | Document architecture decisions |
+| `/test` | 3 | TDD with test pyramid |
+| `/build` | 3 | Thin vertical slices |
+| `/incremental-implementation` | 3 | Safe, incremental changes |
+| `/review` | 4 | Five-axis code review |
+| `/code-simplify` | 4 | Reduce complexity |
+| `/security-and-hardening` | 4 | Security review |
+| `/performance-optimization` | 4 | Performance check |
+| `/ship` | 5 | Pre-launch checklist |
+| `/git-workflow-and-versioning` | 5 | Trunk-based development |
+
+---
+
+## 🎯 Key Principles
+
+### 1. Shared Understanding First
+**Never code until you and the agent agree on what to build.**
+
+Use `/interview-me` or `/grill-with-docs` every time you start a new feature.
+
+### 2. Simple Interfaces, Deep Modules
+**Interface should be obvious. Implementation can be complex.**
+
+Design interfaces first. Keep them simple. Let the implementation handle the complexity.
+
+### 3. Test-Driven Development
+**Tests are specification and safety net.**
+
+Write tests first. Red → Green → Refactor. Follow the 80/15/5 test pyramid.
+
+### 4. Small, Verifiable Steps
+**One vertical slice at a time.**
+
+Don't start Phase 2 until Phase 1 is complete. Don't start Slice 2 until Slice 1 is tested and committed.
+
+### 5. Review Before Ship
+**Never merge without review.**
+
+Use `/review` for five-axis review. Use `/code-simplify` to reduce complexity. Use `/ship` for pre-launch checklist.
+
+---
+
+## 🚫 Anti-Patterns to Avoid
+
+| Anti-Pattern | Fix |
+|--------------|-----|
+| **Coding without spec** | → Use `/spec` first |
+| **Skipping tests** | → Use `/test` for TDD |
+| **Big bang implementation** | → Use `/build` for vertical slices |
+| **Merging without review** | → Use `/review` before merge |
+| **Over-complicating interfaces** | → Use `/api-and-interface-design` |
+| **No shared language** | → Use `/grill-with-docs` |
+
+---
+
+**WAAAGH! Follow this workflow, and ye'll build software like a proper engineer!** 🪓👊

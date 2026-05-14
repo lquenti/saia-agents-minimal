@@ -277,6 +277,117 @@ Skills are pre-installed in the container at:
 
 **Reference skills in your workflow** by reading the `SKILL.md` files or using the slash commands (if your runtime supports them).
 
+---
+
+## 🏗️ Software Engineering Workflow
+
+Follow a **disciplined, skill-driven workflow** for professional software development:
+
+### Phase 1: Shared Understanding
+
+**Never code until you and the agent agree on what to build.**
+
+| Skill | Command | Purpose |
+|-------|---------|----------|
+| Matt Pocock | `/grill-me` or `/grill-with-docs` | Get relentlessly interviewed until fully specified |
+| Addy Osmani | `/interview-me` | One-question-at-a-time requirement extraction |
+| Addy Osmani | `/spec` | Write PRD before any code |
+
+**Output:** Clear requirements, shared language (`CONTEXT.md`), product spec (PRD)
+
+---
+
+### Phase 2: Module & Interface Design
+
+**Design simple interfaces, deep modules.**
+
+| Skill | Command | Purpose |
+|-------|---------|----------|
+| Addy Osmani | `/plan` | Decompose specs into small, verifiable tasks |
+| Addy Osmani | `/api-and-interface-design` | Contract-first API design |
+| Addy Osmani | `/documentation-and-adrs` | Architecture Decision Records |
+
+**Output:** Task breakdown, interface definitions, architecture documentation
+
+---
+
+### Phase 3: Test-Driven Implementation
+
+**Tests as specification and safety net.**
+
+| Skill | Command | Purpose |
+|-------|---------|----------|
+| Addy Osmani | `/test` | Red-green-refactor with test pyramid (80/15/5) |
+| Addy Osmani | `/build` | Thin vertical slices - implement, test, verify |
+| Matt Pocock | `/tdd` | Test-driven development loop |
+
+**Output:** Working code with comprehensive tests
+
+---
+
+### Phase 4: Review & Simplify
+
+**Improve code quality before merging.**
+
+| Skill | Command | Purpose |
+|-------|---------|----------|
+| Addy Osmani | `/review` | Five-axis code review (correctness, security, performance, readability, maintainability) |
+| Addy Osmani | `/code-simplify` | Reduce complexity while preserving behavior |
+| Addy Osmani | `/security-and-hardening` | OWASP Top 10 prevention |
+
+**Output:** Reviewed, simplified, secure code
+
+---
+
+### Phase 5: Ship
+
+**Deploy with confidence.**
+
+| Skill | Command | Purpose |
+|-------|---------|----------|
+| Addy Osmani | `/ship` | Pre-launch checklists + feature flags |
+| Addy Osmani | `/git-workflow-and-versioning` | Trunk-based development + atomic commits |
+
+**Output:** Deployed feature with rollback plan
+
+---
+
+### Complete Workflow Example
+
+```bash
+# Start agent
+./start-opencode.sh
+opencode
+
+# PHASE 1: Shared Understanding
+/interview-me      # Clarify requirements
+/grill-with-docs   # Build shared language
+/spec              # Write PRD
+
+# PHASE 2: Module & Interface Design
+/plan                        # Break into tasks
+/api-and-interface-design    # Design interfaces
+/documentation-and-adrs      # Document decisions
+
+# PHASE 3: TDD Implementation
+/test    # TDD cycle
+/build   # Vertical slice
+# Repeat for each task...
+
+# PHASE 4: Review & Simplify
+/review          # Code review
+/code-simplify   # Reduce complexity
+
+# PHASE 5: Ship
+/ship    # Pre-launch checklist
+
+# Deploy! 🚀
+```
+
+**📖 Full Guide:** See [SOFTWARE_ENGINEERING_WORKFLOW.md](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) for detailed workflows, examples, and anti-patterns.
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -573,7 +684,12 @@ Choose based on your needs and availability.
 
 - [Tools & Security](tools.md) - Complete tool reference and security rules
 - [Quick Start Skills](docs/QUICK_START_SKILLS.md) - Getting started with skills
-- [Software Engineering Workflow](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) - Best practices
+- [Software Engineering Workflow](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) - **Disciplined development process**
+  - **Phase 1:** Shared Understanding (interview, grill, spec)
+  - **Phase 2:** Module & Interface Design (plan, API design, ADRs)
+  - **Phase 3:** Test-Driven Implementation (TDD, vertical slices)
+  - **Phase 4:** Review & Simplify (code review, simplify)
+  - **Phase 5:** Ship (pre-launch checklist)
 
 ## 🧪 Development
 
