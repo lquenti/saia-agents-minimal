@@ -41,13 +41,18 @@ RUN npm install -g opencode-cli 2>/dev/null || \
 RUN mkdir -p /home/agent/.opencode/{config,skills,workspace} \
     && chown -R agent:agent /home/agent
 
-# Pre-install essential skills
-# These are safe, curated skills for coding agents
+# Pre-install essential skills from curated repos
+# Matt Pocock's skills - engineering best practices
+# Addy Osmani's agent-skills - production-grade workflows
 RUN mkdir -p /home/agent/.opencode/workspace/skills
 
 # Copy agent configuration
 COPY --chown=agent:agent agents.json /home/agent/.opencode/
 COPY --chown=agent:agent tools.md /home/agent/.opencode/workspace/
+
+# Copy pre-installed skills
+COPY --chown=agent:agent skills/matt-pocock/skills /home/agent/.opencode/workspace/skills/matt-pocock
+COPY --chown=agent:agent skills/addy-osmani/skills /home/agent/.opencode/workspace/skills/addy-osmani
 
 # Create safe workspace structure
 RUN mkdir -p /home/agent/workspace/{projects,docs,temp,logs} \

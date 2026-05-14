@@ -13,6 +13,7 @@ The **Advanced Coding Agent** provides a secure, isolated Docker environment for
 - **No docker-compose** - Simple `docker build` and `docker run` via shell scripts
 - **Mounts your project** - Current directory is automatically mounted as workspace
 - **Pre-configured tools** - Python via `uv`, Git, and essential development skills
+- **Pre-installed skills** - 45+ production-grade skills from Matt Pocock and Addy Osmani
 - **Security-first** - Non-root user, read-only filesystem, network isolation
 
 Perfect for:
@@ -145,21 +146,86 @@ exit  # ← Container auto-removes
 - ✅ No need to remember where you installed the repo
 - ✅ Clean workflow: `cd project` → `start-agent` → `opencode`
 
+---
+
+## 🧠 Pre-Installed Skills
+
+The agent comes with **45+ production-grade skills** from two curated collections:
+
+### Matt Pocock's Skills (`skills/matt-pocock/`)
+
+Engineering best practices for real software development:
+
+| Skill | Purpose |
+|-------|--------|
+| `/grill-me` | Get relentlessly interviewed about plans until fully specified |
+| `/grill-with-docs` | Grilling session that builds shared language + CONTEXT.md |
+| `/tdd` | Test-driven development with red-green-refactor loop |
+| `/diagnose` | Disciplined diagnosis loop for hard bugs |
+| `/to-prd` | Turn conversation into PRD + GitHub issue |
+| `/to-issues` | Break plans into independent GitHub issues |
+| `/triage` | Triage issues through state machine |
+| `/improve-codebase-architecture` | Find deepening opportunities in codebase |
+| `/zoom-out` | Get broader context on unfamiliar code |
+| `/prototype` | Build throwaway prototypes to explore designs |
+| `/caveman` | Ultra-compressed communication (~75% token savings) |
+| `/handoff` | Compact conversation for agent handoff |
+
+### Addy Osmani's Agent Skills (`skills/addy-osmani/`)
+
+Production-grade engineering workflows for AI agents:
+
+| Skill | Purpose |
+|-------|--------|
+| `/spec` | Write PRD before any code |
+| `/plan` | Decompose specs into small, verifiable tasks |
+| `/build` | Thin vertical slices - implement, test, verify |
+| `/test` | Red-green-refactor with test pyramid |
+| `/review` | Five-axis code review before merge |
+| `/code-simplify` | Reduce complexity while preserving behavior |
+| `/ship` | Pre-launch checklists + feature flags |
+| `/interview-me` | One-question-at-a-time requirement extraction |
+| `/idea-refine` | Divergent/convergent thinking for vague ideas |
+| `/context-engineering` | Feed agents right info at right time |
+| `/source-driven-development` | Ground decisions in official docs |
+| `/doubt-driven-development` | Adversarial review of non-trivial decisions |
+| `/frontend-ui-engineering` | Component architecture + accessibility |
+| `/api-and-interface-design` | Contract-first API design |
+| `/browser-testing-with-devtools` | Chrome DevTools MCP for runtime data |
+| `/debugging-and-error-recovery` | Five-step triage for broken builds |
+| `/code-review-and-quality` | Five-axis review with severity labels |
+| `/security-and-hardening` | OWASP Top 10 prevention |
+| `/performance-optimization` | Measure-first performance work |
+| `/git-workflow-and-versioning` | Trunk-based development + atomic commits |
+| `/ci-cd-and-automation` | Shift Left + quality gate pipelines |
+| `/documentation-and-adrs` | Architecture Decision Records |
+
+### Using Skills
+
+Skills are pre-installed in the container at:
+- OpenCode: `/home/agent/.opencode/workspace/skills/`
+- OpenClaude: `/home/agent/.openclaude/workspace/skills/`
+
+**Reference skills in your workflow** by reading the `SKILL.md` files or using the slash commands (if your runtime supports them).
+
 ## 📁 Project Structure
 
 ```
 advanced-coding-agent/
-├── .env.example              # Environment configuration template
 ├── Dockerfile.opencode       # OpenCode runtime Dockerfile
 ├── Dockerfile.openclaude     # OpenClaude runtime Dockerfile
-├── agents.json               # Agent configuration & skills
-├── tools.md                  # Tool definitions & security rules
 ├── start-opencode.sh         # OpenCode start script
 ├── start-openclaude.sh       # OpenClaude start script
-├── docs/                     # Documentation (read-only)
-│   ├── QUICK_START_SKILLS.md
-│   └── SOFTWARE_ENGINEERING_WORKFLOW.md
-└── README.md                 # This file
+├── .env.example              # Environment configuration template
+├── agents.json               # Agent configuration & skills
+├── tools.md                  # Tool definitions & security rules
+├── README.md                 # This file
+├── skills/                   # Pre-installed skill collections (git submodules)
+│   ├── matt-pocock/          # Matt Pocock's engineering skills
+│   └── addy-osmani/          # Addy Osmani's agent skills
+└── docs/                     # Documentation (read-only)
+    ├── QUICK_START_SKILLS.md
+    └── SOFTWARE_ENGINEERING_WORKFLOW.md
 ```
 
 ## 🔄 User Workflow
