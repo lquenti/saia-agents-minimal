@@ -2,6 +2,8 @@
 
 Detailed comparison of OpenCode and OpenClaude runtimes.
 
+> **Quick Comparison:** See [README.md](../README.md) for basic runtime differences.
+
 ---
 
 ## Overview

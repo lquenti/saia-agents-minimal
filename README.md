@@ -49,9 +49,7 @@ nano .env  # Set API key and MODEL
 ./start-openclaude.sh
 ```
 
-> **💡 Optional:** If no `AGENTS.md` exists in your project, the start script will offer to create one from a template:
-> - **Generic template** - For any project type
-> - **Python/uv template** - Includes uv, ruff, mypy, pytest workflows
+> **💡 Optional:** If no `AGENTS.md` exists in your project, the start script will offer to create one from a template.
 
 ### 4. Run Agent
 
@@ -69,82 +67,17 @@ exit  # Container auto-removes!
 
 ---
 
-## 🏗️ Usage Patterns
-
-### Basic Usage (Recommended)
-
-**Every time you work on a project:**
-
-```bash
-cd /path/to/your/project
-./start-opencode.sh
-opencode
-```
-
-That's it! The container mounts your project and provides all tools.
-
-### Shell Alias (For Convenience)
-
-Add to `~/.bashrc` or `~/.zshrc`:
-
-```bash
-alias start-agent='/path/to/advanced-coding-agent/start-opencode.sh'
-```
-
-Then use from anywhere:
-
-```bash
-cd /any/project
-start-agent
-opencode
-```
-
-### Working with Multiple Projects
-
-```bash
-# Project 1
-cd /projects/website
-./start-opencode.sh
-opencode
-
-# Project 2 (new terminal or tab)
-cd /projects/api
-./start-opencode.sh
-opencode
-```
-
-Each container is isolated and auto-removes on exit.
-
-**📖 More:** [Usage Guide](docs/USAGE.md)
-
----
-
 ## ✅ Testing
 
 Automated tests validate scripts, configuration, and Docker builds.
 
 ```bash
-# Run all tests
-./tests/run_tests.sh
-
-# Script tests only (28 tests)
-./tests/run_tests.sh scripts
-
-# Docker tests only (requires Docker)
-./tests/run_tests.sh docker
+./tests/run_tests.sh        # Run all tests
+./tests/run_tests.sh scripts  # Script tests only (28 tests)
+./tests/run_tests.sh docker   # Docker tests only
 ```
 
-**Test Coverage:**
-- ✅ Script syntax and permissions
-- ✅ File existence and configuration
-- ✅ Template completeness
-- ✅ Documentation presence
-- ✅ GitLab CI/CD configuration
-- ✅ Docker builds (optional)
-
-**CI/CD Integration:** Tests run automatically on merge requests.
-
-**📖 More:** [Testing Guide](docs/TESTING.md)
+**📖 Full guide:** [Testing Guide](docs/TESTING.md)
 
 ---
 
@@ -239,9 +172,7 @@ Follow a **5-phase disciplined workflow**:
 
 ---
 
-## 📁 Quick Reference
-
-### Project Structure
+## 📁 Repository Structure
 
 ```
 advanced-coding-agent/

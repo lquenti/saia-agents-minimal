@@ -63,11 +63,45 @@
 
 **Solution:** Removed commented sections
 
-### 8. ✅ Duplicate Documentation - PARTIALLY FIXED
+### 8. ✅ Duplicate Documentation - FIXED
 
-**Status:** Addressed
+**Status:** Fixed in commit `a4877ba`
 
-**Solution:** Added REVIEW.md, documentation overlap remains for now
+**Solution:** Removed duplicate sections from README, added links to detailed docs
+
+---
+
+## ✅ Moderate Issues - ADDRESSED
+
+### 9. ✅ Unnecessary npm Installation - FIXED
+
+**Status:** Fixed in commit `f279f4a`
+
+**Solution:** Removed from Dockerfiles
+
+### 10. ✅ .dockerignore Optimization - FIXED
+
+**Status:** Fixed in commit `f279f4a`
+
+**Solution:** Added comprehensive exclusions
+
+### 11. ✅ .env Validation - FIXED
+
+**Status:** Fixed in commit `f279f4a`
+
+**Solution:** Added to start scripts
+
+### 12. ✅ Build Script Error Handling - FIXED
+
+**Status:** Fixed in commit `f279f4a`
+
+**Solution:** Added Dockerfile existence checks
+
+### 18. ✅ CHANGELOG.md - FIXED
+
+**Status:** Fixed in commit `a4877ba`
+
+**Solution:** Added CHANGELOG.md following Keep a Changelog format
 
 ---
 

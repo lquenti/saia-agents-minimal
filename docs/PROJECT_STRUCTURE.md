@@ -2,6 +2,8 @@
 
 Complete reference of the Advanced Coding Agent repository structure.
 
+> **Quick Overview:** See [README.md](../README.md) for basic repository layout.
+
 ---
 
 ## Repository Layout

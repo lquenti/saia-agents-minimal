@@ -2,6 +2,8 @@
 
 Complete guide to using the Advanced Coding Agent in various scenarios.
 
+> **Quick Start:** See [README.md](../README.md) for basic setup instructions.
+
 ---
 
 ## Quick Reference
