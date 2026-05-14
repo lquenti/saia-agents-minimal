@@ -60,6 +60,8 @@ This will:
 - Create `.agent-memory/` folder in your current directory (for persistent memory)
 - Start an **interactive bash shell** in the container
 
+> **💡 Pro Tip:** Add an alias to your `.bashrc` or `.zshrc` to start the agent from anywhere! See [Install Shell Alias](#-install-shell-alias-optional-but-recommended) below.
+
 ### 4. Start the Agent TUI
 
 Once inside the container:
@@ -80,6 +82,57 @@ exit  # or Ctrl+D
 
 **The container automatically removes itself when you exit!** No stop script needed for normal use.
 
+---
+
+## 🎯 Install Shell Alias (Optional but Recommended)
+
+Want to start your agent from **anywhere** on your system? Add a shell function to your `.bashrc` or `.zshrc`:
+
+### 1. Add to Your Shell Config
+
+```bash
+# For OpenCode:
+alias start-agent='/path/to/advanced-coding-agent/start-opencode.sh'
+
+# For OpenClaude:
+alias start-agent='/path/to/advanced-coding-agent/start-openclaude.sh'
+```
+
+**Example** (add to `~/.bashrc` or `~/.zshrc`):
+
+```bash
+# Advanced Coding Agent
+alias start-agent='/home/cloud/advanced-coding-agent/start-opencode.sh'
+```
+
+### 2. Reload Your Shell
+
+```bash
+source ~/.bashrc   # or source ~/.zshrc
+```
+
+### 3. Use from Anywhere!
+
+```bash
+# Navigate to your project
+cd /path/to/your-project
+
+# Start agent (one command!)
+start-agent
+
+# You're in! Start the agent
+opencode
+
+# When done
+exit  # ← Container auto-removes
+```
+
+**Benefits:**
+- ✅ Start agent from **any project folder**
+- ✅ Automatically mounts **current directory** as workspace
+- ✅ No need to remember where you installed the repo
+- ✅ Clean workflow: `cd project` → `start-agent` → `opencode`
+
 ## 📁 Project Structure
 
 ```
@@ -91,8 +144,6 @@ advanced-coding-agent/
 ├── tools.md                  # Tool definitions & security rules
 ├── start-opencode.sh         # OpenCode start script
 ├── start-openclaude.sh       # OpenClaude start script
-├── stop-opencode.sh          # OpenCode stop script
-├── stop-openclaude.sh        # OpenClaude stop script
 ├── docs/                     # Documentation (read-only)
 │   ├── QUICK_START_SKILLS.md
 │   └── SOFTWARE_ENGINEERING_WORKFLOW.md
@@ -102,22 +153,39 @@ advanced-coding-agent/
 
 ## 🔄 User Workflow
 
+### Basic Usage
+
 ```bash
 # 1. Go to your project directory
 cd /path/to/your-project
 
-# 2. Start the agent (from advanced-coding-agent folder)
+# 2. Start the agent
 /path/to/advanced-coding-agent/start-opencode.sh
 
 # 3. You're now in an interactive bash shell
-# Start the agent:
 opencode
 
 # 4. When done, exit
 exit  # ← Container automatically removed!
 ```
 
-**Note:** The stop scripts (`stop-opencode.sh`, `stop-openclaude.sh`) are only needed if a container gets orphaned (rare). Normal use: container auto-removes when you exit bash.
+### With Shell Alias (Recommended)
+
+After adding the alias to your `.bashrc`/`.zshrc`:
+
+```bash
+# 1. Go to any project
+cd /any/path/to/project
+
+# 2. Start agent (one command!)
+start-agent
+
+# 3. Start the agent TUI
+opencode
+
+# 4. Exit
+exit
+```
 
 ## 🏗️ Architecture
 
