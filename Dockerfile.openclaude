@@ -33,7 +33,7 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
     && mv /root/.local/bin/uvx /usr/local/bin/
 
 # Install OpenClaude CLI (placeholder - replace with actual installation)
-# Note: OpenClaude installation method may vary - adjust as needed
+# Note: OpenClaude installation method may vary - adjust based on actual package name
 RUN npm install -g openclaude-cli 2>/dev/null || \
     echo "OpenClaude CLI installation - adjust based on actual package name"
 
