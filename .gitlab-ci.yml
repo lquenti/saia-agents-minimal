@@ -14,7 +14,6 @@ workflow:
 pages:
   stage: deploy
   script:
-    # Generate HTML pages (pure Python, no dependencies)
     - python scripts/generate-pages.py
   artifacts:
     paths:
@@ -29,25 +28,21 @@ pages:
 lint:
   stage: test
   script:
-    - echo "Checking markdown syntax..."
-    - find . -name "*.md" -type f | head -10 | while read file; do
-        echo "Checking: $file";
-      done
-    - echo "Markdown linting passed"
+    - echo 'Checking markdown syntax...'
+    - find . -name '*.md' -type f | head -10
+    - echo 'Markdown linting passed'
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_LINT == "true"
+    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_LINT == 'true'
 
 # Manual trigger jobs
 manual_lint:
   stage: test
   script:
-    - echo "=== MANUAL LINT TRIGGERED ==="
-    - echo "Checking markdown syntax..."
-    - find . -name "*.md" -type f | while read file; do
-        echo "✓ Checking: $file";
-      done
-    - echo "✅ Markdown linting passed"
+    - echo '=== MANUAL LINT TRIGGERED ==='
+    - echo 'Checking markdown syntax...'
+    - find . -name '*.md' -type f
+    - echo 'Markdown linting passed'
   rules:
     - if: $CI_PIPELINE_SOURCE == 'web'
   when: manual
@@ -56,9 +51,9 @@ manual_lint:
 manual_pages_deploy:
   stage: deploy
   script:
-    - echo "=== MANUAL PAGES DEPLOY TRIGGERED ==="
+    - echo '=== MANUAL PAGES DEPLOY TRIGGERED ==='
     - python scripts/generate-pages.py
-    - echo "✅ Pages built successfully"
+    - echo 'Pages built successfully'
   rules:
     - if: $CI_PIPELINE_SOURCE == 'web'
   when: manual
