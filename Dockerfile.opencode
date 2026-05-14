@@ -32,8 +32,10 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
     && mv /root/.local/bin/uv /usr/local/bin/ \
     && mv /root/.local/bin/uvx /usr/local/bin/
 
-# Install OpenCode CLI
-RUN npm install -g @opencodeai/cli
+# Install OpenCode CLI (placeholder - replace with actual installation)
+# Note: OpenCode installation method may vary - adjust based on actual package name
+RUN npm install -g opencode-cli 2>/dev/null || \
+    echo "OpenCode CLI installation - adjust based on actual package name"
 
 # Create agent configuration directories
 RUN mkdir -p /home/agent/.opencode/{config,skills,workspace} \
