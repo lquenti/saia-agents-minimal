@@ -25,6 +25,16 @@ Secure, isolated Docker environment for AI coding agents with:
 git clone https://gitlab-ce.gwdg.de/jdecker/advanced-coding-agent.git
 cd advanced-coding-agent
 
+# ⚠️ CRITICAL: Initialize submodules!
+# This project uses Git submodules for skills (addy-osmani, matt-pocock)
+# Without this step, the skills directories will be empty!
+
+git submodule update --init --recursive
+
+# Verify submodules are loaded:
+ls -la skills/addy-osmani  # Should contain files, not just a .git file
+ls -la skills/matt-pocock  # Should contain files, not just a .git file
+
 cp .env.example .env
 nano .env  # Set API key and MODEL
 ```
@@ -188,12 +198,40 @@ advanced-coding-agent/
 ├── docs/                 # Documentation
 ├── tests/                # Test suite
 ├── templates/            # AGENTS.md templates
-└── skills/
-    ├── addy-osmani/
+└── skills/               # ⚠️ Git submodules!
+    ├── addy-osmani/      # Submodule: https://github.com/addy-osmani/agent-skills
     │   └── skills/
     │       └── understand-anything/  # Codebase analysis & knowledge graphs
-    └── matt-pocock/
+    └── matt-pocock/      # Submodule: https://github.com/MattPocock/agent-skills
         └── skills/
+```
+
+**⚠️ Important:** The `skills/` directories are **Git submodules**, not regular folders!
+
+### Submodule Management
+
+**Initialize submodules (first time):**
+```bash
+git submodule update --init --recursive
+```
+
+**Update submodules to latest:**
+```bash
+git submodule update --remote --recursive
+```
+
+**Check submodule status:**
+```bash
+git submodule status
+```
+
+**If submodules appear empty:**
+```bash
+# This happens if you forgot to initialize submodules
+ls skills/addy-osmani  # Shows only a .git file, not actual content
+
+# Fix it:
+git submodule update --init --recursive
 ```
 
 **📖 Full structure:** [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)
