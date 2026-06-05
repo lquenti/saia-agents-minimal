@@ -47,7 +47,7 @@ if ! docker info &>/dev/null; then
 fi
 
 # Check if image exists
-if ! docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_NAME}:${IMAGE_TAG}$";
+if ! docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_NAME}:${IMAGE_TAG}$"; then
     echo -e "${RED}✗ ERROR: Docker image not found${NC}"
     echo -e "${YELLOW}  Build the image first:${NC}"
     echo -e "${YELLOW}  ./build-openclaude.sh${NC}"
