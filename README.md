@@ -11,7 +11,7 @@ Secure, isolated Docker environment for AI coding agents with:
 
 - ✅ **Multiple runtimes** - OpenCode or OpenClaude
 - ✅ **No docker-compose** - Simple shell scripts
-- ✅ **45+ pre-installed skills** - Matt Pocock + Addy Osmani
+- ✅ **46+ pre-installed skills** - Matt Pocock + Addy Osmani + Understand-Anything
 - ✅ **Security-first** - Non-root user, read-only filesystem
 - ✅ **Persistent memory** - AGENTS.md + .agent-memory/
 
@@ -89,7 +89,8 @@ Automated tests validate scripts, configuration, and Docker builds.
 |-------|-------------|
 | [**Configuration**](docs/CONFIGURATION.md) | API keys, models, providers, environment variables |
 | [**Usage Guide**](docs/USAGE.md) | Usage patterns, workflows, shell aliases |
-| [**Skills Reference**](docs/SKILLS.md) | Complete list of 45+ pre-installed skills |
+| [**Skills Reference**](docs/SKILLS.md) | Complete list of 46+ pre-installed skills |
+| [**Understand-Anything**](docs/UNDERSTAND_ANYTHING_INTEGRATION.md) | Codebase analysis & knowledge graph generation |
 | [**Security**](docs/SECURITY.md) | Container hardening, access control, best practices |
 | [**Testing**](docs/TESTING.md) | Automated tests, CI/CD integration |
 | [**Debugging**](docs/DEBUGGING.md) | Troubleshooting, container inspection |
@@ -98,6 +99,7 @@ Automated tests validate scripts, configuration, and Docker builds.
 | [**Runtime Comparison**](docs/RUNTIME_COMPARISON.md) | OpenCode vs OpenClaude comparison |
 | [**Software Engineering Workflow**](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) | 5-phase disciplined development |
 | [**Scripts**](docs/SCRIPTS.md) | Build/start workflow documentation |
+| [**Understand-Anything Integration**](docs/UNDERSTAND_ANYTHING_INTEGRATION.md) | Codebase analysis & knowledge graphs |
 
 ---
 
@@ -139,6 +141,7 @@ CRITICAL: Use .agent-memory/ folder for persistent notes.
 | `/review` | Five-axis code review |
 | `/code-simplify` | Reduce complexity |
 | `/ship` | Pre-launch checklist |
+| `/understand` | Codebase analysis & knowledge graph |
 
 **📖 Complete list:** [docs/SKILLS.md](docs/SKILLS.md)
 
@@ -185,7 +188,12 @@ advanced-coding-agent/
 ├── docs/                 # Documentation
 ├── tests/                # Test suite
 ├── templates/            # AGENTS.md templates
-└── skills/               # Pre-installed skills
+└── skills/
+    ├── addy-osmani/
+    │   └── skills/
+    │       └── understand-anything/  # Codebase analysis & knowledge graphs
+    └── matt-pocock/
+        └── skills/
 ```
 
 **📖 Full structure:** [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)

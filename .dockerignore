@@ -7,6 +7,7 @@
 docs/
 *.md
 !README.md
+!tools.md
 
 # Tests (not needed in container)
 tests/
@@ -51,6 +52,3 @@ docker-compose*.yml
 # CI/CD
 .gitlab-ci.yml
 .github/
-
-# Documentation source (HTML is generated)
-*.md

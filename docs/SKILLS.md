@@ -4,10 +4,10 @@ Complete reference for all pre-installed skills in the Advanced Coding Agent.
 
 ## Overview
 
-The agent comes with **45+ production-grade skills** from two curated collections:
+The agent comes with **46+ production-grade skills** from two curated collections:
 
 - **Matt Pocock's Skills** (12+) - Engineering best practices
-- **Addy Osmani's Agent Skills** (23) - Production-grade workflows
+- **Addy Osmani's Agent Skills** (24) - Production-grade workflows + Understand-Anything
 
 Skills are pre-installed at:
 - OpenCode: `/home/agent/.opencode/workspace/skills/`
@@ -298,6 +298,7 @@ Location: `skills/addy-osmani/skills/`
 | `/review` | `code-review-and-quality` | Five-axis code review before merge |
 | `/code-simplify` | `code-simplification` | Reduce complexity while preserving behavior |
 | `/ship` | `shipping-and-launch` | Pre-launch checklists + feature flags |
+| `/understand` | `understand-anything` | Codebase analysis & knowledge graph generation |
 
 ### All 23 Skills
 
@@ -357,6 +358,7 @@ Location: `skills/addy-osmani/skills/`
 | `source-driven-development` | Ground decisions in official docs |
 | `doubt-driven-development` | Adversarial review of non-trivial decisions |
 | `context-engineering` | Feed agents right info at right time |
+| `understand-anything` | Codebase analysis & knowledge graph generation |
 
 ---
 
@@ -446,6 +448,99 @@ Location: `skills/addy-osmani/skills/`
 ```
 
 **📖 Full Guide:** See [SOFTWARE_ENGINEERING_WORKFLOW.md](SOFTWARE_ENGINEERING_WORKFLOW.md)
+
+---
+
+#### `/understand` (Understand-Anything)
+
+**Purpose:** Turn any codebase into an interactive knowledge graph you can explore, search, and ask questions about.
+
+**When to use:**
+- Starting work on a large/complex codebase (10k+ lines)
+- Need to understand architecture quickly
+- Onboarding new team members
+- Planning major refactoring
+- Need visual documentation
+
+**Installation (first-time):**
+```bash
+curl -fsSL https://raw.githubusercontent.com/Lum1104/Understand-Anything/main/install.sh | bash
+```
+
+**Commands:**
+
+**Scan codebase:**
+```bash
+/understand [path] [--language <lang>]
+```
+
+**Open dashboard:**
+```bash
+/understand-dashboard
+```
+
+**Ask questions:**
+```bash
+/understand-chat "How does authentication work?"
+```
+
+**Deep-dive into file:**
+```bash
+/understand-explain src/auth/login.ts
+```
+
+**Generate onboarding docs:**
+```bash
+/understand-onboard docs/UNDERSTANDING.md
+```
+
+**Extract business domains:**
+```bash
+/understand-domain
+```
+
+**Analyze impact of changes:**
+```bash
+/understand-diff
+```
+
+**What it does:**
+- Multi-agent pipeline scans your project
+- Builds interactive knowledge graph
+- Generates plain-English summaries
+- Creates visual dashboard for exploration
+- Supports incremental updates
+- Works with 6 languages (en, zh, ja, ko, ru)
+
+**Output:**
+- `.understand-anything/knowledge-graph.json` - Main graph (commit this!)
+- Interactive web dashboard with visual exploration
+- Plain-English code explanations
+- Architecture layer mapping
+
+**Example workflow:**
+```bash
+# 1. Scan codebase
+/understand
+
+# 2. Open dashboard
+/understand-dashboard
+
+# 3. Ask questions
+/understand-chat "What are the main architectural layers?"
+
+# 4. Generate onboarding docs
+/understand-onboard docs/UNDERSTANDING.md
+
+# 5. Share with team
+git add .understand-anything/ docs/UNDERSTANDING.md
+git commit -m "Add knowledge graph and onboarding docs"
+```
+
+**Resources:**
+- GitHub: https://github.com/Lum1104/Understand-Anything
+- Demo: https://understand-anything.com/demo/
+- Documentation: https://understand-anything.com
 
 ---
 
