@@ -6,7 +6,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOCKERFILE="${SCRIPT_DIR}/Dockerfile.opencode"
-CONTAINER_NAME="advanced-coding-agent"
+IMAGE_NAME="advanced-coding-agent-opencode"
 
 # Colors for output
 RED='\033[0;31m'
@@ -29,10 +29,10 @@ fi
 # Build the image
 echo -e "${GREEN}🔨 Building OpenCode Docker image...${NC}"
 echo -e "${YELLOW}  Dockerfile: ${DOCKERFILE}${NC}"
-echo -e "${YELLOW}  Image: ${CONTAINER_NAME}:latest${NC}"
+echo -e "${YELLOW}  Image: ${IMAGE_NAME}:latest${NC}"
 echo ""
 
-docker build -f "${DOCKERFILE}" -t "${CONTAINER_NAME}:latest" "${SCRIPT_DIR}"
+docker build -f "${DOCKERFILE}" -t "${IMAGE_NAME}:latest" "${SCRIPT_DIR}"
 
 if [[ $? -ne 0 ]]; then
     echo -e "${RED}✗ ERROR: Docker build failed${NC}"
@@ -41,6 +41,6 @@ fi
 
 echo ""
 echo -e "${GREEN}✓ OpenCode image built successfully${NC}"
-echo -e "${GREEN}  Image: ${CONTAINER_NAME}:latest${NC}"
+echo -e "${GREEN}  Image: ${IMAGE_NAME}:latest${NC}"
 echo ""
 echo -e "${GREEN}Next: Run ./start-opencode.sh to start the container${NC}"

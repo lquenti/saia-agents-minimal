@@ -6,8 +6,9 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env"
-CONTAINER_NAME="advanced-coding-agent"
-IMAGE_TAG="openclaude"
+CONTAINER_NAME="advanced-coding-agent-openclaude"
+IMAGE_NAME="advanced-coding-agent-openclaude"
+IMAGE_TAG="latest"
 
 # Colors for output
 RED='\033[0;31m'
@@ -46,7 +47,7 @@ if ! docker info &>/dev/null; then
 fi
 
 # Check if image exists
-if ! docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${CONTAINER_NAME}:${IMAGE_TAG}$"; then
+if ! docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_NAME}:${IMAGE_TAG}$";
     echo -e "${RED}✗ ERROR: Docker image not found${NC}"
     echo -e "${YELLOW}  Build the image first:${NC}"
     echo -e "${YELLOW}  ./build-openclaude.sh${NC}"
@@ -132,7 +133,7 @@ docker run -it --rm \
     -e OPENCLAUDE_HOME=/home/agent/.openclaude \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
     -e LOG_LEVEL="${LOG_LEVEL:-info}" \
-    "${CONTAINER_NAME}:${IMAGE_TAG}"
+    "${IMAGE_NAME}:${IMAGE_TAG}"
 
 if [[ $? -ne 0 ]]; then
     echo -e "${RED}✗ ERROR: Failed to start container${NC}"
