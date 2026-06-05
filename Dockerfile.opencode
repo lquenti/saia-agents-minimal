@@ -15,13 +15,15 @@ RUN groupadd -r agent && useradd -r -g agent -d /home/agent -m agent
 # Set working directory (isolated workspace)
 WORKDIR /home/agent/workspace
 
-# Install system dependencies
+# Install system dependencies including Node.js for opencode CLI
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     python3 \
     python3-venv \
     build-essential \
+    nodejs \
+    npm \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -30,12 +32,14 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
     && mv /root/.local/bin/uv /usr/local/bin/ \
     && mv /root/.local/bin/uvx /usr/local/bin/
 
-# Note: Agent CLI (opencode/openclaude) must be installed separately
-# This container provides the base environment with tools and skills
-# Install the CLI after container starts or use a different base image
+# Install opencode CLI via npm
+RUN npm install -g opencode-ai
 
 # Create agent configuration directories
-RUN mkdir -p /home/agent/.opencode/{config,skills,workspace,memory} \
+RUN mkdir -p /home/agent/.opencode/config \
+    && mkdir -p /home/agent/.opencode/skills \
+    && mkdir -p /home/agent/.opencode/workspace \
+    && mkdir -p /home/agent/.opencode/memory \
     && chown -R agent:agent /home/agent
 
 # Pre-install essential skills from curated repos
@@ -52,7 +56,10 @@ COPY --chown=agent:agent skills/matt-pocock /home/agent/.opencode/skills/matt-po
 COPY --chown=agent:agent skills/addy-osmani /home/agent/.opencode/skills/addy-osmani
 
 # Create safe workspace structure
-RUN mkdir -p /home/agent/workspace/{projects,docs,temp,logs} \
+RUN mkdir -p /home/agent/workspace/projects \
+    && mkdir -p /home/agent/workspace/docs \
+    && mkdir -p /home/agent/workspace/temp \
+    && mkdir -p /home/agent/workspace/logs \
     && chmod -R 755 /home/agent/workspace
 
 # Set environment variables
