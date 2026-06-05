@@ -46,8 +46,15 @@ if ! docker info &>/dev/null; then
     exit 1
 fi
 
-# Check if image exists
-if ! docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_NAME}:${IMAGE_TAG}$"; then
+# Check if image exists (handle podman's localhost/ prefix)
+IMAGE_FULL_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
+IMAGE_PODMAN_NAME="localhost/${IMAGE_NAME}:${IMAGE_TAG}"
+
+if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_PODMAN_NAME}$"; then
+    ACTUAL_IMAGE_NAME="${IMAGE_PODMAN_NAME}"
+elif docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_FULL_NAME}$"; then
+    ACTUAL_IMAGE_NAME="${IMAGE_FULL_NAME}"
+else
     echo -e "${RED}✗ ERROR: Docker image not found${NC}"
     echo -e "${YELLOW}  Build the image first:${NC}"
     echo -e "${YELLOW}  ./build-opencode.sh${NC}"
@@ -133,7 +140,7 @@ docker run -it --rm \
     -e OPENCODE_HOME=/home/agent/.opencode \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
     -e LOG_LEVEL="${LOG_LEVEL:-info}" \
-    "${IMAGE_NAME}:${IMAGE_TAG}"
+    "${ACTUAL_IMAGE_NAME}"
 
 if [[ $? -ne 0 ]]; then
     echo -e "${RED}✗ ERROR: Failed to start container${NC}"
