@@ -152,7 +152,7 @@ docker run -it --rm \
     --read-only \
     --cap-drop ALL \
     --security-opt no-new-privileges:true \
-    --tmpfs /tmp:rw,noexec,nosuid,size=100m \
+    --tmpfs /tmp:rw,nosuid,size=100m \
     --tmpfs /var/run:rw,noexec,nosuid,size=10m \
     --memory 4g \
     --memory-swap 4g \
