@@ -6,7 +6,7 @@ FROM ubuntu:24.04
 # Labels
 LABEL maintainer="Gorbad Ironfist <gorbad@openclaw.ai>"
 LABEL description="OpenClaude coding agent environment with pre-installed skills"
-LABEL version="2.0.0"
+LABEL version="1.0.0"
 LABEL runtime="openclaude"
 
 # Security: Run as non-root user
