@@ -37,12 +37,9 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 RUN npm install -g @gitlawb/openclaude
 
 # Install Bun runtime (required for OpenClaude's crypto polyfill)
-# Skip for now - try with Node.js polyfill first
-# RUN apt-get install -y unzip && \
-#     curl -fsSL https://github.com/oven-sh/bun/releases/download/bun-v1.1.36/bun-linux-x64.zip -o /tmp/bun.zip && \
-#     unzip -q /tmp/bun.zip -d /usr/local/bin && \
-#     chmod +x /usr/local/bin/bun && \
-#     rm /tmp/bun.zip
+# Copy Bun binary from build context (pre-installed on host)
+COPY bun /usr/local/bin/bun
+RUN chmod +x /usr/local/bin/bun && ln -sf /usr/local/bin/bun /usr/local/bin/bunx
 
 # Create agent configuration directories
 RUN mkdir -p /home/agent/.openclaude/config \
