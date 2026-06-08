@@ -55,12 +55,14 @@ COPY --chown=agent:agent tools.md /home/agent/.opencode/workspace/
 COPY --chown=agent:agent skills/matt-pocock /home/agent/.opencode/skills/matt-pocock
 COPY --chown=agent:agent skills/addy-osmani /home/agent/.opencode/skills/addy-osmani
 
-# Create safe workspace structure
+# Create safe workspace structure with proper ownership
 RUN mkdir -p /home/agent/workspace/projects \
     && mkdir -p /home/agent/workspace/docs \
     && mkdir -p /home/agent/workspace/temp \
     && mkdir -p /home/agent/workspace/logs \
-    && chmod -R 755 /home/agent/workspace
+    && mkdir -p /home/agent/.local \
+    && chown -R agent:agent /home/agent/workspace /home/agent/.local \
+    && chmod -R 755 /home/agent/workspace /home/agent/.local
 
 # Set environment variables
 ENV NODE_ENV=production \
