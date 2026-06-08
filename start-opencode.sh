@@ -144,7 +144,10 @@ fi
 # Start the container
 echo -e "${GREEN}🚀 Starting OpenCode container...${NC}"
 echo ""
+echo -e "${YELLOW}⏳ Container is starting. Messages will appear below...${NC}"
+echo ""
 
+# Run container (interactive mode shows all output)
 docker run -it --rm \
     --name "${CONTAINER_NAME}" \
     --hostname coding-agent \
