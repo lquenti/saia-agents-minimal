@@ -142,7 +142,7 @@ docker run -it --rm \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
     -e LOG_LEVEL="${LOG_LEVEL:-info}" \
     -e CLAUDE_CODE_USE_OPENAI="${CLAUDE_CODE_USE_OPENAI:-1}" \
-    -e OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
+    -e OPENAI_API_KEY="${OPENCLAUDE_API_KEY:-${OPENAI_API_KEY:-}}" \
     -e OPENAI_BASE_URL="${OPENAI_BASE_URL:-https://api.openai.com/v1}" \
     -e OPENAI_MODEL="${OPENAI_MODEL:-${MODEL}}" \
     "${ACTUAL_IMAGE_NAME}"
