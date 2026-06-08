@@ -36,8 +36,11 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 # Install Bun runtime first (required for OpenClaude's crypto polyfill)
 RUN npm install -g bun
 
-# Install openclaude CLI via Bun
-RUN bun install -g @gitlawb/openclaude
+# Install openclaude CLI via npm
+RUN npm install -g @gitlawb/openclaude
+
+# Add npm global bin directory to PATH for agent user
+ENV PATH="/usr/local/bin:/usr/local/lib/node_modules/.bin:/usr/lib/node_modules/.bin:$PATH"
 
 # Create agent configuration directories
 RUN mkdir -p /home/agent/.openclaude/config \
