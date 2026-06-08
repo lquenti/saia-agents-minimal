@@ -157,7 +157,6 @@ docker run -it --rm \
     --memory 4g \
     --memory-swap 4g \
     --cpus 2.0 \
-    --network none \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
     -v "${SCRIPT_DIR}/tools.md:/home/agent/.opencode/workspace/tools.md:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace/projects/${PROJECT_NAME}:rw" \
