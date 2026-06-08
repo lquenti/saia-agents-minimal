@@ -149,6 +149,7 @@ docker run -it --rm \
     --name "${CONTAINER_NAME}" \
     --hostname coding-agent \
     --user agent \
+    --read-only \
     -v "${ENV_FILE}:/home/agent/.opencode/.env:ro" \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
     -v "${SCRIPT_DIR}/tools.md:/home/agent/.opencode/workspace/tools.md:ro" \
