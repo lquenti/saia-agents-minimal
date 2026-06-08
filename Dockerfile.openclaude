@@ -15,20 +15,11 @@ RUN groupadd -r agent && useradd -r -g agent -d /home/agent -m agent
 # Set working directory (isolated workspace)
 WORKDIR /home/agent/workspace
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
-    curl \
-    python3 \
-    python3-venv \
-    build-essential \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
 # Install system dependencies including Node.js for openclaude CLI
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
+    unzip \
     python3 \
     python3-venv \
     build-essential \
@@ -44,6 +35,10 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 
 # Install openclaude CLI via npm
 RUN npm install -g @gitlawb/openclaude
+
+# Install Bun runtime (required for OpenClaude's crypto polyfill)
+RUN curl -fsSL https://bun.sh/install.sh | bash -s -- "--install-dir /usr/local/bin" && \
+    ln -sf /usr/local/bin/bun /usr/local/bin/bunx
 
 # Create agent configuration directories
 RUN mkdir -p /home/agent/.openclaude/config \
@@ -77,7 +72,8 @@ ENV NODE_ENV=production \
     HOME=/home/agent \
     WORKSPACE=/home/agent/workspace \
     OPENCLAUDE_HOME=/home/agent/.openclaude \
-    PATH="/home/agent/.local/bin:$PATH"
+    PATH="/usr/local/bin:/home/agent/.local/bin:$PATH" \
+    BUN_INSTALL=/usr/local/bin
 
 # Switch to non-root user
 USER agent
