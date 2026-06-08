@@ -74,6 +74,35 @@ fi
 CURRENT_DIR="$(pwd)"
 PROJECT_NAME="$(basename "${CURRENT_DIR}")"
 
+# Check and fix directory ownership for container agent user (UID 999)
+echo -e "${YELLOW}Checking directory ownership...${NC}"
+CURRENT_OWNER=$(stat -c '%u' "${CURRENT_DIR}")
+if [[ "${CURRENT_OWNER}" != "999" ]]; then
+    echo -e "${YELLOW}⚠ Directory owned by UID ${CURRENT_OWNER}, container expects UID 999${NC}"
+    echo -e "${YELLOW}  Fixing ownership to allow container writes...${NC}"
+    
+    # Check if we have sudo access
+    if [[ "$(id -u)" != "0" ]] && ! command -v sudo &>/dev/null; then
+        echo -e "${RED}✗ ERROR: Not running as root and sudo not available${NC}"
+        echo -e "${YELLOW}  Rootless Docker cannot map UIDs correctly${NC}"
+        echo -e "${YELLOW}  Solution: Run this script with sudo:${NC}"
+        echo -e "${YELLOW}    sudo ./start-opencode.sh${NC}"
+        echo -e "${YELLOW}  Or manually fix ownership:${NC}"
+        echo -e "${YELLOW}    sudo chown -R 999:999 ${CURRENT_DIR}${NC}"
+        exit 1
+    fi
+    
+    # Use sudo if not running as root
+    if [[ "$(id -u)" != "0" ]]; then
+        sudo chown -R 999:999 "${CURRENT_DIR}"
+    else
+        chown -R 999:999 "${CURRENT_DIR}"
+    fi
+    echo -e "${GREEN}✓ Ownership fixed${NC}"
+else
+    echo -e "${GREEN}✓ Directory ownership correct (UID 999)${NC}"
+fi
+
 # Create memory directory for persistence
 MEMORY_DIR="${CURRENT_DIR}/.agent-memory"
 mkdir -p "${MEMORY_DIR}"
