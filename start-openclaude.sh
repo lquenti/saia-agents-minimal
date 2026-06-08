@@ -120,15 +120,16 @@ docker run -it --rm \
     --name "${CONTAINER_NAME}" \
     --hostname coding-agent \
     --user agent \
-    --read-only \
     --cap-drop ALL \
+    --cap-add NET_BIND_SERVICE \
+    --cap-add NET_RAW \
     --security-opt no-new-privileges:true \
-    --tmpfs /tmp:rw,noexec,nosuid,size=100m \
+    --tmpfs /tmp:rw,nosuid,size=100m \
     --tmpfs /var/run:rw,noexec,nosuid,size=10m \
     --memory 4g \
     --memory-swap 4g \
     --cpus 2.0 \
-    --network none \
+    -v "${ENV_FILE}:/home/agent/.openclaude/.env:ro" \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.openclaude/agents.json:ro" \
     -v "${SCRIPT_DIR}/tools.md:/home/agent/.openclaude/workspace/tools.md:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace/projects/${PROJECT_NAME}:rw" \
