@@ -4,6 +4,14 @@
 
 set -e
 
+# Check if running as root (sudo required)
+if [[ "$(id -u)" != "0" ]]; then
+    echo -e "\033[0;31m✗ ERROR: This script must be run with sudo\033[0m"
+    echo -e "\033[1;33m  Please run: sudo ./start-openclaude.sh\033[0m"
+    echo -e "\033[1;33m  Docker requires elevated permissions for volume mounts and ownership\033[0m"
+    exit 1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env"
 CONTAINER_NAME="advanced-coding-agent-openclaude"
