@@ -175,6 +175,8 @@ chmod 755 "${HOME}/.local/share/opencode" 2>/dev/null || true
 cp "${OPENCODE_DIR}/auth.json" "${HOME}/.local/share/opencode/auth.json"
 chmod 644 "${HOME}/.local/share/opencode/auth.json"
 
+# Mount the directory to container so OpenCode can read auth.json AND create log/
+
 # Display quick info before container starts
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
@@ -229,7 +231,7 @@ docker run -it --rm \
     --memory-swap 4g \
     --cpus 2.0 \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
-    -v "${OPENCODE_DIR}/auth.json:/home/agent/.opencode/auth.json:ro" \
+    -v "${HOME}/.local/share/opencode:/home/agent/.local/share/opencode:rw" \
     -v "${OPENCODE_DIR}/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
     -v "${MEMORY_DIR}:/home/agent/.opencode/memory:rw" \
