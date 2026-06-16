@@ -219,6 +219,7 @@ docker run -it --rm \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
     -v "${OPENCODE_DIR}/auth.json:/home/agent/.local/share/opencode/auth.json:ro" \
     -v "${OPENCODE_DIR}/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
+    -v "${OPENCODE_DIR}/opencode.json:/home/agent/workspace/opencode.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
     -v "${MEMORY_DIR}:/home/agent/.opencode/memory:rw" \
     -e NODE_ENV=production \
