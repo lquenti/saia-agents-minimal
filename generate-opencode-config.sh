@@ -71,38 +71,72 @@ if [[ ! -f "${OPENCODE_DIR}/opencode.json" ]]; then
     # Fetch available models from /models endpoint
     echo -e "${YELLOW}🔍 Fetching available models from ${BASE_URL}/models...${NC}"
     
-    MODELS_JSON=$(curl -s -X GET "${BASE_URL}/models" -H "Authorization: Bearer ${API_KEY}" 2>/dev/null || echo "")
-    
-    if [[ -z "${MODELS_JSON}" ]] || echo "${MODELS_JSON}" | grep -q "error"; then
-        echo -e "${YELLOW}⚠ Could not fetch models from API, using default list${NC}"
-        # Default model list
-        DEFAULT_MODELS='{
-      "glm-4.7": { "name": "glm-4.7" },
-      "devstral-2-123b-instruct-2512": { "name": "devstral-2-123b-instruct-2512" },
-      "qwen3-30b-a3b-instruct-2507": { "name": "qwen3-30b-a3b-instruct-2507" },
-      "gpt-4.1": { "name": "OpenAI gpt-4.1" },
-      "claude-opus-4-6": { "name": "claude-opus-4-6" }
-    }'
-    else
-        # Parse models from API response
-        echo -e "${GREEN}✓ Found models, presenting options...${NC}"
+    # Try different auth header formats
+    MODELS_JSON=""
+    if [[ -n "${API_KEY}" ]]; then
+        # Try Bearer token first (most common)
+        MODELS_JSON=$(curl -s -X GET "${BASE_URL}/models" \
+            -H "Authorization: Bearer ${API_KEY}" \
+            -H "Content-Type: application/json" 2>/dev/null)
         
-        # Extract model IDs from response (assuming OpenAI-compatible format)
-        MODEL_LIST=$(echo "${MODELS_JSON}" | jq -r '.data[].id' 2>/dev/null || echo "")
-        
-        if [[ -z "${MODEL_LIST}" ]]; then
-            echo -e "${YELLOW}⚠ Could not parse models from API response${NC}"
-            MODEL_LIST="glm-4.7 devstral-2-123b-instruct-2512 qwen3-30b-a3b-instruct-2507 gpt-4.1 claude-opus-4-6"
+        # If that fails, try without auth (some endpoints don't require it)
+        if [[ -z "${MODELS_JSON}" ]] || echo "${MODELS_JSON}" | grep -q '"error"'; then
+            echo -e "${YELLOW}⚠ Bearer auth failed, trying without auth...${NC}"
+            MODELS_JSON=$(curl -s -X GET "${BASE_URL}/models" \
+                -H "Content-Type: application/json" 2>/dev/null)
         fi
     fi
     
-    # Present model selection via TUI-like menu
+    # Check if we got valid response
+    if [[ -z "${MODELS_JSON}" ]] || echo "${MODELS_JSON}" | grep -q '"error"'; then
+        echo -e "${RED}✗ ERROR: Could not fetch models from API${NC}"
+        echo -e "${YELLOW}  Response: ${MODELS_JSON}${NC}"
+        echo -e "${YELLOW}  Please check:${NC}"
+        echo -e "    - API key is correct in .env${NC}"
+        echo -e "    - Base URL is correct: ${BASE_URL}${NC}"
+        echo -e "    - API endpoint is accessible${NC}"
+        echo ""
+        echo -e "${YELLOW}Aborting config generation.${NC}"
+        echo -e "${YELLOW}You can manually create the config files later.${NC}"
+        exit 1
+    fi
+    
+    echo -e "${GREEN}✓ Successfully fetched models from API${NC}"
+    
+    # Extract model IDs from response (OpenAI-compatible format)
+    MODEL_LIST=$(echo "${MODELS_JSON}" | jq -r '.data[].id' 2>/dev/null)
+    
+    if [[ -z "${MODEL_LIST}" ]]; then
+        # Try alternative format
+        MODEL_LIST=$(echo "${MODELS_JSON}" | jq -r '.data[].id // .id' 2>/dev/null | grep -v '^$')
+    fi
+    
+    if [[ -z "${MODEL_LIST}" ]]; then
+        echo -e "${RED}✗ ERROR: Could not parse models from API response${NC}"
+        echo -e "${YELLOW}  Raw response:${NC}"
+        echo "${MODELS_JSON}" | head -c 500
+        echo ""
+        echo -e "${YELLOW}Aborting config generation.${NC}"
+        exit 1
+    fi
+    
+    # Remove duplicates and sort
+    MODEL_LIST=$(echo "${MODEL_LIST}" | sort -u | tr '\n' ' ')
+    
+    if [[ -z "${MODEL_LIST}" ]]; then
+        echo -e "${RED}✗ ERROR: No models found in API response${NC}"
+        exit 1
+    fi
+    
+    echo -e "${GREEN}✓ Found $(echo ${MODEL_LIST} | wc -w) models${NC}"
     echo ""
+    
+    # Present model selection via TUI-like menu
     echo -e "${YELLOW}Select a model (enter number):${NC}"
     echo ""
     
     # Build model array for selection
-    IFS=' ' read -ra MODELS <<< "${MODEL_LIST:-glm-4.7 devstral-2-123b-instruct-2512 qwen3-30b-a3b-instruct-2507 gpt-4.1 claude-opus-4-6}"
+    IFS=' ' read -ra MODELS <<< "${MODEL_LIST}"
     
     counter=1
     declare -a MODEL_OPTIONS
