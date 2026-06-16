@@ -173,10 +173,6 @@ echo -e "  /understand      - Codebase analysis & knowledge graph"
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
-echo -e "${GREEN}🚀 Starting container in 3 seconds...${NC}"
-echo -e "${YELLOW}Press Ctrl+C to cancel${NC}"
-sleep 3
-echo ""
 
 # Start the container
 echo -e "${GREEN}🚀 Starting OpenClaude container...${NC}"
@@ -217,27 +213,3 @@ if [[ $? -ne 0 ]]; then
     echo -e "${RED}✗ ERROR: Failed to start container${NC}"
     exit 1
 fi
-
-# Container runs interactively, will exit when user exits bash
-echo -e "${GREEN}✓ Container running (interactive mode)${NC}"
-echo -e "${GREEN}  Container will be removed when you exit${NC}"
-echo ""
-echo ""
-echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
-echo -e "${GREEN}  Advanced Coding Agent - OpenClaude Runtime${NC}"
-echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
-echo ""
-echo -e "  Container: ${YELLOW}${CONTAINER_NAME}${NC} (auto-removes on exit)"
-echo -e "  Project:   ${YELLOW}${PROJECT_NAME}${NC}"
-echo -e "  Workspace: ${YELLOW}/home/agent/workspace/projects/${PROJECT_NAME}${NC}"
-echo -e "  Memory:    ${YELLOW}/home/agent/.openclaude/memory${NC} → ${MEMORY_DIR}"
-echo ""
-echo -e "${GREEN}Next steps:${NC}"
-echo ""
-echo -e "  1. Start the OpenClaude TUI:"
-echo -e "     ${YELLOW}openclaude${NC}"
-echo ""
-echo -e "  2. Exit (container will be removed):"
-echo -e "     ${YELLOW}exit${NC} or ${YELLOW}Ctrl+D${NC}"
-echo ""
-echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
