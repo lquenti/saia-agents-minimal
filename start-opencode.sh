@@ -217,7 +217,7 @@ docker run -it --rm \
     --memory-swap 4g \
     --cpus 2.0 \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
-    -v "${OPENCODE_DIR}/auth.json:/home/agent/.opencode/auth.json:ro" \
+    -v "${OPENCODE_DIR}/auth.json:/home/agent/.local/share/opencode/auth.json:ro" \
     -v "${OPENCODE_DIR}/opencode.json:/home/agent/.opencode/opencode.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
     -v "${MEMORY_DIR}:/home/agent/.opencode/memory:rw" \
@@ -225,7 +225,6 @@ docker run -it --rm \
     -e WORKSPACE=/home/agent/workspace \
     -e HOME=/home/agent/workspace \
     -e OPENCODE_HOME=/home/agent/.opencode \
-    -e OPENCODE_CONFIG_DIR=/home/agent/.opencode \
     -e OPENAI_API_KEY="${OPENCODE_API_KEY}" \
     -e OPENAI_BASE_URL="${OPENAI_BASE_URL}" \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
