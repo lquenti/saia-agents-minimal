@@ -129,8 +129,10 @@ echo ""
 echo -e "${YELLOW}⚙️ PROJECT:${NC}"
 echo -e "  Container: ${YELLOW}${CONTAINER_NAME}${NC} (auto-removes on exit)"
 echo -e "  Project:   ${YELLOW}${PROJECT_NAME}${NC}"
-echo -e "  Workspace: ${YELLOW}/home/agent/workspace/projects/${PROJECT_NAME}${NC}"
+echo -e "  Workspace: ${YELLOW}/home/agent/workspace${NC}"
 echo -e "  Memory:    ${YELLOW}/home/agent/.openclaude/memory${NC} → ${MEMORY_DIR}"
+echo -e "  Docs:      ${YELLOW}/home/agent/docs${NC}"
+echo -e "  Tools:     ${YELLOW}/home/agent/tools.md${NC}"
 echo ""
 echo -e "${YELLOW}🎯 NEXT STEPS:${NC}"
 echo ""
@@ -178,13 +180,13 @@ docker run -it --rm \
     --cpus 2.0 \
     -v "${ENV_FILE}:/home/agent/.openclaude/.env:ro" \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.openclaude/agents.json:ro" \
-    -v "${SCRIPT_DIR}/tools.md:/home/agent/.openclaude/workspace/tools.md:ro" \
-    -v "${CURRENT_DIR}:/home/agent/workspace/projects/${PROJECT_NAME}:rw" \
-    -v "${SCRIPT_DIR}/docs:/home/agent/workspace/docs:ro" \
+    -v "${SCRIPT_DIR}/tools.md:/home/agent/tools.md:ro" \
+    -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
+    -v "${SCRIPT_DIR}/docs:/home/agent/docs:ro" \
     -v "${MEMORY_DIR}:/home/agent/.openclaude/memory:rw" \
     -e NODE_ENV=production \
     -e WORKSPACE=/home/agent/workspace \
-    -e HOME=/home/agent/workspace/projects/${PROJECT_NAME} \
+    -e HOME=/home/agent/workspace \
     -e OPENCLAUDE_HOME=/home/agent/.openclaude \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
     -e LOG_LEVEL="${LOG_LEVEL:-info}" \
