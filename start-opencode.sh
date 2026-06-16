@@ -163,6 +163,10 @@ if [[ ! -f "${OPENCODE_DIR}/auth.json" ]] || [[ ! -f "${OPENCODE_DIR}/opencode.j
     echo ""
 fi
 
+# Fix permissions so agent user can read config files
+chmod 644 "${OPENCODE_DIR}/auth.json" "${OPENCODE_DIR}/opencode.json" 2>/dev/null || true
+chmod 755 "${OPENCODE_DIR}" 2>/dev/null || true
+
 # Display quick info before container starts
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
