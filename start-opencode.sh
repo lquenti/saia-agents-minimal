@@ -160,8 +160,6 @@ echo -e "  Container: ${YELLOW}${CONTAINER_NAME}${NC} (auto-removes on exit)"
 echo -e "  Project:   ${YELLOW}${PROJECT_NAME}${NC}"
 echo -e "  Workspace: ${YELLOW}/home/agent/workspace${NC}"
 echo -e "  Memory:    ${YELLOW}/home/agent/.opencode/memory${NC} → ${MEMORY_DIR}"
-echo -e "  Docs:      ${YELLOW}/home/agent/docs${NC}"
-echo -e "  Tools:     ${YELLOW}/home/agent/tools.md${NC}"
 echo ""
 echo -e "${YELLOW}🎯 NEXT STEPS:${NC}"
 echo ""
@@ -185,10 +183,6 @@ echo -e "  /understand      - Codebase analysis & knowledge graph"
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
-echo -e "${GREEN}🚀 Starting container in 3 seconds...${NC}"
-echo -e "${YELLOW}Press Ctrl+C to cancel${NC}"
-sleep 3
-echo ""
 
 # Start the container
 echo -e "${GREEN}🚀 Starting OpenCode container...${NC}"
@@ -210,9 +204,7 @@ docker run -it --rm \
     --cpus 2.0 \
     -v "${ENV_FILE}:/home/agent/.opencode/.env:ro" \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
-    -v "${SCRIPT_DIR}/tools.md:/home/agent/tools.md:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
-    -v "${SCRIPT_DIR}/docs:/home/agent/docs:ro" \
     -v "${MEMORY_DIR}:/home/agent/.opencode/memory:rw" \
     -e NODE_ENV=production \
     -e WORKSPACE=/home/agent/workspace \
