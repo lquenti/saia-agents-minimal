@@ -225,7 +225,7 @@ docker run -it --rm \
     -e WORKSPACE=/home/agent/workspace \
     -e HOME=/home/agent/workspace \
     -e OPENCODE_HOME=/home/agent/.opencode \
-    -e OPENCODE_CONFIG=/home/agent/.opencode/opencode.json \
+    -e OPENCODE_CONFIG_DIR=/home/agent/.opencode \
     -e OPENAI_API_KEY="${OPENCODE_API_KEY}" \
     -e OPENAI_BASE_URL="${OPENAI_BASE_URL}" \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
