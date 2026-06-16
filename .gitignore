@@ -3,6 +3,13 @@
 .env.local
 .env.*.local
 
+# Agent runtime directories (auto-generated during container runs)
+.opencode/
+.openclaude/
+
+# Agent memory (persistent across sessions - keep local only)
+.agent-memory/
+
 # Docker volumes
 projects/
 memory/
