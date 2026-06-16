@@ -13,8 +13,7 @@
 # Generated config files (contain secrets)
 .opencode/auth.json
 .opencode/opencode.json
-.openclaude/auth.json
-.openclaude/opencode.json
+.local/share/opencode/auth.json
 
 # Docker volumes
 projects/
