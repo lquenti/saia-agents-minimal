@@ -65,7 +65,7 @@ RUN mkdir -p /home/agent/workspace/projects \
     && mkdir -p /home/agent/workspace/docs \
     && mkdir -p /home/agent/workspace/temp \
     && mkdir -p /home/agent/workspace/logs \
-    && mkdir -p /home/agent/.local \
+    && mkdir -p /home/agent/.local/share/opencode \
     && chown -R agent:agent /home/agent/workspace /home/agent/.local \
     && chmod -R 755 /home/agent/workspace /home/agent/.local
 
