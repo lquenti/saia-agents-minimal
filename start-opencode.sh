@@ -209,9 +209,8 @@ docker run -it --rm \
     -e WORKSPACE=/home/agent/workspace \
     -e HOME=/home/agent/workspace \
     -e OPENCODE_HOME=/home/agent/.opencode \
-    -e OPENCODE_API_KEY="${OPENCODE_API_KEY}" \
+    -e OPENAI_API_KEY="${OPENCODE_API_KEY}" \
     -e OPENAI_BASE_URL="${OPENAI_BASE_URL}" \
-    -e MODEL="${MODEL}" \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
     -e LOG_LEVEL="${LOG_LEVEL:-info}" \
     "${ACTUAL_IMAGE_NAME}"
