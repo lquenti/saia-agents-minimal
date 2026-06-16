@@ -149,6 +149,20 @@ if [[ ! -f "${CURRENT_DIR}/AGENTS.md" ]]; then
     echo ""
 fi
 
+# Generate OpenCode config files if they don't exist
+OPENCODE_DIR="${SCRIPT_DIR}/.opencode"
+if [[ ! -f "${OPENCODE_DIR}/auth.json" ]] || [[ ! -f "${OPENCODE_DIR}/opencode.json" ]]; then
+    echo -e "${YELLOW}⚠ OpenCode config files not found${NC}"
+    echo -e "${YELLOW}  Generating auth.json and opencode.json from .env...${NC}"
+    echo ""
+    
+    if ! "${SCRIPT_DIR}/generate-opencode-config.sh"; then
+        echo -e "${RED}✗ ERROR: Failed to generate OpenCode config${NC}"
+        exit 1
+    fi
+    echo ""
+fi
+
 # Display quick info before container starts
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
@@ -203,6 +217,8 @@ docker run -it --rm \
     --memory-swap 4g \
     --cpus 2.0 \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
+    -v "${OPENCODE_DIR}/auth.json:/home/agent/.opencode/auth.json:ro" \
+    -v "${OPENCODE_DIR}/opencode.json:/home/agent/.opencode/opencode.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
     -v "${MEMORY_DIR}:/home/agent/.opencode/memory:rw" \
     -e NODE_ENV=production \

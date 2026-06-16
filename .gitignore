@@ -10,6 +10,12 @@
 # Agent memory (persistent across sessions - keep local only)
 .agent-memory/
 
+# Generated config files (contain secrets)
+.opencode/auth.json
+.opencode/opencode.json
+.openclaude/auth.json
+.openclaude/opencode.json
+
 # Docker volumes
 projects/
 memory/
