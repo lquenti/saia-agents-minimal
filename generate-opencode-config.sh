@@ -28,14 +28,12 @@ fi
 source "${ENV_FILE}"
 echo -e "${GREEN}✓ Loaded .env file${NC}"
 
-# Create .opencode directory and local/share/opencode for auth.json
+# Create .opencode directory
 mkdir -p "${OPENCODE_DIR}"
-mkdir -p "${SCRIPT_DIR}/.local/share/opencode"
 echo -e "${GREEN}✓ Created .opencode directory${NC}"
-echo -e "${GREEN}✓ Created .local/share/opencode directory${NC}"
 
-# Check if auth.json exists in correct location
-if [[ ! -f "${SCRIPT_DIR}/.local/share/opencode/auth.json" ]]; then
+# Check if auth.json exists in .opencode/
+if [[ ! -f "${OPENCODE_DIR}/auth.json" ]]; then
     echo -e "${YELLOW}⚠ No auth.json found, generating from .env...${NC}"
     
     # Determine provider name from .env or use default
@@ -48,8 +46,8 @@ if [[ ! -f "${SCRIPT_DIR}/.local/share/opencode/auth.json" ]]; then
         exit 1
     fi
     
-    # Generate auth.json in correct location
-    cat > "${SCRIPT_DIR}/.local/share/opencode/auth.json" << EOF
+    # Generate auth.json in .opencode/
+    cat > "${OPENCODE_DIR}/auth.json" << EOF
 {
   "${PROVIDER_NAME}": {
     "type": "api",
@@ -57,7 +55,7 @@ if [[ ! -f "${SCRIPT_DIR}/.local/share/opencode/auth.json" ]]; then
   }
 }
 EOF
-    echo -e "${GREEN}✓ Created auth.json at .local/share/opencode/auth.json${NC}"
+    echo -e "${GREEN}✓ Created auth.json at .opencode/auth.json${NC}"
 else
     echo -e "${GREEN}✓ auth.json already exists${NC}"
 fi
