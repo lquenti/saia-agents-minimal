@@ -167,6 +167,14 @@ fi
 chmod 644 "${OPENCODE_DIR}/auth.json" "${OPENCODE_DIR}/opencode.json" 2>/dev/null || true
 chmod 755 "${OPENCODE_DIR}" 2>/dev/null || true
 
+# Create .local/share/opencode directory with proper permissions for mounting
+mkdir -p "${HOME}/.local/share/opencode" 2>/dev/null || true
+chmod 755 "${HOME}/.local/share/opencode" 2>/dev/null || true
+
+# Copy auth.json to the correct location (OpenCode hardcodes this path)
+cp "${OPENCODE_DIR}/auth.json" "${HOME}/.local/share/opencode/auth.json"
+chmod 644 "${HOME}/.local/share/opencode/auth.json"
+
 # Display quick info before container starts
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
