@@ -203,13 +203,12 @@ fi
 chmod 644 "${OPENCODE_DIR}/auth.json" "${OPENCODE_DIR}/opencode.json" 2>/dev/null || true
 chmod 755 "${OPENCODE_DIR}" 2>/dev/null || true
 
-# Mount the directory to container so OpenCode can read auth.json AND create log/
-
-# Copy auth.json to the .agent-memory directory (OpenCode needs it in .local/share/opencode)
-# This is separate from session data - auth.json is read-only, sessions are writable
-echo "${OPENCODE_API_KEY}" | jq -R '{"apiKey": .}' > "${MEMORY_DIR}/auth.json"
-chmod 644 "${MEMORY_DIR}/auth.json"
-echo -e "${GREEN}✓ Auth config prepared in ${MEMORY_DIR}${NC}"
+# Copy auth.json to the container's local config (NOT to .agent-memory)
+# This keeps auth.json inside the container, not on the host
+mkdir -p "${SCRIPT_DIR}/.opencode/local"
+cp "${OPENCODE_DIR}/auth.json" "${SCRIPT_DIR}/.opencode/local/auth.json"
+chmod 644 "${SCRIPT_DIR}/.opencode/local/auth.json"
+echo -e "${GREEN}✓ Auth config prepared (container-local)${NC}"
 
 # Display quick info before container starts
 echo ""
@@ -222,7 +221,8 @@ echo -e "  Container: ${YELLOW}${CONTAINER_NAME}${NC} (auto-removes on exit)"
 echo -e "  Project:   ${YELLOW}${PROJECT_NAME}${NC}"
 echo -e "  Workspace: ${YELLOW}/home/agent/workspace${NC}"
 echo -e "  Memory:    ${YELLOW}/home/agent/.opencode/memory${NC} → ${MEMORY_DIR}"
-echo -e "  State:     ${YELLOW}OPENCODE_STATE_DIR=${MEMORY_DIR}${NC} (session storage)"
+echo -e "  State:     ${YELLOW}.local/share/opencode${NC} → .opencode/memory (symlink)"
+echo -e "  Auth:      ${YELLOW}/home/agent/.opencode/auth.json${NC} (container-local)"
 echo ""
 echo -e "${YELLOW}🎯 NEXT STEPS:${NC}"
 echo ""
@@ -267,8 +267,9 @@ docker run -it --rm \
     --cpus 2.0 \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
     -v "${OPENCODE_DIR}/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
+    -v "${SCRIPT_DIR}/.opencode/local/auth.json:/home/agent/.opencode/auth.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
-    -v "${MEMORY_DIR}:/home/agent/.local/share/opencode:rw" \
+    -v "${MEMORY_DIR}:/home/agent/.opencode/memory:rw" \
     -e NODE_ENV=production \
     -e WORKSPACE=/home/agent/workspace \
     -e OPENAI_API_KEY="${OPENCODE_API_KEY}" \
