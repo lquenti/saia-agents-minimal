@@ -224,6 +224,7 @@ echo -e "  Container: ${YELLOW}${CONTAINER_NAME}${NC} (auto-removes on exit)"
 echo -e "  Project:   ${YELLOW}${PROJECT_NAME}${NC}"
 echo -e "  Workspace: ${YELLOW}/home/agent/workspace${NC}"
 echo -e "  Memory:    ${YELLOW}/home/agent/.opencode/memory${NC} → ${MEMORY_DIR}"
+echo -e "  State:     ${YELLOW}OPENCODE_STATE_DIR=${MEMORY_DIR}${NC} (session storage)"
 echo ""
 echo -e "${YELLOW}🎯 NEXT STEPS:${NC}"
 echo ""
@@ -277,6 +278,7 @@ docker run -it --rm \
     -e OPENAI_BASE_URL="${OPENAI_BASE_URL}" \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
     -e LOG_LEVEL="${LOG_LEVEL:-info}" \
+    -e OPENCODE_STATE_DIR=/home/agent/.opencode/memory \
     "${ACTUAL_IMAGE_NAME}"
 
 if [[ $? -ne 0 ]]; then
