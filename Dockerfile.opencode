@@ -70,12 +70,6 @@ RUN mkdir -p /home/agent/.opencode/config \
 RUN mkdir -p /home/agent/workspace \
     && mkdir -p /home/agent/.local
 
-# Create symlinks for OpenCode state storage:
-# - .local/share -> workspace/.agent-memory/share (for sessions, databases, history)
-# - .local/share/opencode/auth.json -> .opencode/auth.json (container-local auth)
-RUN mkdir -p /home/agent/workspace/.agent-memory/share \
-    && ln -s /home/agent/workspace/.agent-memory/share /home/agent/.local/share 2>/dev/null || true
-
 # Pre-install essential skills from curated repos
 # Matt Pocock's skills - engineering best practices
 # Addy Osmani's agent-skills - production-grade workflows
@@ -89,6 +83,10 @@ COPY --chown=agent:agent tools.md /home/agent/.opencode/workspace/
 COPY --chown=agent:agent skills/matt-pocock /home/agent/.opencode/skills/matt-pocock
 COPY --chown=agent:agent skills/addy-osmani /home/agent/.opencode/skills/addy-osmani
 
+# Copy entrypoint script
+COPY --chown=agent:agent entrypoint.sh /home/agent/entrypoint.sh
+RUN chmod +x /home/agent/entrypoint.sh
+
 # Set environment variables
 ENV NODE_ENV=production \
     HOME=/home/agent \
@@ -100,5 +98,6 @@ ENV NODE_ENV=production \
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD ["/bin/bash", "-c", "echo 'healthy'"]
 
-# Default command - interactive bash shell
+# Default command - use entrypoint script to set up symlinks
+ENTRYPOINT ["/home/agent/entrypoint.sh"]
 CMD ["/bin/bash"]
