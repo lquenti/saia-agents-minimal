@@ -209,18 +209,11 @@ fi
 chmod 644 "${OPENCODE_DIR}/auth.json" "${OPENCODE_DIR}/opencode.json" 2>/dev/null || true
 chmod 755 "${OPENCODE_DIR}" 2>/dev/null || true
 
-# Copy auth.json to the container-local location on host
-mkdir -p "${SCRIPT_DIR}/.opencode/local"
-echo "${OPENCODE_API_KEY}" | jq -R '{"apiKey": .}' > "${SCRIPT_DIR}/.opencode/local/auth.json"
-chmod 644 "${SCRIPT_DIR}/.opencode/local/auth.json"
-chown ${HOST_UID}:${HOST_GID} "${SCRIPT_DIR}/.opencode/local/auth.json"
-echo -e "${GREEN}✓ Auth config prepared at ${SCRIPT_DIR}/.opencode/local/auth.json (owned by ${HOST_USER})${NC}"
-
 # Create symlink in .agent-memory/share/opencode/auth.json -> .opencode/auth.json
 # This symlink will be visible inside the container through the mounted volumes
 mkdir -p "${MEMORY_SHARE_DIR}/opencode"
-ln -sf ../../../.opencode/auth.json "${MEMORY_SHARE_DIR}/opencode/auth.json"
-chown ${HOST_UID}:${HOST_GID} "${MEMORY_SHARE_DIR}/opencode/auth.json"
+ln -sf ../../../../.opencode/auth.json "${MEMORY_SHARE_DIR}/opencode/auth.json"
+chown ${HOST_UID}:${HOST_GID} -R "${MEMORY_SHARE_DIR}/opencode"
 echo -e "${GREEN}✓ Created symlink: .agent-memory/share/opencode/auth.json -> .opencode/auth.json (owned by ${HOST_USER})${NC}"
 
 # Display quick info before container starts
@@ -280,7 +273,7 @@ docker run -it --rm \
     --cpus 2.0 \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
     -v "${OPENCODE_DIR}/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
-    -v "${SCRIPT_DIR}/.opencode/local/auth.json:/home/agent/.opencode/auth.json:ro" \
+    -v "${SCRIPT_DIR}/.opencode/auth.json:/home/agent/.opencode/auth.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
     -v "${MEMORY_SHARE_DIR}:/home/agent/workspace/.agent-memory/share:rw" \
     -e NODE_ENV=production \
