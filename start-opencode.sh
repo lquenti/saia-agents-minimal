@@ -203,15 +203,13 @@ fi
 chmod 644 "${OPENCODE_DIR}/auth.json" "${OPENCODE_DIR}/opencode.json" 2>/dev/null || true
 chmod 755 "${OPENCODE_DIR}" 2>/dev/null || true
 
-# Create .local/share/opencode directory with proper permissions for mounting
-mkdir -p "${HOME}/.local/share/opencode" 2>/dev/null || true
-chmod 755 "${HOME}/.local/share/opencode" 2>/dev/null || true
-
-# Copy auth.json to the correct location (OpenCode hardcodes this path)
-cp "${OPENCODE_DIR}/auth.json" "${HOME}/.local/share/opencode/auth.json"
-chmod 644 "${HOME}/.local/share/opencode/auth.json"
-
 # Mount the directory to container so OpenCode can read auth.json AND create log/
+
+# Copy auth.json to the .agent-memory directory (OpenCode needs it in .local/share/opencode)
+# This is separate from session data - auth.json is read-only, sessions are writable
+echo "${OPENCODE_API_KEY}" | jq -R '{"apiKey": .}' > "${MEMORY_DIR}/auth.json"
+chmod 644 "${MEMORY_DIR}/auth.json"
+echo -e "${GREEN}✓ Auth config prepared in ${MEMORY_DIR}${NC}"
 
 # Display quick info before container starts
 echo ""
@@ -268,16 +266,15 @@ docker run -it --rm \
     --memory-swap 4g \
     --cpus 2.0 \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
-    -v "${OPENCODE_DIR}/auth.json:/home/agent/.local/share/opencode/auth.json:ro" \
     -v "${OPENCODE_DIR}/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
+    -v "${MEMORY_DIR}:/home/agent/.local/share/opencode:rw" \
     -e NODE_ENV=production \
     -e WORKSPACE=/home/agent/workspace \
     -e OPENAI_API_KEY="${OPENCODE_API_KEY}" \
     -e OPENAI_BASE_URL="${OPENAI_BASE_URL}" \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
     -e LOG_LEVEL="${LOG_LEVEL:-info}" \
-    -e OPENCODE_STATE_DIR=/home/agent/workspace/.agent-memory \
     "${ACTUAL_IMAGE_NAME}"
 
 if [[ $? -ne 0 ]]; then
