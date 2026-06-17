@@ -4,7 +4,6 @@
 FROM ubuntu:24.04
 
 # Labels
-LABEL maintainer="Gorbad Ironfist <gorbad@openclaw.ai>"
 LABEL description="OpenCode coding agent environment with pre-installed skills"
 LABEL version="1.0.0"
 LABEL runtime="opencode"
@@ -28,9 +27,6 @@ RUN if [ "${HOST_UID}" = "1000" ]; then \
         groupadd -r -g 9999 agent && \
         useradd -r -g agent -u ${HOST_UID} -d /home/agent -m agent; \
     fi
-
-# Set working directory (isolated workspace)
-WORKDIR /home/agent/workspace
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -60,6 +56,9 @@ RUN npm install -g opencode-ai
 # Switch to non-root user
 USER agent
 
+# Set working directory (isolated workspace)
+WORKDIR /home/agent/workspace
+
 # Create agent configuration directories
 RUN mkdir -p /home/agent/.opencode/config \
     && mkdir -p /home/agent/.opencode/skills \
@@ -67,8 +66,11 @@ RUN mkdir -p /home/agent/.opencode/config \
     && mkdir -p /home/agent/.opencode/memory
 
 # Create safe workspace structure with proper ownership
-RUN mkdir -p /home/agent/workspace \
-    && mkdir -p /home/agent/.local
+RUN mkdir -p /home/agent/workspace/.agent-memory/share
+
+RUN mkdir -p /home/agent/.local
+
+RUN ln -sf /home/agent/workspace/.agent-memory/share /home/agent/.local/share
 
 # Pre-install essential skills from curated repos
 # Matt Pocock's skills - engineering best practices
