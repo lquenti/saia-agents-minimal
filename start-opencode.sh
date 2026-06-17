@@ -204,12 +204,17 @@ fi
 chmod 644 "${OPENCODE_DIR}/auth.json" "${OPENCODE_DIR}/opencode.json" 2>/dev/null || true
 chmod 755 "${OPENCODE_DIR}" 2>/dev/null || true
 
-# Copy auth.json to the container's local config (NOT to .agent-memory)
-# This keeps auth.json inside the container, not on the host
+# Copy auth.json to the container-local location on host
 mkdir -p "${SCRIPT_DIR}/.opencode/local"
-cp "${OPENCODE_DIR}/auth.json" "${SCRIPT_DIR}/.opencode/local/auth.json"
+echo "${OPENCODE_API_KEY}" | jq -R '{"apiKey": .}' > "${SCRIPT_DIR}/.opencode/local/auth.json"
 chmod 644 "${SCRIPT_DIR}/.opencode/local/auth.json"
-echo -e "${GREEN}✓ Auth config prepared (container-local)${NC}"
+echo -e "${GREEN}✓ Auth config prepared at ${SCRIPT_DIR}/.opencode/local/auth.json${NC}"
+
+# Create symlink in .agent-memory/share/opencode/auth.json -> .opencode/auth.json
+# This symlink will be visible inside the container through the mounted volumes
+mkdir -p "${MEMORY_SHARE_DIR}/opencode"
+ln -sf ../../../.opencode/auth.json "${MEMORY_SHARE_DIR}/opencode/auth.json"
+echo -e "${GREEN}✓ Created symlink: .agent-memory/share/opencode/auth.json -> .opencode/auth.json${NC}"
 
 # Display quick info before container starts
 echo ""
