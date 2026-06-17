@@ -257,7 +257,7 @@ docker run -it --rm \
     --memory-swap 4g \
     --cpus 2.0 \
     -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
-    -v "${HOME}/.local/share/opencode:/home/agent/.local/share/opencode:rw" \
+    -v "${OPENCODE_DIR}/auth.json:/home/agent/.local/share/opencode/auth.json:ro" \
     -v "${OPENCODE_DIR}/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
     -v "${MEMORY_DIR}:/home/agent/.opencode/memory:rw" \

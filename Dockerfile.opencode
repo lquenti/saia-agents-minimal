@@ -57,12 +57,18 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 # Install opencode CLI via npm
 RUN npm install -g opencode-ai
 
+# Switch to non-root user
+USER agent
+
 # Create agent configuration directories
 RUN mkdir -p /home/agent/.opencode/config \
     && mkdir -p /home/agent/.opencode/skills \
     && mkdir -p /home/agent/.opencode/workspace \
-    && mkdir -p /home/agent/.opencode/memory \
-    && chown -R agent:agent /home/agent
+    && mkdir -p /home/agent/.opencode/memory
+
+# Create safe workspace structure with proper ownership
+RUN mkdir -p /home/agent/workspace \
+    && mkdir -p /home/agent/.local/share/opencode
 
 # Pre-install essential skills from curated repos
 # Matt Pocock's skills - engineering best practices
@@ -78,7 +84,7 @@ COPY --chown=agent:agent skills/matt-pocock /home/agent/.opencode/skills/matt-po
 COPY --chown=agent:agent skills/addy-osmani /home/agent/.opencode/skills/addy-osmani
 
 # Create safe workspace structure with proper ownership
-# Note: agent user now has HOST_UID, so files created will match host user
+# Note: agent user has HOST_UID, so files created will match host user
 RUN mkdir -p /home/agent/workspace/projects \
     && mkdir -p /home/agent/workspace/docs \
     && mkdir -p /home/agent/workspace/temp \
@@ -93,9 +99,6 @@ ENV NODE_ENV=production \
     WORKSPACE=/home/agent/workspace \
     OPENCODE_HOME=/home/agent/.opencode \
     PATH="/home/agent/.local/bin:$PATH"
-
-# Switch to non-root user
-USER agent
 
 # Health check - check if shell is responsive
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
