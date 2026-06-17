@@ -4,6 +4,13 @@
 
 set -e
 
+# Detect current user's UID BEFORE sudo elevation
+# This ensures container agent user matches host user for proper file ownership
+HOST_UID=$(id -u)
+HOST_GID=$(id -g)
+HOST_USER=$(id -un)
+echo -e "${GREEN}✓ Host user: ${HOST_USER} (UID: ${HOST_UID}, GID: ${HOST_GID})${NC}"
+
 # Check if running as root (sudo required)
 if [[ "$(id -u)" != "0" ]]; then
     echo -e "\033[0;31m✗ ERROR: This script must be run with sudo\033[0m"
@@ -82,33 +89,18 @@ fi
 CURRENT_DIR="$(pwd)"
 PROJECT_NAME="$(basename "${CURRENT_DIR}")"
 
-# Check and fix directory ownership for container agent user (UID 999)
+# Check and fix directory ownership for container agent user (matches host UID)
 echo -e "${YELLOW}Checking directory ownership...${NC}"
 CURRENT_OWNER=$(stat -c '%u' "${CURRENT_DIR}")
-if [[ "${CURRENT_OWNER}" != "999" ]]; then
-    echo -e "${YELLOW}⚠ Directory owned by UID ${CURRENT_OWNER}, container expects UID 999${NC}"
-    echo -e "${YELLOW}  Fixing ownership to allow container writes...${NC}"
+if [[ "${CURRENT_OWNER}" != "${HOST_UID}" ]]; then
+    echo -e "${YELLOW}⚠ Directory owned by UID ${CURRENT_OWNER}, container expects UID ${HOST_UID}${NC}"
+    echo -e "${YELLOW}  Fixing ownership to match host user (${HOST_USER})...${NC}"
     
-    # Check if we have sudo access
-    if [[ "$(id -u)" != "0" ]] && ! command -v sudo &>/dev/null; then
-        echo -e "${RED}✗ ERROR: Not running as root and sudo not available${NC}"
-        echo -e "${YELLOW}  Rootless Docker cannot map UIDs correctly${NC}"
-        echo -e "${YELLOW}  Solution: Run this script with sudo:${NC}"
-        echo -e "${YELLOW}    sudo ./start-opencode.sh${NC}"
-        echo -e "${YELLOW}  Or manually fix ownership:${NC}"
-        echo -e "${YELLOW}    sudo chown -R 999:999 ${CURRENT_DIR}${NC}"
-        exit 1
-    fi
-    
-    # Use sudo if not running as root
-    if [[ "$(id -u)" != "0" ]]; then
-        sudo chown -R 999:999 "${CURRENT_DIR}"
-    else
-        chown -R 999:999 "${CURRENT_DIR}"
-    fi
-    echo -e "${GREEN}✓ Ownership fixed${NC}"
+    # Use chown to match host UID/GID
+    chown -R ${HOST_UID}:${HOST_GID} "${CURRENT_DIR}"
+    echo -e "${GREEN}✓ Ownership fixed (now owned by ${HOST_USER}:${HOST_USER})${NC}"
 else
-    echo -e "${GREEN}✓ Directory ownership correct (UID 999)${NC}"
+    echo -e "${GREEN}✓ Directory ownership correct (UID ${HOST_UID})${NC}"
 fi
 
 # Create memory directory for persistence
@@ -211,6 +203,40 @@ echo -e "  /understand      - Codebase analysis & knowledge graph"
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
+
+# Build image with host UID/GID if needed (check if image needs rebuild)
+IMAGE_FULL_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
+IMAGE_PODMAN_NAME="localhost/${IMAGE_NAME}:${IMAGE_TAG}"
+
+# Check if image was built with different UID
+IMAGE_UID="unknown"
+if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_PODMAN_NAME}$"; then
+    ACTUAL_IMAGE_NAME="${IMAGE_PODMAN_NAME}"
+    # Try to extract build arg from image labels (may not be available)
+    IMAGE_UID=$(docker inspect --format='{{.Config.Env.HOST_UID}}' "${ACTUAL_IMAGE_NAME}" 2>/dev/null || echo "unknown")
+elif docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_FULL_NAME}$"; then
+    ACTUAL_IMAGE_NAME="${IMAGE_FULL_NAME}"
+    IMAGE_UID=$(docker inspect --format='{{.Config.Env.HOST_UID}}' "${ACTUAL_IMAGE_NAME}" 2>/dev/null || echo "unknown")
+else
+    echo -e "${RED}✗ ERROR: Docker image not found${NC}"
+    echo -e "${YELLOW}  Build the image first:${NC}"
+    echo -e "${YELLOW}  ./build-opencode.sh${NC}"
+    exit 1
+fi
+
+# Rebuild if UID doesn't match
+if [[ "${IMAGE_UID}" != "${HOST_UID}" ]]; then
+    echo -e "${YELLOW}⚠ Image built with UID ${IMAGE_UID}, host uses UID ${HOST_UID}${NC}"
+    echo -e "${YELLOW}  Rebuilding image with correct UID...${NC}"
+    echo ""
+    
+    if ! "${SCRIPT_DIR}/build-opencode.sh" "${HOST_UID}"; then
+        echo -e "${RED}✗ ERROR: Failed to rebuild image${NC}"
+        exit 1
+    fi
+    echo ""
+    ACTUAL_IMAGE_NAME="${IMAGE_PODMAN_NAME}"
+fi
 
 # Start the container
 echo -e "${GREEN}🚀 Starting OpenCode container...${NC}"

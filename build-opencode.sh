@@ -4,6 +4,19 @@
 
 set -e
 
+# Detect host UID/GID BEFORE sudo elevation (critical!)
+# If parameters provided, use them; otherwise detect current user
+if [[ -n "$1" ]]; then
+    HOST_UID=$1
+    HOST_GID=${2:-$(id -g)}
+else
+    # Detect from environment or fallback to current user
+    HOST_UID=${SUDO_UID:-$(id -u)}
+    HOST_GID=${SUDO_GID:-$(id -g)}
+fi
+
+echo -e "${GREEN}✓ Building with host UID: ${HOST_UID}, GID: ${HOST_GID}${NC}"
+
 # Check if running as root (sudo required)
 if [[ "$(id -u)" != "0" ]]; then
     echo -e "\033[0;31m✗ ERROR: This script must be run with sudo\033[0m"
@@ -34,13 +47,18 @@ if [[ ! -f "${DOCKERFILE}" ]]; then
     exit 1
 fi
 
-# Build the image
+# Build the image with host UID/GID as build arguments
 echo -e "${GREEN}🔨 Building OpenCode Docker image...${NC}"
 echo -e "${YELLOW}  Dockerfile: ${DOCKERFILE}${NC}"
 echo -e "${YELLOW}  Image: ${IMAGE_NAME}:latest${NC}"
+echo -e "${YELLOW}  Host UID/GID: ${HOST_UID}/${HOST_GID}${NC}"
 echo ""
 
-docker build -f "${DOCKERFILE}" -t "${IMAGE_NAME}:latest" "${SCRIPT_DIR}"
+docker build \
+    --build-arg HOST_UID=${HOST_UID} \
+    -f "${DOCKERFILE}" \
+    -t "${IMAGE_NAME}:latest" \
+    "${SCRIPT_DIR}"
 
 if [[ $? -ne 0 ]]; then
     echo -e "${RED}✗ ERROR: Docker build failed${NC}"

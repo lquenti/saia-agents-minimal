@@ -9,8 +9,25 @@ LABEL description="OpenCode coding agent environment with pre-installed skills"
 LABEL version="1.0.0"
 LABEL runtime="opencode"
 
+# Build argument for host user ID (defaults to 1000 if not provided)
+# This is used to match container user UID with host user for proper file ownership
+ARG HOST_UID=1000
+ENV HOST_UID=${HOST_UID}
+
 # Security: Run as non-root user
-RUN groupadd -r agent && useradd -r -g agent -d /home/agent -m agent
+# Ubuntu 24.04 already has 'ubuntu' user with UID 1000, which matches most Linux hosts
+# We rename it to 'agent' and change home directory to /home/agent
+# For non-1000 UIDs, create a new agent user
+RUN if [ "${HOST_UID}" = "1000" ]; then \
+        # Use existing ubuntu user (UID 1000) - just rename and change home
+        usermod -u 1000 -l agent -d /home/agent -m ubuntu && \
+        groupmod -g 1000 -n agent ubuntu && \
+        usermod -g agent agent; \
+    else \
+        # Create agent user with specified UID (use unique GID 9999 to avoid conflicts)
+        groupadd -r -g 9999 agent && \
+        useradd -r -g agent -u ${HOST_UID} -d /home/agent -m agent; \
+    fi
 
 # Set working directory (isolated workspace)
 WORKDIR /home/agent/workspace
@@ -61,6 +78,7 @@ COPY --chown=agent:agent skills/matt-pocock /home/agent/.opencode/skills/matt-po
 COPY --chown=agent:agent skills/addy-osmani /home/agent/.opencode/skills/addy-osmani
 
 # Create safe workspace structure with proper ownership
+# Note: agent user now has HOST_UID, so files created will match host user
 RUN mkdir -p /home/agent/workspace/projects \
     && mkdir -p /home/agent/workspace/docs \
     && mkdir -p /home/agent/workspace/temp \
