@@ -108,7 +108,8 @@ fi
 MEMORY_DIR="${CURRENT_DIR}/.agent-memory"
 MEMORY_SHARE_DIR="${MEMORY_DIR}/share"
 mkdir -p "${MEMORY_SHARE_DIR}"
-echo -e "${GREEN}✓ Memory directory created: ${MEMORY_SHARE_DIR}${NC}"
+chown ${HOST_UID}:${HOST_GID} "${MEMORY_DIR}" "${MEMORY_SHARE_DIR}"
+echo -e "${GREEN}✓ Memory directory created: ${MEMORY_SHARE_DIR} (owned by ${HOST_USER})${NC}"
 
 # Check and update .gitignore to include .agent-memory
 GITIGNORE_FILE="${CURRENT_DIR}/.gitignore"
@@ -125,7 +126,8 @@ if [[ ! -f "${GITIGNORE_FILE}" ]]; then
             ;;
         *)
             echo ".agent-memory/" > "${GITIGNORE_FILE}"
-            echo -e "${GREEN}✓ Created .gitignore with .agent-memory/ excluded${NC}"
+            chown ${HOST_UID}:${HOST_GID} "${GITIGNORE_FILE}"
+            echo -e "${GREEN}✓ Created .gitignore with .agent-memory/ excluded (owned by ${HOST_USER})${NC}"
             ;;
     esac
     echo ""
@@ -144,7 +146,8 @@ else
             *)
                 echo "" >> "${GITIGNORE_FILE}"
                 echo ".agent-memory/" >> "${GITIGNORE_FILE}"
-                echo -e "${GREEN}✓ Added .agent-memory/ to .gitignore${NC}"
+                chown ${HOST_UID}:${HOST_GID} "${GITIGNORE_FILE}"
+                echo -e "${GREEN}✓ Added .agent-memory/ to .gitignore (owned by ${HOST_USER})${NC}"
                 ;;
         esac
         echo ""
@@ -168,12 +171,14 @@ if [[ ! -f "${CURRENT_DIR}/AGENTS.md" ]]; then
     case $REPLY in
         [1])
             cp "${SCRIPT_DIR}/templates/AGENTS.md" "${CURRENT_DIR}/AGENTS.md"
-            echo -e "${GREEN}✓ Created AGENTS.md (generic template)${NC}"
+            chown ${HOST_UID}:${HOST_GID} "${CURRENT_DIR}/AGENTS.md"
+            echo -e "${GREEN}✓ Created AGENTS.md (generic template, owned by ${HOST_USER})${NC}"
             echo -e "${YELLOW}  Edit AGENTS.md to customize for your project${NC}"
             ;;
         [2])
             cp "${SCRIPT_DIR}/templates/AGENTS.md-python" "${CURRENT_DIR}/AGENTS.md"
-            echo -e "${GREEN}✓ Created AGENTS.md (Python/uv template)${NC}"
+            chown ${HOST_UID}:${HOST_GID} "${CURRENT_DIR}/AGENTS.md"
+            echo -e "${GREEN}✓ Created AGENTS.md (Python/uv template, owned by ${HOST_USER})${NC}"
             echo -e "${YELLOW}  Edit AGENTS.md to customize for your project${NC}"
             ;;
         [nN]|"")
@@ -208,13 +213,15 @@ chmod 755 "${OPENCODE_DIR}" 2>/dev/null || true
 mkdir -p "${SCRIPT_DIR}/.opencode/local"
 echo "${OPENCODE_API_KEY}" | jq -R '{"apiKey": .}' > "${SCRIPT_DIR}/.opencode/local/auth.json"
 chmod 644 "${SCRIPT_DIR}/.opencode/local/auth.json"
-echo -e "${GREEN}✓ Auth config prepared at ${SCRIPT_DIR}/.opencode/local/auth.json${NC}"
+chown ${HOST_UID}:${HOST_GID} "${SCRIPT_DIR}/.opencode/local/auth.json"
+echo -e "${GREEN}✓ Auth config prepared at ${SCRIPT_DIR}/.opencode/local/auth.json (owned by ${HOST_USER})${NC}"
 
 # Create symlink in .agent-memory/share/opencode/auth.json -> .opencode/auth.json
 # This symlink will be visible inside the container through the mounted volumes
 mkdir -p "${MEMORY_SHARE_DIR}/opencode"
 ln -sf ../../../.opencode/auth.json "${MEMORY_SHARE_DIR}/opencode/auth.json"
-echo -e "${GREEN}✓ Created symlink: .agent-memory/share/opencode/auth.json -> .opencode/auth.json${NC}"
+chown ${HOST_UID}:${HOST_GID} "${MEMORY_SHARE_DIR}/opencode/auth.json"
+echo -e "${GREEN}✓ Created symlink: .agent-memory/share/opencode/auth.json -> .opencode/auth.json (owned by ${HOST_USER})${NC}"
 
 # Display quick info before container starts
 echo ""
