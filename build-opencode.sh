@@ -4,16 +4,10 @@
 
 set -e
 
-# Detect host UID/GID BEFORE sudo elevation (critical!)
-# If parameters provided, use them; otherwise detect current user
-if [[ -n "$1" ]]; then
-    HOST_UID=$1
-    HOST_GID=${2:-$(id -g)}
-else
-    # Detect from environment or fallback to current user
-    HOST_UID=${SUDO_UID:-$(id -u)}
-    HOST_GID=${SUDO_GID:-$(id -g)}
-fi
+# Detect current user's UID/GID
+# SUDO_UID is set when script is run via sudo, otherwise use current user
+HOST_UID=${SUDO_UID:-$(id -u)}
+HOST_GID=${SUDO_GID:-$(id -g)}
 
 echo -e "${GREEN}✓ Building with host UID: ${HOST_UID}, GID: ${HOST_GID}${NC}"
 

@@ -204,40 +204,6 @@ echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
 
-# Build image with host UID/GID if needed (check if image needs rebuild)
-IMAGE_FULL_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
-IMAGE_PODMAN_NAME="localhost/${IMAGE_NAME}:${IMAGE_TAG}"
-
-# Check if image was built with different UID
-IMAGE_UID="unknown"
-if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_PODMAN_NAME}$"; then
-    ACTUAL_IMAGE_NAME="${IMAGE_PODMAN_NAME}"
-    # Try to extract build arg from image labels (may not be available)
-    IMAGE_UID=$(docker inspect --format='{{.Config.Env.HOST_UID}}' "${ACTUAL_IMAGE_NAME}" 2>/dev/null || echo "unknown")
-elif docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_FULL_NAME}$"; then
-    ACTUAL_IMAGE_NAME="${IMAGE_FULL_NAME}"
-    IMAGE_UID=$(docker inspect --format='{{.Config.Env.HOST_UID}}' "${ACTUAL_IMAGE_NAME}" 2>/dev/null || echo "unknown")
-else
-    echo -e "${RED}✗ ERROR: Docker image not found${NC}"
-    echo -e "${YELLOW}  Build the image first:${NC}"
-    echo -e "${YELLOW}  ./build-opencode.sh${NC}"
-    exit 1
-fi
-
-# Rebuild if UID doesn't match
-if [[ "${IMAGE_UID}" != "${HOST_UID}" ]]; then
-    echo -e "${YELLOW}⚠ Image built with UID ${IMAGE_UID}, host uses UID ${HOST_UID}${NC}"
-    echo -e "${YELLOW}  Rebuilding image with correct UID...${NC}"
-    echo ""
-    
-    if ! "${SCRIPT_DIR}/build-opencode.sh" "${HOST_UID}"; then
-        echo -e "${RED}✗ ERROR: Failed to rebuild image${NC}"
-        exit 1
-    fi
-    echo ""
-    ACTUAL_IMAGE_NAME="${IMAGE_PODMAN_NAME}"
-fi
-
 # Start the container
 echo -e "${GREEN}🚀 Starting OpenCode container...${NC}"
 echo ""
