@@ -109,6 +109,49 @@ MEMORY_DIR="${CURRENT_DIR}/.agent-memory"
 mkdir -p "${MEMORY_DIR}"
 echo -e "${GREEN}✓ Memory directory created: ${MEMORY_DIR}${NC}"
 
+# Check and update .gitignore to include .agent-memory
+GITIGNORE_FILE="${CURRENT_DIR}/.gitignore"
+if [[ ! -f "${GITIGNORE_FILE}" ]]; then
+    echo -e "${YELLOW}⚠ No .gitignore found in project root${NC}"
+    echo -e "${YELLOW}  Create .gitignore with .agent-memory excluded?${NC}"
+    echo -e "${YELLOW}  This prevents memory files from being committed to git${NC}"
+    echo ""
+    read -p "  Create .gitignore? [Y/n]: " -n 1 -r
+    echo
+    case $REPLY in
+        [Nn])
+            echo -e "${YELLOW}  Skipping (you can create .gitignore later)${NC}"
+            ;;
+        *)
+            echo ".agent-memory/" > "${GITIGNORE_FILE}"
+            echo -e "${GREEN}✓ Created .gitignore with .agent-memory/ excluded${NC}"
+            ;;
+    esac
+    echo ""
+else
+    # Check if .agent-memory is already in .gitignore
+    if ! grep -q "\.agent-memory" "${GITIGNORE_FILE}"; then
+        echo -e "${YELLOW}⚠ .gitignore exists but doesn't exclude .agent-memory${NC}"
+        echo -e "${YELLOW}  Add .agent-memory/ to .gitignore?${NC}"
+        echo ""
+        read -p "  Add to .gitignore? [Y/n]: " -n 1 -r
+        echo
+        case $REPLY in
+            [Nn])
+                echo -e "${YELLOW}  Skipping (memory files might be committed to git)${NC}"
+                ;;
+            *)
+                echo "" >> "${GITIGNORE_FILE}"
+                echo ".agent-memory/" >> "${GITIGNORE_FILE}"
+                echo -e "${GREEN}✓ Added .agent-memory/ to .gitignore${NC}"
+                ;;
+        esac
+        echo ""
+    else
+        echo -e "${GREEN}✓ .gitignore already excludes .agent-memory${NC}"
+    fi
+fi
+
 # Check if AGENTS.md exists, offer to create from template
 if [[ ! -f "${CURRENT_DIR}/AGENTS.md" ]]; then
     echo -e "${YELLOW}⚠ No AGENTS.md found in project root${NC}"
