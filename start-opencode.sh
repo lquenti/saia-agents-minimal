@@ -106,8 +106,9 @@ fi
 
 # Create memory directory for persistence
 MEMORY_DIR="${CURRENT_DIR}/.agent-memory"
-mkdir -p "${MEMORY_DIR}"
-echo -e "${GREEN}✓ Memory directory created: ${MEMORY_DIR}${NC}"
+MEMORY_SHARE_DIR="${MEMORY_DIR}/share"
+mkdir -p "${MEMORY_SHARE_DIR}"
+echo -e "${GREEN}✓ Memory directory created: ${MEMORY_SHARE_DIR}${NC}"
 
 # Check and update .gitignore to include .agent-memory
 GITIGNORE_FILE="${CURRENT_DIR}/.gitignore"
@@ -220,8 +221,8 @@ echo -e "${YELLOW}⚙️ PROJECT:${NC}"
 echo -e "  Container: ${YELLOW}${CONTAINER_NAME}${NC} (auto-removes on exit)"
 echo -e "  Project:   ${YELLOW}${PROJECT_NAME}${NC}"
 echo -e "  Workspace: ${YELLOW}/home/agent/workspace${NC}"
-echo -e "  Memory:    ${YELLOW}/home/agent/.opencode/memory${NC} → ${MEMORY_DIR}"
-echo -e "  State:     ${YELLOW}.local/share/opencode${NC} → .opencode/memory (symlink)"
+echo -e "  Memory:    ${YELLOW}${MEMORY_SHARE_DIR}${NC}"
+echo -e "  State:     ${YELLOW}.local/share${NC} → workspace/.agent-memory/share (symlink)"
 echo -e "  Auth:      ${YELLOW}/home/agent/.opencode/auth.json${NC} (container-local)"
 echo ""
 echo -e "${YELLOW}🎯 NEXT STEPS:${NC}"
@@ -269,7 +270,7 @@ docker run -it --rm \
     -v "${OPENCODE_DIR}/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
     -v "${SCRIPT_DIR}/.opencode/local/auth.json:/home/agent/.opencode/auth.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
-    -v "${MEMORY_DIR}:/home/agent/.opencode/memory:rw" \
+    -v "${MEMORY_SHARE_DIR}:/home/agent/workspace/.agent-memory/share:rw" \
     -e NODE_ENV=production \
     -e WORKSPACE=/home/agent/workspace \
     -e OPENAI_API_KEY="${OPENCODE_API_KEY}" \
