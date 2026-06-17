@@ -271,14 +271,13 @@ docker run -it --rm \
     -v "${OPENCODE_DIR}/auth.json:/home/agent/.local/share/opencode/auth.json:ro" \
     -v "${OPENCODE_DIR}/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
-    -v "${MEMORY_DIR}:/home/agent/.opencode/memory:rw" \
     -e NODE_ENV=production \
     -e WORKSPACE=/home/agent/workspace \
     -e OPENAI_API_KEY="${OPENCODE_API_KEY}" \
     -e OPENAI_BASE_URL="${OPENAI_BASE_URL}" \
     -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
     -e LOG_LEVEL="${LOG_LEVEL:-info}" \
-    -e OPENCODE_STATE_DIR=/home/agent/.opencode/memory \
+    -e OPENCODE_STATE_DIR=/home/agent/workspace/.agent-memory \
     "${ACTUAL_IMAGE_NAME}"
 
 if [[ $? -ne 0 ]]; then
