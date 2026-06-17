@@ -6,9 +6,10 @@ set -e
 
 # Detect current user's UID BEFORE sudo elevation
 # This ensures container agent user matches host user for proper file ownership
-HOST_UID=$(id -u)
-HOST_GID=$(id -g)
-HOST_USER=$(id -un)
+# SUDO_UID is set by sudo to the original user's UID
+HOST_UID=${SUDO_UID:-$(id -u)}
+HOST_GID=${SUDO_GID:-$(id -g)}
+HOST_USER=$(getent passwd ${HOST_UID} | cut -d: -f1)
 echo -e "${GREEN}✓ Host user: ${HOST_USER} (UID: ${HOST_UID}, GID: ${HOST_GID})${NC}"
 
 # Check if running as root (sudo required)
