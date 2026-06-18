@@ -84,31 +84,62 @@ echo -e "${GREEN}✓ Memory directory created: ${MEMORY_SHARE_DIR}${NC}"
 # Setup .gitignore
 # -----------------------------------------------------------------------------
 GITIGNORE_FILE="${CURRENT_DIR}/.gitignore"
+GITIGNORE_ENTRIES=(
+    ".agent-memory/"
+    ".openclaude/"
+    ".npm/"
+    ".openclaude.json"
+)
+
 if [[ ! -f "${GITIGNORE_FILE}" ]]; then
     echo -e "${YELLOW}⚠ No .gitignore found${NC}"
-    echo -e "${YELLOW}  Create .gitignore with .agent-memory/ excluded?${NC}"
+    echo -e "${YELLOW}  Create .gitignore with OpenClaude exclusions?${NC}"
     read -p "  Create? [Y/n]: " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Nn]$ ]]; then
-        echo ".agent-memory/" > "${GITIGNORE_FILE}"
+        printf '%s\n' "${GITIGNORE_ENTRIES[@]}" > "${GITIGNORE_FILE}"
         chown ${HOST_UID}:${HOST_GID} "${GITIGNORE_FILE}"
         echo -e "${GREEN}✓ Created .gitignore (owned by ${HOST_USER})${NC}"
-    fi
-    echo ""
-elif ! grep -q "\.agent-memory" "${GITIGNORE_FILE}"; then
-    echo -e "${YELLOW}⚠ .gitignore missing .agent-memory/ exclusion${NC}"
-    echo -e "${YELLOW}  Add it?${NC}"
-    read -p "  Add? [Y/n]: " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
-        echo "" >> "${GITIGNORE_FILE}"
-        echo ".agent-memory/" >> "${GITIGNORE_FILE}"
-        chown ${HOST_UID}:${HOST_GID} "${GITIGNORE_FILE}"
-        echo -e "${GREEN}✓ Added .agent-memory/ to .gitignore${NC}"
+        for entry in "${GITIGNORE_ENTRIES[@]}"; do
+            echo -e "${GREEN}  - ${entry}${NC}"
+        done
     fi
     echo ""
 else
-    echo -e "${GREEN}✓ .gitignore already excludes .agent-memory${NC}"
+    NEEDS_UPDATE=false
+    MISSING_ENTRIES=()
+    
+    for entry in "${GITIGNORE_ENTRIES[@]}"; do
+        if ! grep -qF "${entry}" "${GITIGNORE_FILE}"; then
+            NEEDS_UPDATE=true
+            MISSING_ENTRIES+=("${entry}")
+        fi
+    done
+    
+    if [[ "$NEEDS_UPDATE" == "true" ]]; then
+        echo -e "${YELLOW}⚠ .gitignore missing OpenClaude exclusions${NC}"
+        echo -e "${YELLOW}  Missing:${NC}"
+        for entry in "${MISSING_ENTRIES[@]}"; do
+            echo -e "${YELLOW}    - ${entry}${NC}"
+        done
+        echo -e "${YELLOW}  Add them?${NC}"
+        read -p "  Add? [Y/n]: " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+            echo "" >> "${GITIGNORE_FILE}"
+            for entry in "${MISSING_ENTRIES[@]}"; do
+                echo "${entry}" >> "${GITIGNORE_FILE}"
+            done
+            chown ${HOST_UID}:${HOST_GID} "${GITIGNORE_FILE}"
+            echo -e "${GREEN}✓ Added missing exclusions to .gitignore${NC}"
+            for entry in "${MISSING_ENTRIES[@]}"; do
+                echo -e "${GREEN}  - ${entry}${NC}"
+            done
+        fi
+        echo ""
+    else
+        echo -e "${GREEN}✓ .gitignore already excludes OpenClaude files${NC}"
+    fi
 fi
 
 # -----------------------------------------------------------------------------
