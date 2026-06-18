@@ -5,6 +5,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+[![GitLab Pages](https://img.shields.io/badge/📚-documentation-blue)](https://jdecker.pages-ce.gwdg.de/advanced-coding-agent/)
 
 ## 🎯 Overview
 
