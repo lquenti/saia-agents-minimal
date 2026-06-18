@@ -53,11 +53,6 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 # Install opencode CLI via npm
 RUN npm install -g opencode-ai
 
-# Create workspace structure BEFORE switching to agent user
-RUN mkdir -p /home/agent/workspace/.agent-memory/share \
-    && chown -R agent:agent /home/agent/workspace \
-    && chmod -R 755 /home/agent/workspace
-
 # Switch to non-root user
 USER agent
 
@@ -65,12 +60,10 @@ USER agent
 WORKDIR /home/agent/workspace
 
 # Create agent configuration directories
-RUN mkdir -p /home/agent/.opencode \
-    && mkdir -p /home/agent/.config/opencode/skills
+RUN mkdir -p /home/agent/.opencode
 
 # Create safe workspace structure with proper ownership
-# Directory already created above, just ensure proper permissions
-RUN chmod -R 755 /home/agent/workspace
+RUN mkdir -p /home/agent/workspace/.agent-memory/share
 
 RUN mkdir -p /home/agent/.local
 
