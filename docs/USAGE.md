@@ -177,6 +177,227 @@ sudo ./start-opencode.sh
 
 ---
 
+## Adding Custom Skills
+
+You can add your own skills to extend the agent's capabilities.
+
+### Skill Structure
+
+Create a skill directory in your project:
+
+```
+your-project/
+└── .agent-memory/
+    └── skills/           # Custom skills directory
+        └── my-custom-skill/
+            ├── SKILL.md  # Skill definition (required)
+            ├── README.md # Documentation (optional)
+            └── scripts/  # Helper scripts (optional)
+```
+
+### SKILL.md Format
+
+```markdown
+# My Custom Skill
+
+## Description
+Brief description of what this skill does.
+
+## Usage
+```
+my-command [arguments]
+```
+
+## Examples
+```bash
+my-command --option value
+```
+
+## Implementation
+How the skill works internally.
+```
+
+### Registering a Skill
+
+Add to `.agent-memory/claude/opencode.json` (or `.opencode/opencode.json`):
+
+```json
+{
+  "skills": {
+    "my-custom-skill": {
+      "path": "/home/agent/workspace/.agent-memory/share/skills/my-custom-skill",
+      "enabled": true
+    }
+  }
+}
+```
+
+### Example: Custom Code Review Skill
+
+```markdown
+# /custom-review
+
+## Description
+Run custom review with project-specific rules.
+
+## Usage
+```
+/custom-review [file]
+```
+
+## Rules
+1. Check for security vulnerabilities
+2. Validate against project coding standards
+3. Suggest performance improvements
+```
+
+### Pre-installed Skills Location
+
+Skills are mounted from:
+- **OpenCode:** `/home/agent/.opencode/workspace/skills/`
+- **OpenClaude:** `/home/agent/.openclaude/workspace/skills/`
+
+Your custom skills in `.agent-memory/share/skills/` are symlinked to these locations.
+
+---
+
+## Workflow Examples
+
+### Example 1: New Feature Development
+
+```bash
+# 1. Start container
+cd my-project
+sudo start-opencode.sh
+
+# 2. Extract requirements
+/interview-me
+
+# 3. Build shared context
+/grill-with-docs
+
+# 4. Write specification
+/spec
+
+# 5. Break into tasks
+/plan
+
+# 6. Implement with tests
+/test
+/build
+
+# 7. Review and simplify
+/review
+/code-simplify
+
+# 8. Ship it!
+/ship
+```
+
+### Example 2: Bug Fixing
+
+```bash
+# 1. Diagnose the issue
+/diagnose
+
+# 2. Understand codebase context
+/zoom-out
+
+# 3. Write failing test
+/test
+
+# 4. Fix the bug
+/build
+
+# 5. Verify fix
+/test
+
+# 6. Review changes
+/review
+```
+
+### Example 3: Codebase Understanding
+
+```bash
+# 1. Generate knowledge graph
+/understand
+
+# 2. Review architecture
+/improve-codebase-architecture
+
+# 3. Create documentation
+/grill-with-docs
+```
+
+---
+
+## Session Memory
+
+### AGENTS.md (Project-wide)
+Persistent across all sessions for the project.
+
+### .agent-memory/ (Session-specific)
+```
+.agent-memory/
+├── opencode/           # OpenCode session data
+│   └── session-notes.md
+└── claude/             # OpenClaude session data
+    └── session-notes.md
+```
+
+**Best Practice:**
+- Start each session by reading `session-notes.md`
+- Update with decisions and progress
+- Keep AGENTS.md for major decisions only
+
+---
+
+## Troubleshooting
+
+### Docker not running
+```bash
+sudo systemctl start docker
+sudo usermod -aG docker $USER
+# Log out and back in
+```
+
+### Image not found
+```bash
+./build-opencode.sh
+# or
+./build-openclaude.sh
+```
+
+### API key not set
+Edit `.env` and set:
+- `OPENCODE_API_KEY` for OpenCode
+- `OPENCLAUDE_API_KEY` for OpenClaude
+
+### Permission denied
+Scripts must be run with `sudo`:
+```bash
+sudo ./start-opencode.sh
+```
+
+### Skills not loading
+1. Check submodules are initialized:
+   ```bash
+   git submodule update --init --recursive
+   ```
+2. Verify skills directory exists:
+   ```bash
+   ls skills/
+   ```
+3. Check `.agent-memory/share/skills/` is populated
+
+### Container won't start
+1. Check Docker is running: `docker ps`
+2. Check image exists: `docker images`
+3. Check `.env` has required variables
+4. Check disk space: `df -h`
+
+---
+
 ## Best Practices
 
 1. **Always initialize submodules** - Skills won't work without them
@@ -184,6 +405,8 @@ sudo ./start-opencode.sh
 3. **Use .agent-memory/** - Store session-specific notes
 4. **Follow the workflow** - Use skills in order: spec → plan → test → build → review → ship
 5. **Keep .gitignore updated** - Don't commit `.agent-memory/` or runtime data
+6. **Write custom skills** - Extend functionality for your specific needs
+7. **Document decisions** - Update AGENTS.md after major changes
 
 ---
 
