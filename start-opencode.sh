@@ -192,7 +192,6 @@ echo -e "${GREEN}✓ Auth config: ${SCRIPT_DIR}/.opencode/local/auth.json${NC}"
 # Create symlink for auth.json in .agent-memory/share
 mkdir -p "${MEMORY_SHARE_DIR}/opencode"
 ln -sf ../../../.opencode/auth.json "${MEMORY_SHARE_DIR}/opencode/auth.json"
-chown ${HOST_UID}:${HOST_GID} "${MEMORY_SHARE_DIR}/opencode/auth.json"
 echo -e "${GREEN}✓ Symlink: .agent-memory/share/opencode/auth.json → .opencode/auth.json${NC}"
 
 # Create skills directory and symlink for custom skills
@@ -200,7 +199,6 @@ SKILLS_DIR="${MEMORY_SHARE_DIR}/skills"
 mkdir -p "${SKILLS_DIR}"
 chown ${HOST_UID}:${HOST_GID} "${SKILLS_DIR}"
 ln -sf ../../../.config/opencode/skills "${SKILLS_DIR}"
-chown ${HOST_UID}:${HOST_GID} "${SKILLS_DIR}/skills"
 echo -e "${GREEN}✓ Symlink: .agent-memory/share/skills → .config/opencode/skills${NC}"
 echo -e "${YELLOW}  Add custom skills to: ${SKILLS_DIR}${NC}"
 
