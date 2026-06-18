@@ -201,7 +201,6 @@ chown ${HOST_UID}:${HOST_GID} "${SKILLS_DIR}"
 ln -sf ../../../.config/opencode/skills "${SKILLS_DIR}"
 echo -e "${GREEN}✓ Symlink: .agent-memory/share/skills → .config/opencode/skills${NC}"
 echo -e "${YELLOW}  Add custom skills to: ${SKILLS_DIR}${NC}"
-
 # -----------------------------------------------------------------------------
 # Display Info
 # -----------------------------------------------------------------------------
@@ -216,7 +215,6 @@ echo -e "  Project:   ${YELLOW}${PROJECT_NAME}${NC}"
 echo -e "  Workspace: ${YELLOW}/home/agent/workspace${NC}"
 echo -e "  Memory:    ${YELLOW}${MEMORY_SHARE_DIR}${NC}"
 echo -e "  State:     ${YELLOW}.local/share${NC} → workspace/.agent-memory/share"
-echo -e "  Skills:    ${YELLOW}.config/opencode/skills${NC} → workspace/.agent-memory/share/skills"
 echo -e "  Auth:      ${YELLOW}/home/agent/.opencode/auth.json${NC} (container-local)"
 echo ""
 echo -e "${YELLOW}🎯 NEXT STEPS:${NC}"
