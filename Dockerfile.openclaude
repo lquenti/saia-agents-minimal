@@ -4,16 +4,29 @@
 FROM ubuntu:24.04
 
 # Labels
-LABEL maintainer="Gorbad Ironfist <gorbad@openclaw.ai>"
 LABEL description="OpenClaude coding agent environment with pre-installed skills"
 LABEL version="1.0.0"
 LABEL runtime="openclaude"
 
-# Security: Run as non-root user
-RUN groupadd -r agent && useradd -r -g agent -d /home/agent -m agent
+# Build argument for host user ID (defaults to 1000 if not provided)
+# This is used to match container user UID with host user for proper file ownership
+ARG HOST_UID=1000
+ENV HOST_UID=${HOST_UID}
 
-# Set working directory (isolated workspace)
-WORKDIR /home/agent/workspace
+# Security: Run as non-root user
+# Ubuntu 24.04 already has 'ubuntu' user with UID 1000, which matches most Linux hosts
+# We rename it to 'agent' and change home directory to /home/agent
+# For non-1000 UIDs, create a new agent user
+RUN if [ "${HOST_UID}" = "1000" ]; then \
+        # Use existing ubuntu user (UID 1000) - just rename and change home
+        usermod -u 1000 -l agent -d /home/agent -m ubuntu && \
+        groupmod -g 1000 -n agent ubuntu && \
+        usermod -g agent agent; \
+    else \
+        # Create agent user with specified UID (use unique GID 9999 to avoid conflicts)
+        groupadd -r -g 9999 agent && \
+        useradd -r -g agent -u ${HOST_UID} -d /home/agent -m agent; \
+    fi
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -24,6 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-venv \
     build-essential \
     ca-certificates \
+    nano \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -44,46 +58,29 @@ RUN npm install -g @gitlawb/openclaude
 # Add npm global bin directory to PATH for agent user
 ENV PATH="/usr/local/bin:/usr/local/lib/node_modules/.bin:/usr/lib/node_modules/.bin:$PATH"
 
-# Create agent configuration directories
-RUN mkdir -p /home/agent/.openclaude/config \
-    && mkdir -p /home/agent/.openclaude/skills \
-    && mkdir -p /home/agent/.openclaude/workspace \
-    && mkdir -p /home/agent/.openclaude/memory \
-    && chown -R agent:agent /home/agent
+# Switch to non-root user
+USER agent
 
+# Set working directory (isolated workspace)
+WORKDIR /home/agent/workspace
+
+# Create agent configuration directories
+RUN mkdir -p /home/agent/.openclaude
 # Pre-install essential skills from curated repos
 # Matt Pocock's skills - engineering best practices
 # Addy Osmani's agent-skills - production-grade workflows
-RUN mkdir -p /home/agent/.openclaude/workspace/skills
-
-# Copy agent configuration
-COPY --chown=agent:agent agents.json /home/agent/.openclaude/
-COPY --chown=agent:agent tools.md /home/agent/.openclaude/workspace/
-
 # Copy pre-installed skills
 COPY --chown=agent:agent skills/matt-pocock /home/agent/.openclaude/skills/matt-pocock
 COPY --chown=agent:agent skills/addy-osmani /home/agent/.openclaude/skills/addy-osmani
 
 # Create safe workspace structure
-RUN mkdir -p /home/agent/workspace/projects \
-    && mkdir -p /home/agent/workspace/docs \
-    && mkdir -p /home/agent/workspace/temp \
-    && mkdir -p /home/agent/workspace/logs \
-    && chmod -R 755 /home/agent/workspace
+RUN mkdir -p /home/agent/workspace
 
 # Set environment variables
 ENV NODE_ENV=production \
-    HOME=/home/agent \
     WORKSPACE=/home/agent/workspace \
     OPENCLAUDE_HOME=/home/agent/.openclaude \
     PATH="/usr/local/bin:/usr/local/lib/node_modules/.bin:/usr/lib/node_modules/.bin:$PATH"
-
-# Switch to non-root user
-USER agent
-
-# Health check - check if shell is responsive
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD ["/bin/bash", "-c", "echo 'healthy'"]
 
 # Default command - interactive bash shell
 CMD ["/bin/bash"]

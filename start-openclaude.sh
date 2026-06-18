@@ -69,55 +69,80 @@ else
     exit 1
 fi
 
-# Check if container already exists
-if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-    echo -e "${YELLOW}⚠ Container '${CONTAINER_NAME}' already exists${NC}"
-    echo -e "${YELLOW}  Removing old container...${NC}"
-    docker stop "${CONTAINER_NAME}" &>/dev/null || true
-    docker rm "${CONTAINER_NAME}" &>/dev/null || true
-    echo -e "${GREEN}✓ Removed existing container${NC}"
-fi
-
 # Get current directory for mounting
 CURRENT_DIR="$(pwd)"
 PROJECT_NAME="$(basename "${CURRENT_DIR}")"
 
 # Create memory directory for persistence
 MEMORY_DIR="${CURRENT_DIR}/.agent-memory"
-mkdir -p "${MEMORY_DIR}"
-echo -e "${GREEN}✓ Memory directory created: ${MEMORY_DIR}${NC}"
+MEMORY_SHARE_DIR="${MEMORY_DIR}/claude"
+mkdir -p "${MEMORY_SHARE_DIR}"
+chown -R ${HOST_UID}:${HOST_GID} "${CURRENT_DIR}/.agent-memory"
+echo -e "${GREEN}✓ Memory directory created: ${MEMORY_SHARE_DIR}${NC}"
 
-# Check if AGENTS.md exists, offer to create from template
+# -----------------------------------------------------------------------------
+# Setup .gitignore
+# -----------------------------------------------------------------------------
+GITIGNORE_FILE="${CURRENT_DIR}/.gitignore"
+if [[ ! -f "${GITIGNORE_FILE}" ]]; then
+    echo -e "${YELLOW}⚠ No .gitignore found${NC}"
+    echo -e "${YELLOW}  Create .gitignore with .agent-memory/ excluded?${NC}"
+    read -p "  Create? [Y/n]: " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        echo ".agent-memory/" > "${GITIGNORE_FILE}"
+        chown ${HOST_UID}:${HOST_GID} "${GITIGNORE_FILE}"
+        echo -e "${GREEN}✓ Created .gitignore (owned by ${HOST_USER})${NC}"
+    fi
+    echo ""
+elif ! grep -q "\.agent-memory" "${GITIGNORE_FILE}"; then
+    echo -e "${YELLOW}⚠ .gitignore missing .agent-memory/ exclusion${NC}"
+    echo -e "${YELLOW}  Add it?${NC}"
+    read -p "  Add? [Y/n]: " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        echo "" >> "${GITIGNORE_FILE}"
+        echo ".agent-memory/" >> "${GITIGNORE_FILE}"
+        chown ${HOST_UID}:${HOST_GID} "${GITIGNORE_FILE}"
+        echo -e "${GREEN}✓ Added .agent-memory/ to .gitignore${NC}"
+    fi
+    echo ""
+else
+    echo -e "${GREEN}✓ .gitignore already excludes .agent-memory${NC}"
+fi
+
+# -----------------------------------------------------------------------------
+# Setup AGENTS.md
+# -----------------------------------------------------------------------------
 if [[ ! -f "${CURRENT_DIR}/AGENTS.md" ]]; then
-    echo -e "${YELLOW}⚠ No AGENTS.md found in project root${NC}"
+    echo -e "${YELLOW}⚠ No AGENTS.md found${NC}"
     echo -e "${YELLOW}  AGENTS.md provides persistent memory across sessions${NC}"
     echo ""
     echo -e "${YELLOW}Choose template:${NC}"
-    echo -e "  ${GREEN}1${NC}) Generic project template"
-    echo -e "  ${GREEN}2${NC}) Python/uv project template (includes ruff, mypy, pytest)"
-    echo -e "  ${GREEN}n${NC}) Skip (create later)"
+    echo -e "  ${GREEN}1${NC}) Generic project"
+    echo -e "  ${GREEN}2${NC}) Python/uv project (ruff, mypy, pytest)"
+    echo -e "  ${GREEN}n${NC}) Skip"
     echo ""
     read -p "  Selection [1/2/n]: " -n 1 -r
     echo
     case $REPLY in
         [1])
             cp "${SCRIPT_DIR}/templates/AGENTS.md" "${CURRENT_DIR}/AGENTS.md"
-            echo -e "${GREEN}✓ Created AGENTS.md (generic template)${NC}"
-            echo -e "${YELLOW}  Edit AGENTS.md to customize for your project${NC}"
+            chown ${HOST_UID}:${HOST_GID} "${CURRENT_DIR}/AGENTS.md"
+            echo -e "${GREEN}✓ Created AGENTS.md (owned by ${HOST_USER})${NC}"
             ;;
         [2])
             cp "${SCRIPT_DIR}/templates/AGENTS.md-python" "${CURRENT_DIR}/AGENTS.md"
-            echo -e "${GREEN}✓ Created AGENTS.md (Python/uv template)${NC}"
-            echo -e "${YELLOW}  Edit AGENTS.md to customize for your project${NC}"
-            ;;
-        [nN]|"")
-            echo -e "${YELLOW}  Skipping (you can create AGENTS.md later)${NC}"
+            chown ${HOST_UID}:${HOST_GID} "${CURRENT_DIR}/AGENTS.md"
+            echo -e "${GREEN}✓ Created AGENTS.md (Python template, owned by ${HOST_USER})${NC}"
             ;;
         *)
-            echo -e "${YELLOW}  Invalid selection, skipping${NC}"
+            echo -e "${YELLOW}  Skipping${NC}"
             ;;
     esac
     echo ""
+else
+    echo -e "${GREEN}✓ AGENTS.md exists${NC}"
 fi
 
 # Display quick info before container starts
@@ -172,13 +197,11 @@ docker run -it --rm \
     --memory 4g \
     --memory-swap 4g \
     --cpus 2.0 \
-    -v "${SCRIPT_DIR}/agents.json:/home/agent/.openclaude/agents.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
-    -v "${MEMORY_DIR}:/home/agent/.openclaude/memory:rw" \
+    -v "${MEMORY_DIR}:/home/agent/.claude:rw" \
     -e NODE_ENV=production \
     -e WORKSPACE=/home/agent/workspace \
     -e HOME=/home/agent/workspace \
-    -e OPENCLAUDE_HOME=/home/agent/.openclaude \
     -e CLAUDE_CODE_USE_OPENAI="${CLAUDE_CODE_USE_OPENAI:-1}" \
     -e OPENAI_API_KEY="${OPENAI_API_KEY}" \
     -e OPENAI_BASE_URL="${OPENAI_BASE_URL}" \
