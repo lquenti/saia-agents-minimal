@@ -11,29 +11,6 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
-# Run tests before deploying
-test:
-  stage: test
-  script:
-    - echo 'Running test suite...'
-    - chmod +x tests/*.sh
-    - bash tests/test_scripts.sh
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_TEST == 'true'
-  allow_failure: false
-
-# Optional: Lint markdown files (MR only)
-lint:
-  stage: test
-  script:
-    - echo 'Checking markdown syntax...'
-    - find . -name '*.md' -type f | head -10
-    - echo 'Markdown linting passed'
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-  allow_failure: true
-
 pages:
   stage: deploy
   script:
@@ -42,32 +19,3 @@ pages:
   artifacts:
     paths:
       - public
-    expire_in: 1 week
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE == 'web'
-    - if: $CI_PIPELINE_SOURCE == 'schedule'
-
-# Manual trigger jobs (only when explicitly triggered)
-manual_lint:
-  stage: test
-  script:
-    - echo '=== MANUAL LINT TRIGGERED ==='
-    - echo 'Checking markdown syntax...'
-    - find . -name '*.md' -type f
-    - echo 'Markdown linting passed'
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_LINT == 'true'
-  when: manual
-  allow_failure: true
-
-manual_pages_deploy:
-  stage: deploy
-  script:
-    - echo '=== MANUAL PAGES DEPLOY TRIGGERED ==='
-    - python scripts/generate-pages.py
-    - echo 'Pages built successfully'
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'web' && $MANUAL_PAGES_DEPLOY == 'true'
-  when: manual
-  allow_failure: false

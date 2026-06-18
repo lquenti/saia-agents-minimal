@@ -1,6 +1,6 @@
-# Contributing 🪓
+# Contributing
 
-WAAAGH! Thanks for wanting to contribute, boss! Let's make this fortress stronger!
+Thanks for wanting to contribute.
 
 ## How to Contribute
 
@@ -81,8 +81,4 @@ docker run -it test-agent /bin/bash
 
 ## Questions?
 
-Open an issue or hit us up!
-
----
-
-**WAAAGH! Let's build something awesome!** 👊🪓
+Open an issue.

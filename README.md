@@ -1,6 +1,7 @@
 # Advanced Coding Agent 🦾
 
-> An isolated, secure Docker environment for AI-assisted coding. Choose your runtime: **OpenCode** or **OpenClaude**.
+> An isolated, secure Docker environment for AI-assisted coding.\
+> Choose your runtime: **OpenCode** or **OpenClaude**.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
@@ -11,8 +12,7 @@ Secure, isolated Docker environment for AI coding agents with:
 
 - ✅ **Multiple runtimes** - OpenCode or OpenClaude
 - ✅ **No docker-compose** - Simple shell scripts
-- ✅ **46+ pre-installed skills** - Matt Pocock + Addy Osmani + Understand-Anything
-- ✅ **Security-first** - Non-root user, read-only filesystem
+- ✅ **Pre-installed skills** - Matt Pocock + Addy Osmani + Understand-Anything
 - ✅ **Persistent memory** - AGENTS.md + .agent-memory/
 
 ---
@@ -49,46 +49,41 @@ nano .env  # Set API key and MODEL
 ./build-openclaude.sh
 ```
 
-### 3. Start Container
+### 3. Add to Shell
+
+```bash
+# For Bash
+echo "alias start-opencode=\"$(pwd)/start-opencode.sh\"" >> ~/.bashrc
+echo "alias start-openclaude=\"$(pwd)/start-openclaude.sh\"" >> ~/.bashrc
+source ~/.bashrc
+
+# For Zsh
+echo "alias start-opencode=\"$(pwd)/start-opencode.sh\"" >> ~/.zshrc
+echo "alias start-openclaude=\"$(pwd)/start-openclaude.sh\"" >> ~/.zshrc
+source ~/.zshrc
+```
+
+### 4. Start Container
+
+Navigate to project folder and run.
 
 ```bash
 # For OpenCode:
-./start-opencode.sh
+start-opencode
 
 # For OpenClaude:
-./start-openclaude.sh
+start-openclaude
 ```
 
-> **💡 Optional:** If no `AGENTS.md` exists in your project, the start script will offer to create one from a template.
+> If no `AGENTS.md` exists in your project, the start script will offer to create one from a template.
 
-### 4. Run Agent
+### 5. Run Agent
 
 ```bash
-opencode    # or openclaude
+opencode    
+# or 
+openclaude
 ```
-
-### 5. Exit
-
-```bash
-exit  # Container auto-removes!
-```
-
-> **💡 Pro Tip:** Build once, start multiple times. The image is cached, so subsequent starts are fast!
-
----
-
-## ✅ Testing
-
-Automated tests validate scripts, configuration, and Docker builds.
-
-```bash
-./tests/run_tests.sh        # Run all tests
-./tests/run_tests.sh scripts  # Script tests only (28 tests)
-./tests/run_tests.sh docker   # Docker tests only
-```
-
-**📖 Full guide:** [Testing Guide](docs/TESTING.md)
-
 ---
 
 ## 📚 Documentation
@@ -97,25 +92,14 @@ Automated tests validate scripts, configuration, and Docker builds.
 
 | Guide | Description |
 |-------|-------------|
-| [**Configuration**](docs/CONFIGURATION.md) | API keys, models, providers, environment variables |
-| [**Usage Guide**](docs/USAGE.md) | Usage patterns, workflows, shell aliases |
 | [**Skills Reference**](docs/SKILLS.md) | Complete list of 46+ pre-installed skills |
-| [**Understand-Anything**](docs/UNDERSTAND_ANYTHING_INTEGRATION.md) | Codebase analysis & knowledge graph generation |
-| [**Security**](docs/SECURITY.md) | Container hardening, access control, best practices |
-| [**Testing**](docs/TESTING.md) | Automated tests, CI/CD integration |
-| [**Debugging**](docs/DEBUGGING.md) | Troubleshooting, container inspection |
-| [**Architecture**](docs/ARCHITECTURE.md) | System design, security, runtime architecture |
-| [**Project Structure**](docs/PROJECT_STRUCTURE.md) | Repository layout, file descriptions |
-| [**Runtime Comparison**](docs/RUNTIME_COMPARISON.md) | OpenCode vs OpenClaude comparison |
 | [**Software Engineering Workflow**](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) | 5-phase disciplined development |
-| [**Scripts**](docs/SCRIPTS.md) | Build/start workflow documentation |
-| [**Understand-Anything Integration**](docs/UNDERSTAND_ANYTHING_INTEGRATION.md) | Codebase analysis & knowledge graphs |
 
 ---
 
 ## 🧠 Persistent Memory
 
-**Sessions are stateless by default.** Use **AGENTS.md** (works for both runtimes) to add memory:
+Sessions are persistent per project via .agent-memory and **AGENTS.md** (works for both runtimes)
 
 ```markdown
 # AGENTS.md
@@ -130,13 +114,11 @@ CRITICAL: Use .agent-memory/ folder for persistent notes.
 - Last task: Implement feature X
 ```
 
-**📖 Full guide:** [tools.md](tools.md#memory--persistence)
-
 ---
 
 ## 🧠 Pre-Installed Skills
 
-**45+ production-grade skills** from Matt Pocock and Addy Osmani.
+**Production-grade skills** from Matt Pocock and Addy Osmani.
 
 ### Key Skills
 
@@ -173,84 +155,6 @@ Follow a **5-phase disciplined workflow**:
 
 ---
 
-## 🔒 Security
-
-- ✅ **Non-root user** (agent)
-- ✅ **Read-only filesystem**
-- ✅ **Network isolation** (disabled by default)
-- ✅ **Blocked dangerous commands**
-- ✅ **Resource limits** (4GB RAM, 2 CPU cores)
-
-**📖 Full security guide:** [docs/SECURITY.md](docs/SECURITY.md)
-
----
-
-## 📁 Repository Structure
-
-```
-advanced-coding-agent/
-├── Dockerfile.*          # Build configs
-├── start-*.sh            # Launch scripts
-├── build-*.sh            # Build scripts
-├── .env.example          # Config template
-├── agents.json           # Agent config
-├── tools.md              # Tools & security
-├── docs/                 # Documentation
-├── tests/                # Test suite
-├── templates/            # AGENTS.md templates
-└── skills/               # ⚠️ Git submodules!
-    ├── addy-osmani/      # Submodule: https://github.com/addy-osmani/agent-skills
-    │   └── skills/
-    │       └── understand-anything/  # Codebase analysis & knowledge graphs
-    └── matt-pocock/      # Submodule: https://github.com/MattPocock/agent-skills
-        └── skills/
-```
-
-**⚠️ Important:** The `skills/` directories are **Git submodules**, not regular folders!
-
-### Submodule Management
-
-**Initialize submodules (first time):**
-```bash
-git submodule update --init --recursive
-```
-
-**Update submodules to latest:**
-```bash
-git submodule update --remote --recursive
-```
-
-**Check submodule status:**
-```bash
-git submodule status
-```
-
-**If submodules appear empty:**
-```bash
-# This happens if you forgot to initialize submodules
-ls skills/addy-osmani  # Shows only a .git file, not actual content
-
-# Fix it:
-git submodule update --init --recursive
-```
-
-**📖 Full structure:** [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)
-
----
-
-## 🔄 Runtime Comparison
-
-| Feature | OpenCode | OpenClaude |
-|---------|----------|------------|
-| Runtime | Open-source | Claude-based |
-| Best for | General coding | Complex tasks |
-| API Key | OpenAI-compatible | Anthropic |
-| Start Script | `start-opencode.sh` | `start-openclaude.sh` |
-
-**📖 Detailed comparison:** [docs/RUNTIME_COMPARISON.md](docs/RUNTIME_COMPARISON.md)
-
----
-
 ## 🤝 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
@@ -258,8 +162,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 ## 📝 License
 
 MIT License - see [LICENSE](LICENSE) for details.
-
----
-
-**Questions?** Open an issue.  
-**Security issues?** Report responsibly via the issue tracker.
