@@ -98,10 +98,15 @@ PROJECT_NAME="$(basename "${CURRENT_DIR}")"
 
 # Create memory directory for persistence
 MEMORY_DIR="${CURRENT_DIR}/.agent-memory"
-MEMORY_SHARE_DIR="${MEMORY_DIR}/claude"
-mkdir -p "${MEMORY_SHARE_DIR}"
+mkdir -p "${MEMORY_DIR}"
 chown -R ${HOST_UID}:${HOST_GID} "${CURRENT_DIR}/.agent-memory"
-echo -e "${GREEN}✓ Memory directory created: ${MEMORY_SHARE_DIR}${NC}"
+echo -e "${GREEN}✓ Memory directory created: ${MEMORY_DIR}${NC}"
+
+CLAUDE_DIR="${CURRENT_DIR}/.openclaude"
+CLAUDE_SKILLS_DIR="${CLAUDE_DIR}/skills"
+mkdir -p "${CLAUDE_SKILLS_DIR}"
+chown -R ${HOST_UID}:${HOST_GID} "${CLAUDE_DIR}"
+echo -e "${GREEN}✓ Skills directory created: ${CLAUDE_SKILLS_DIR}${NC}"
 
 # -----------------------------------------------------------------------------
 # Setup .gitignore
@@ -256,10 +261,8 @@ docker run -it --rm \
     --memory-swap 4g \
     --cpus 2.0 \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
-    -v "${MEMORY_DIR}:/home/agent/.claude:rw" \
     -e NODE_ENV=production \
     -e WORKSPACE=/home/agent/workspace \
-    -e HOME=/home/agent/workspace \
     -e CLAUDE_CODE_USE_OPENAI="${CLAUDE_CODE_USE_OPENAI:-1}" \
     -e OPENAI_API_KEY="${OPENAI_API_KEY}" \
     -e OPENAI_BASE_URL="${OPENAI_BASE_URL}" \

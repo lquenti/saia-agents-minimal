@@ -70,8 +70,8 @@ RUN mkdir -p /home/agent/.openclaude
 # Matt Pocock's skills - engineering best practices
 # Addy Osmani's agent-skills - production-grade workflows
 # Copy pre-installed skills
-COPY --chown=agent:agent skills/matt-pocock /home/agent/.openclaude/skills/matt-pocock
-COPY --chown=agent:agent skills/addy-osmani /home/agent/.openclaude/skills/addy-osmani
+COPY --chown=agent:agent skills/matt-pocock/skills /home/agent/.claude/skills
+COPY --chown=agent:agent skills/addy-osmani/skills /home/agent/.claude/skills
 
 # Create safe workspace structure
 RUN mkdir -p /home/agent/workspace
@@ -79,7 +79,6 @@ RUN mkdir -p /home/agent/workspace
 # Set environment variables
 ENV NODE_ENV=production \
     WORKSPACE=/home/agent/workspace \
-    OPENCLAUDE_HOME=/home/agent/.openclaude \
     PATH="/usr/local/bin:/usr/local/lib/node_modules/.bin:/usr/lib/node_modules/.bin:$PATH"
 
 # Default command - interactive bash shell
