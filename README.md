@@ -92,6 +92,8 @@ openclaude
 
 | Guide | Description |
 |-------|-------------|
+| [**Project Structure**](docs/PROJECT_STRUCTURE.md) | Understanding the layout |
+| [**Usage Guide**](docs/USAGE.md) | How to use the agent |
 | [**Skills Reference**](docs/SKILLS.md) | Complete list of 46+ pre-installed skills |
 | [**Software Engineering Workflow**](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) | 5-phase disciplined development |
 
