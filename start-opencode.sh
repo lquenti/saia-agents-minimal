@@ -183,23 +183,17 @@ fi
 # -----------------------------------------------------------------------------
 # Prepare Auth Config
 # -----------------------------------------------------------------------------
-mkdir -p "${SCRIPT_DIR}/.opencode/local"
-echo "${OPENCODE_API_KEY}" | jq -R '{"apiKey": .}' > "${SCRIPT_DIR}/.opencode/local/auth.json"
-chmod 644 "${SCRIPT_DIR}/.opencode/local/auth.json"
-chown ${HOST_UID}:${HOST_GID} "${SCRIPT_DIR}/.opencode/local/auth.json"
-echo -e "${GREEN}✓ Auth config: ${SCRIPT_DIR}/.opencode/local/auth.json${NC}"
 
 # Create symlink for auth.json in .agent-memory/share
 mkdir -p "${MEMORY_SHARE_DIR}/opencode"
-ln -sf ../../../.opencode/auth.json "${MEMORY_SHARE_DIR}/opencode/auth.json"
+ln -sf ../../../../.opencode/auth.json "${MEMORY_SHARE_DIR}/opencode/auth.json"
+chown -R ${HOST_UID}:${HOST_GID} "${MEMORY_SHARE_DIR}"
 echo -e "${GREEN}✓ Symlink: .agent-memory/share/opencode/auth.json → .opencode/auth.json${NC}"
 
 # Create skills directory and symlink for custom skills
-SKILLS_DIR="${MEMORY_SHARE_DIR}/skills"
+SKILLS_DIR="${MEMORY_DIR}/skills"
 mkdir -p "${SKILLS_DIR}"
-chown ${HOST_UID}:${HOST_GID} "${SKILLS_DIR}"
-ln -sf ../../../.config/opencode/skills "${SKILLS_DIR}"
-echo -e "${GREEN}✓ Symlink: .agent-memory/share/skills → .config/opencode/skills${NC}"
+chown -R ${HOST_UID}:${HOST_GID} "${SKILLS_DIR}"
 echo -e "${YELLOW}  Add custom skills to: ${SKILLS_DIR}${NC}"
 # -----------------------------------------------------------------------------
 # Display Info
@@ -259,9 +253,8 @@ docker run -it --rm \
     --memory 4g \
     --memory-swap 4g \
     --cpus 2.0 \
-    -v "${SCRIPT_DIR}/agents.json:/home/agent/.opencode/agents.json:ro" \
     -v "${OPENCODE_DIR}/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
-    -v "${SCRIPT_DIR}/.opencode/local/auth.json:/home/agent/.opencode/auth.json:ro" \
+    -v "${SCRIPT_DIR}/.opencode/auth.json:/home/agent/.opencode/auth.json:ro" \
     -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
     -v "${MEMORY_SHARE_DIR}:/home/agent/workspace/.agent-memory/share:rw" \
     -e NODE_ENV=production \
