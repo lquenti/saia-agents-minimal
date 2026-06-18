@@ -1,37 +1,52 @@
 #!/bin/bash
+# =============================================================================
 # Advanced Coding Agent - Start Script (OpenClaude Runtime)
-# Starts the OpenClaude container with current directory mounted
+# =============================================================================
+# Starts the OpenClaude container with:
+# - Current directory mounted as workspace
+# - Session state persisted in .agent-memory/claude/
+# - OpenClaude data in .openclaude/, .npm/, .openclaude.json
+# =============================================================================
 
 set -e
 
-# Check if running as root (sudo required)
+# -----------------------------------------------------------------------------
+# Check Root Privileges
+# -----------------------------------------------------------------------------
 if [[ "$(id -u)" != "0" ]]; then
-    echo -e "\033[0;31m✗ ERROR: This script must be run with sudo\033[0m"
-    echo -e "\033[1;33m  Please run: sudo ./start-openclaude.sh\033[0m"
-    echo -e "\033[1;33m  Docker requires elevated permissions for volume mounts and ownership\033[0m"
+    echo -e "${RED}✗ ERROR: This script must be run with sudo${NC}"
+    echo -e "${YELLOW}  Please run: sudo ./start-openclaude.sh${NC}"
+    echo -e "${YELLOW}  Docker requires elevated permissions for volume mounts${NC}"
     exit 1
 fi
 
+# -----------------------------------------------------------------------------
+# Configuration
+# -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env"
 CONTAINER_NAME="advanced-coding-agent-openclaude"
 IMAGE_NAME="advanced-coding-agent-openclaude"
 IMAGE_TAG="latest"
 
-# Colors for output
+# -----------------------------------------------------------------------------
+# Colors
+# -----------------------------------------------------------------------------
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Load environment file
+# -----------------------------------------------------------------------------
+# Load Environment
+# -----------------------------------------------------------------------------
 if [[ -f "${ENV_FILE}" ]]; then
     source "${ENV_FILE}"
     echo -e "${GREEN}✓ Loaded .env file${NC}"
 else
-    echo -e "${YELLOW}⚠ No .env file found. Copy .env.example to .env and configure.${NC}"
+    echo -e "${YELLOW}⚠ No .env file found${NC}"
+    echo -e "${YELLOW}  Copy .env.example to .env and configure${NC}"
     echo -e "${YELLOW}  cp .env.example .env${NC}"
-    echo -e "${YELLOW}  nano .env${NC}"
     exit 1
 fi
 
@@ -48,12 +63,17 @@ if [[ -z "${MODEL}" ]]; then
     exit 1
 fi
 
-# Check if Docker is running
+# -----------------------------------------------------------------------------
+# Check Docker
+# -----------------------------------------------------------------------------
 if ! docker info &>/dev/null; then
     echo -e "${RED}✗ ERROR: Docker is not running${NC}"
     exit 1
 fi
 
+# -----------------------------------------------------------------------------
+# Check Docker Image
+# -----------------------------------------------------------------------------
 # Check if image exists (handle podman's localhost/ prefix)
 IMAGE_FULL_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
 IMAGE_PODMAN_NAME="localhost/${IMAGE_NAME}:${IMAGE_TAG}"
@@ -69,6 +89,9 @@ else
     exit 1
 fi
 
+# -----------------------------------------------------------------------------
+# Prepare Workspace
+# -----------------------------------------------------------------------------
 # Get current directory for mounting
 CURRENT_DIR="$(pwd)"
 PROJECT_NAME="$(basename "${CURRENT_DIR}")"
@@ -176,7 +199,9 @@ else
     echo -e "${GREEN}✓ AGENTS.md exists${NC}"
 fi
 
-# Display quick info before container starts
+# -----------------------------------------------------------------------------
+# Display Info
+# -----------------------------------------------------------------------------
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
 echo -e "${GREEN}  Advanced Coding Agent - OpenClaude Runtime${NC}"
@@ -186,7 +211,7 @@ echo -e "${YELLOW}⚙️ PROJECT:${NC}"
 echo -e "  Container: ${YELLOW}${CONTAINER_NAME}${NC} (auto-removes on exit)"
 echo -e "  Project:   ${YELLOW}${PROJECT_NAME}${NC}"
 echo -e "  Workspace: ${YELLOW}/home/agent/workspace${NC}"
-echo -e "  Memory:    ${YELLOW}/home/agent/.openclaude/memory${NC} → ${MEMORY_DIR}"
+echo -e "  Memory:    ${YELLOW}/home/agent/.claude${NC} → ${MEMORY_DIR}"
 echo ""
 echo -e "${YELLOW}🎯 NEXT STEPS:${NC}"
 echo ""
@@ -211,7 +236,9 @@ echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
 
-# Start the container
+# -----------------------------------------------------------------------------
+# Start Container
+# -----------------------------------------------------------------------------
 echo -e "${GREEN}🚀 Starting OpenClaude container...${NC}"
 echo ""
 
