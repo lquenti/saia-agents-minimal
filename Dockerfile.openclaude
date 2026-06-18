@@ -64,8 +64,11 @@ USER agent
 # Set working directory (isolated workspace)
 WORKDIR /home/agent/workspace
 
-# Create agent configuration directories
-RUN mkdir -p /home/agent/.openclaude
+RUN ln -sf /home/agent/workspace/.agent-memory/claude /home/agent/.claude
+RUN ln -sf /home/agent/workspace/.agent-memory/openclaude /home/agent/.openclaude
+RUN ln -sf /home/agent/workspace/.agent-memory/openclaude.json /home/agent/.openclaude.json
+RUN ln -sf /home/agent/workspace/.agent-memory/npm /home/agent/.npm
+
 # Pre-install essential skills from curated repos
 # Matt Pocock's skills - engineering best practices
 # Addy Osmani's agent-skills - production-grade workflows

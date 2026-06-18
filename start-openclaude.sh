@@ -11,16 +11,6 @@
 set -e
 
 # -----------------------------------------------------------------------------
-# Check Root Privileges
-# -----------------------------------------------------------------------------
-if [[ "$(id -u)" != "0" ]]; then
-    echo -e "${RED}✗ ERROR: This script must be run with sudo${NC}"
-    echo -e "${YELLOW}  Please run: sudo ./start-openclaude.sh${NC}"
-    echo -e "${YELLOW}  Docker requires elevated permissions for volume mounts${NC}"
-    exit 1
-fi
-
-# -----------------------------------------------------------------------------
 # Configuration
 # -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -36,6 +26,25 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
+
+# -----------------------------------------------------------------------------
+# Detect Host User (before sudo elevation)
+# -----------------------------------------------------------------------------
+HOST_UID=${SUDO_UID:-$(id -u)}
+HOST_GID=${SUDO_GID:-$(id -g)}
+HOST_USER=$(getent passwd ${HOST_UID} | cut -d: -f1)
+
+echo -e "${GREEN}✓ Host user: ${HOST_USER} (UID: ${HOST_UID}, GID: ${HOST_GID})${NC}"
+
+# -----------------------------------------------------------------------------
+# Check Root Privileges
+# -----------------------------------------------------------------------------
+if [[ "$(id -u)" != "0" ]]; then
+    echo -e "${RED}✗ ERROR: This script must be run with sudo${NC}"
+    echo -e "${YELLOW}  Please run: sudo ./start-openclaude.sh${NC}"
+    echo -e "${YELLOW}  Docker requires elevated permissions for volume mounts${NC}"
+    exit 1
+fi
 
 # -----------------------------------------------------------------------------
 # Load Environment
@@ -98,7 +107,12 @@ PROJECT_NAME="$(basename "${CURRENT_DIR}")"
 
 # Create memory directory for persistence
 MEMORY_DIR="${CURRENT_DIR}/.agent-memory"
-mkdir -p "${MEMORY_DIR}"
+MEMORY_OPENCLAUDE_DIR="${MEMORY_DIR}/openclaude"
+MEMORY_CLAUDE_DIR="${MEMORY_DIR}/claude"
+MEMORY_NPM_DIR="${MEMORY_DIR}/npm"
+mkdir -p "${MEMORY_CLAUDE_DIR}"
+mkdir -p "${MEMORY_OPENCLAUDE_DIR}"
+mkdir -p "${MEMORY_NPM_DIR}"
 chown -R ${HOST_UID}:${HOST_GID} "${CURRENT_DIR}/.agent-memory"
 echo -e "${GREEN}✓ Memory directory created: ${MEMORY_DIR}${NC}"
 
@@ -115,8 +129,6 @@ GITIGNORE_FILE="${CURRENT_DIR}/.gitignore"
 GITIGNORE_ENTRIES=(
     ".agent-memory/"
     ".openclaude/"
-    ".npm/"
-    ".openclaude.json"
 )
 
 if [[ ! -f "${GITIGNORE_FILE}" ]]; then
@@ -215,10 +227,9 @@ echo ""
 echo -e "${YELLOW}⚙️ PROJECT:${NC}"
 echo -e "  Container: ${YELLOW}${CONTAINER_NAME}${NC} (auto-removes on exit)"
 echo -e "  Project:   ${YELLOW}${PROJECT_NAME}${NC}"
-echo -e "  Workspace: ${YELLOW}/home/agent/workspace${NC}"
-echo -e "  Memory:    ${YELLOW}/home/agent/.claude${NC} → ${MEMORY_DIR}"
-echo -e "  Config:    ${YELLOW}/home/agent/.openclaude${NC} (container-local)"
-echo -e "  Cache:     ${YELLOW}/home/agent/.npm${NC} (container-local)"
+echo -e "  Workspace: ${YELLOW}/home/agent/workspace${NC} (mounted on local directory)"
+echo -e "  Memory:    ${YELLOW}/home/agent/workspace/.agent-memory${NC}"
+echo -e "  Skills:    ${YELLOW}/home/agent/workspace/.openclaude/skills${NC}"
 echo ""
 echo -e "${YELLOW}🎯 NEXT STEPS:${NC}"
 echo ""

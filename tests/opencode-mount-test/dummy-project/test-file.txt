@@ -1,2 +1,0 @@
-Test file for mount verification.
-Created by test script.
