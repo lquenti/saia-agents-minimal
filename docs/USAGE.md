@@ -36,8 +36,8 @@ echo "alias start-openclaude=\"$(pwd)/start-openclaude.sh\"" >> ~/.bashrc
 source ~/.bashrc
 
 # Zsh
-echo "alias start-opencode=\"$(pwd)/start-opencode.sh\"" >> ~/.zshrc
-echo "alias start-openclaude=\"$(pwd)/start-openclaude.sh\"" >> ~/.zshrc
+echo "alias start-opencode=\"sudo $(pwd)/start-opencode.sh\"" >> ~/.zshrc
+echo "alias start-openclaude=\"sudo $(pwd)/start-openclaude.sh\"" >> ~/.zshrc
 source ~/.zshrc
 ```
 
@@ -90,10 +90,11 @@ your-project/
 ├── .gitignore             # Auto-generated with exclusions
 ├── .agent-memory/         # Persistent session data
 │   ├── opencode/          # OpenCode memory
+│   ├── npm/               # OpenClaude cache
+│   ├── skills/            # Custom Skills
+│   ├── openclaude/        # OpenClaude memory
 │   └── claude/            # OpenClaude memory
-├── .opencode/             # OpenCode config (container-local)
-├── .openclaude/           # OpenClaude data (container-local)
-└── .npm/                  # npm cache (container-local)
+└── .openclaude/           # OpenClaude memory, symlink to .agent-memory
 ```
 
 ---
@@ -149,31 +150,6 @@ CRITICAL: Use .agent-memory/ folder for persistent notes.
 | `/understand` | Codebase analysis & knowledge graph |
 
 **📖 Complete list:** [SKILLS.md](SKILLS.md)
-
----
-
-## Troubleshooting
-
-### Docker not running
-```bash
-sudo systemctl start docker
-```
-
-### Image not found
-```bash
-./build-opencode.sh
-# or
-./build-openclaude.sh
-```
-
-### API key not set
-Edit `.env` and set `OPENCODE_API_KEY` or `OPENCLAUDE_API_KEY`
-
-### Permission denied
-Scripts must be run with `sudo`:
-```bash
-sudo ./start-opencode.sh
-```
 
 ---
 
@@ -339,10 +315,7 @@ Persistent across all sessions for the project.
 ### .agent-memory/ (Session-specific)
 ```
 .agent-memory/
-├── opencode/           # OpenCode session data
-│   └── session-notes.md
-└── claude/             # OpenClaude session data
-    └── session-notes.md
+└── session-notes.md    # session data
 ```
 
 **Best Practice:**

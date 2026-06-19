@@ -867,7 +867,3 @@ Use `/review` for five-axis review. Use `/code-simplify` to reduce complexity. U
 | **Merging without review** | → Use `/review` before merge |
 | **Over-complicating interfaces** | → Use `/api-and-interface-design` |
 | **No shared language** | → Use `/grill-with-docs` |
-
----
-
-**WAAAGH! Follow this workflow, and ye'll build software like a proper engineer!** 🪓👊

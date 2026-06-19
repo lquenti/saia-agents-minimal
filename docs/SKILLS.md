@@ -4,14 +4,10 @@ Complete reference for all pre-installed skills in the Advanced Coding Agent.
 
 ## Overview
 
-The agent comes with **46+ production-grade skills** from two curated collections:
+The agent comes with **production-grade skills** from two curated collections:
 
 - **Matt Pocock's Skills** (12+) - Engineering best practices
 - **Addy Osmani's Agent Skills** (24) - Production-grade workflows + Understand-Anything
-
-Skills are pre-installed at:
-- OpenCode: `/home/agent/.opencode/workspace/skills/`
-- OpenClaude: `/home/agent/.openclaude/workspace/skills/`
 
 ---
 
