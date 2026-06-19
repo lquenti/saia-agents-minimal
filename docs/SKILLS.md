@@ -19,18 +19,18 @@ Location: `skills/matt-pocock/skills/`
 
 | Skill | Command | Purpose |
 |-------|---------|---------|
-| `/grill-me` | Get relentlessly interviewed about plans until fully specified |
-| `/grill-with-docs` | Grilling session that builds shared language + CONTEXT.md |
-| `/tdd` | Test-driven development with red-green-refactor loop |
-| `/diagnose` | Disciplined diagnosis loop for hard bugs |
-| `/to-prd` | Turn conversation into PRD + GitHub issue |
-| `/to-issues` | Break plans into independent GitHub issues |
-| `/triage` | Triage issues through state machine |
-| `/improve-codebase-architecture` | Find deepening opportunities in codebase |
-| `/zoom-out` | Get broader context on unfamiliar code |
-| `/prototype` | Build throwaway prototypes to explore designs |
-| `/caveman` | Ultra-compressed communication (~75% token savings) |
-| `/handoff` | Compact conversation for agent handoff |
+| `/grill-me` | `grill-me` | Get relentlessly interviewed about plans until fully specified |
+| `/grill-with-docs` | `grill-with-docs` | Grilling session that builds shared language + CONTEXT.md |
+| `/tdd` | `tdd` | Test-driven development with red-green-refactor loop |
+| `/diagnose` | `diagnose` | Disciplined diagnosis loop for hard bugs |
+| `/to-prd` | `to-prd` | Turn conversation into PRD + GitHub issue |
+| `/to-issues` | `to-issues` | Break plans into independent GitHub issues |
+| `/triage` | `triage` | Triage issues through state machine |
+| `/improve-codebase-architecture` | `improve-codebase-architecture` | Find deepening opportunities in codebase |
+| `/zoom-out` | `zoom-out` | Get broader context on unfamiliar code |
+| `/prototype` | `prototype` | Build throwaway prototypes to explore designs |
+| `/caveman` | `caveman` | Ultra-compressed communication (~75% token savings) |
+| `/handoff` | `handoff` | Compact conversation for agent handoff |
 
 ### Skill Details
 
