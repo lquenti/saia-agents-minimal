@@ -274,11 +274,9 @@ def create_html_template(title, content):
 <body>
   <nav>
     <a href="index.html">README</a>
-    <a href="CONFIGURATION.html">Configuration</a>
     <a href="SKILLS.html">Skills</a>
-    <a href="SECURITY.html">Security</a>
     <a href="SOFTWARE_ENGINEERING_WORKFLOW.html">Workflow</a>
-    <a href="QUICK_START_SKILLS.html">Quick Start</a>
+    <a href="USAGE.html">Usage</a>
   </nav>
   <div class="markdown-body">{content}</div>
 </body>
