@@ -58,20 +58,6 @@ Ready to fight alongside us?
 - **Document Changes**: Update README.md if needed
 - **Keep It Clean**: Follow existing code style
 
-## Development Setup
-
-```bash
-# Clone your fork
-git clone https://github.com/yourusername/advanced-coding-agent.git
-cd advanced-coding-agent
-
-# Build for testing
-docker build -t test-agent ./opencode/
-
-# Run tests
-docker run -it test-agent /bin/bash
-```
-
 ## Code of Conduct
 
 - Be respectful to fellow warriors

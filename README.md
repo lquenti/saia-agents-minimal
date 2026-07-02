@@ -5,7 +5,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
-[![GitLab Pages](https://img.shields.io/badge/📚-documentation-blue)](https://jdecker.pages-ce.gwdg.de/advanced-coding-agent/)
+[![GitLab Pages](https://img.shields.io/badge/📚-documentation-blue)](https://gwdg.pages-ce.gwdg.de/coding-agents)
 
 ## 🎯 Overview
 
@@ -23,7 +23,7 @@ Secure, isolated Docker environment for AI coding agents with:
 ### 1. Clone & Configure
 
 ```bash
-git clone https://gitlab-ce.gwdg.de/jdecker/advanced-coding-agent.git
+git clone https://gitlab-ce.gwdg.de/gwdg/coding-agents.git
 cd advanced-coding-agent
 
 # ⚠️ CRITICAL: Initialize submodules!
@@ -89,7 +89,7 @@ openclaude
 
 ## 📚 Documentation
 
-**🌐 [View Documentation Online](https://jdecker.pages-ce.gwdg.de/advanced-coding-agent/)**
+**🌐 [View Documentation Online](https://gwdg.pages-ce.gwdg.de/coding-agents)**
 
 | Guide | Description |
 |-------|-------------|

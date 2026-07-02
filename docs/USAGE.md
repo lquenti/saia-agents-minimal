@@ -6,7 +6,7 @@
 
 ```bash
 # Clone repository
-git clone https://gitlab-ce.gwdg.de/jdecker/advanced-coding-agent.git
+git clone https://gitlab-ce.gwdg.de/gwdg/coding-agents.git
 cd advanced-coding-agent
 
 # ⚠️ CRITICAL: Initialize submodules!
