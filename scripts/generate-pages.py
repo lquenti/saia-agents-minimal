@@ -134,26 +134,27 @@ def markdown_to_html(md_text):
     
     return '\n'.join(html_lines)
 
+
 def process_inline(text):
     """Process inline markdown elements."""
     # Inline code (must be before bold/italic)
     text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
-    
+
     # Bold (must be before italic)
     text = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', text)
-    
+
     # Italic
     text = re.sub(r'\*([^*]+)\*', r'<em>\1</em>', text)
-    
+
+    # Images (MUST be before links to handle images inside links)
+    text = re.sub(r'!$([^$]*)$$([^)]+)$', r'<img src="\2" alt="\1">', text)
+
     # Links
-    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
-    
-    # Images
-    text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', r'<img src="\2" alt="\1">', text)
-    
+    text = re.sub(r'$([^$]+)$$([^)]+)$', r'<a href="\2">\1</a>', text)
+
     # Inline code spans (multiple backticks)
     text = re.sub(r'``([^`]+)``', r'<code>\1</code>', text)
-    
+
     return text
 
 def create_html_template(title, content):
