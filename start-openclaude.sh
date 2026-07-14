@@ -6,6 +6,7 @@
 # - Current directory mounted as workspace
 # - Session state persisted in .agent-memory/claude/
 # - OpenClaude data in .openclaude/, .npm/, .openclaude.json
+# - Interactive menu to select from available images
 # =============================================================================
 
 set -e
@@ -15,17 +16,27 @@ set -e
 # -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env"
-CONTAINER_NAME="advanced-coding-agent-openclaude"
-IMAGE_NAME="advanced-coding-agent-openclaude"
-IMAGE_TAG="latest"
+RUNTIME="openclaude"
+
+# Load shared library functions
+source "${SCRIPT_DIR}/scripts/docker-lib.sh"
 
 # -----------------------------------------------------------------------------
-# Colors
+# Discover Available Images and Display Menu
 # -----------------------------------------------------------------------------
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+available_images=($(discover_built_images "${RUNTIME}"))
+
+# Display start menu and get user selection
+selected_image=$(display_start_menu "${RUNTIME}" "${available_images[@]}")
+
+if [[ "${selected_image}" == "exit" ]]; then
+    echo -e "${YELLOW}Start cancelled${NC}"
+    exit 0
+fi
+
+# Display what was selected
+echo -e "${GREEN}✓ Selection: ${selected_image}${NC}"
+echo ""
 
 # -----------------------------------------------------------------------------
 # Detect Host User (before sudo elevation)
@@ -80,23 +91,18 @@ if ! docker info &>/dev/null; then
     exit 1
 fi
 
-# -----------------------------------------------------------------------------
-# Check Docker Image
-# -----------------------------------------------------------------------------
-# Check if image exists (handle podman's localhost/ prefix)
-IMAGE_FULL_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
-IMAGE_PODMAN_NAME="localhost/${IMAGE_NAME}:${IMAGE_TAG}"
+# Set up container and image names based on selection
+ACTUAL_IMAGE_NAME="${selected_image}"
 
-if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_PODMAN_NAME}$"; then
-    ACTUAL_IMAGE_NAME="${IMAGE_PODMAN_NAME}"
-elif docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_FULL_NAME}$"; then
-    ACTUAL_IMAGE_NAME="${IMAGE_FULL_NAME}"
-else
-    echo -e "${RED}✗ ERROR: Docker image not found${NC}"
-    echo -e "${YELLOW}  Build the image first:${NC}"
-    echo -e "${YELLOW}  ./build-openclaude.sh${NC}"
-    exit 1
+# Handle both image name formats
+if [[ "${ACTUAL_IMAGE_NAME}" != localhost/* ]]; then
+    ACTUAL_IMAGE_NAME="localhost/${ACTUAL_IMAGE_NAME}"
 fi
+
+# Determine container name from image name
+IMAGE_NAME_ONLY="${selected_image%:*}"
+IMAGE_NAME_ONLY="${IMAGE_NAME_ONLY#localhost/}"
+CONTAINER_NAME="${IMAGE_NAME_ONLY}"
 
 # -----------------------------------------------------------------------------
 # Prepare Workspace
@@ -221,7 +227,6 @@ fi
 # -----------------------------------------------------------------------------
 # Display Info
 # -----------------------------------------------------------------------------
-echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
 echo -e "${GREEN}  Advanced Coding Agent - OpenClaude Runtime${NC}"
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
@@ -232,6 +237,7 @@ echo -e "  Project:   ${YELLOW}${PROJECT_NAME}${NC}"
 echo -e "  Workspace: ${YELLOW}/home/agent/workspace${NC} (mounted on local directory)"
 echo -e "  Memory:    ${YELLOW}/home/agent/workspace/.agent-memory${NC}"
 echo -e "  Skills:    ${YELLOW}/home/agent/workspace/.agent-memory/skills${NC}"
+echo -e "  Image:     ${YELLOW}${selected_image}${NC}"
 echo ""
 echo -e "${YELLOW}🎯 NEXT STEPS:${NC}"
 echo ""
