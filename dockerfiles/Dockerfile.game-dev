@@ -1,0 +1,127 @@
+ARG BASE_IMAGE=localhost/advanced-coding-agent-opencode:latest
+
+FROM ${BASE_IMAGE}
+
+USER root
+
+# Install C/C++ and game development tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    clang \
+    cmake \
+    make \
+    ninja-build \
+    libglfw3-dev \
+    libglew-dev \
+    libgl1-mesa-dev \
+    libglu1-mesa-dev \
+    libx11-dev \
+    libxrandr-dev \
+    libxi-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Godot Engine
+RUN wget -q https://downloads.tuxfamily.org/godotengine/4.2.1/mono/Godot_v4.2.1-stable_mono_linux_x86_64.zip -O /tmp/godot.zip && \
+    unzip /tmp/godot.zip -d /opt/ && \
+    chmod +x /opt/Godot_v4.2.1-stable_mono_linux_x86_64/Godot_v4.2.1-stable_mono_linux_x86_64.x86_64 && \
+    rm /tmp/godot.zip
+
+# Add Godot to PATH
+ENV PATH="/opt/Godot_v4.2.1-stable_mono_linux_x86_64:${PATH}"
+
+# Install .NET for Godot C# support
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    dotnet-sdk-7.0 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Unity command-line tools
+RUN wget -q https://download.unity3d.com/download_unity/c8c7edac9083/LinuxEditorTargetInstaller/UnitySetup-Linux-IL2CPP-Support-for-Editor-2022.3.15f1.tar.xz -O /tmp/unity-il2cpp.tar.xz && \
+    mkdir -p /opt/unity && \
+    tar xf /tmp/unity-il2cpp.tar.xz -C /opt/unity && \
+    rm /tmp/unity-il2cpp.tar.xz
+
+# Install Godot build tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    scons \
+    python3 \
+    python3-pip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install game development libraries
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libsdl2-dev \
+    libsfml-dev \
+    libalut-dev \
+    libopenal-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install audio development tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libvorbis-dev \
+    libflac-dev \
+    libmpg123-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install 2D graphics libraries
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libgdk-pixbuf-2.0-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install networking tools for multiplayer games
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcurl4-openssl-dev \
+    libenet-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install physics engine tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libbullet-dev \
+    libbox2d-dev \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install game testing tools
+RUN pip3 install --no-cache-dir pytest
+
+# Install game asset tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    imagemagick \
+    ffmpeg \
+    sox \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install version control for game assets
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git-lfs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install additional build tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ccache \
+    ninja-build \
+    bear \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install IDE tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gdb \
+    valgrind \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+USER agent
+
+CMD ["/bin/bash"]

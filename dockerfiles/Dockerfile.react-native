@@ -1,0 +1,113 @@
+ARG BASE_IMAGE=localhost/advanced-coding-agent-opencode:latest
+
+FROM ${BASE_IMAGE}
+
+USER root
+
+# Install React Native and mobile development tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    unzip \
+    build-essential \
+    libssl-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Android SDK command-line tools
+RUN mkdir -p /opt/android-sdk && \
+    cd /opt/android-sdk && \
+    wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip && \
+    unzip commandlinetools-linux-9477386_latest.zip && \
+    rm commandlinetools-linux-9477386_latest.zip && \
+    mkdir -p cmdline-tools/latest && \
+    mv cmdline-tools/* cmdline-tools/latest/ && \
+    chmod +x cmdline-tools/latest/bin/*
+
+# Set Android SDK environment variables
+ENV ANDROID_SDK_ROOT=/opt/android-sdk
+ENV PATH="${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platform-tools:${ANDROID_SDK_ROOT}/build-tools/34.0.0"
+
+# Install Android SDK components
+RUN yes | sdkmanager --licenses && \
+    sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+# Install Node.js and package managers for React Native
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y --no-install-recommends nodejs && \
+    npm install -g --silent yarn pnpm && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install React Native CLI and Expo
+RUN npm install -g --silent react-native-cli && \
+    npm install -g --silent @expo/cli && \
+    npm install -g --silent expo-cli
+
+# Install watchman (React Native file watcher)
+RUN git clone https://github.com/facebook/watchman.git /tmp/watchman && \
+    cd /tmp/watchman && \
+    git checkout v2023.11.20.00 && \
+    apt-get update && apt-get install -y --no-install-recommends \
+    autoconf \
+    automake \
+    libtool \
+    libssl-dev \
+    && ./autogen.sh && \
+    ./configure && \
+    make && \
+    make install && \
+    make clean && \
+    rm -rf /tmp/watchman && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install React Native development tools
+RUN npm install -g --silent \
+    @react-native/eslint-config \
+    @react-native/typescript-config \
+    @react-native/metro-config
+
+# Install debugging tools
+RUN npm install -g --silent react-devtools && \
+    npm install -g --silent flipper-server
+
+# Install code quality tools
+RUN npm install -g --silent \
+    @typescript-eslint/eslint-plugin \
+    @typescript-eslint/parser \
+    eslint-plugin-react \
+    eslint-plugin-react-hooks \
+    prettier
+
+# Install testing tools
+RUN npm install -g --silent \
+    jest \
+    @testing-library/react-native \
+    detox-cli
+
+# Install additional development tools
+RUN npm install -g --silent \
+    bundler \
+    react-native-reanimated
+
+# Install iOS development dependencies (for web-based testing)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libimobiledevice-dev \
+    libusbmuxd-dev \
+    libplist-dev \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install additional tools
+RUN npm install -g --silent \
+    metro-react-native-babel-preset \
+    @babel/core \
+    @babel/preset-env \
+    @babel/preset-react \
+    @babel/preset-typescript \
+    @babel/runtime
+
+USER agent
+
+CMD ["/bin/bash"]

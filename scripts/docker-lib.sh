@@ -192,7 +192,7 @@ display_build_menu() {
         echo -e "${YELLOW}⚠ No extension Dockerfiles found${NC}" >&2
         echo "" >&2
     else
-        echo -e "${BLUE}ℹ Extensions are shared between runtimes${NC}" >&2
+        echo -e "${BLUE}ℹ Extensions are available to both runtimes${NC}" >&2
         echo "" >&2
     fi
     

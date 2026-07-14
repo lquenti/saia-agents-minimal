@@ -1,0 +1,48 @@
+ARG BASE_IMAGE=localhost/advanced-coding-agent-opencode:latest
+
+FROM ${BASE_IMAGE}
+
+USER root
+
+# Install .NET SDK
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    dotnet-sdk-8.0 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Entity Framework tools
+RUN dotnet tool install --global dotnet-ef
+
+# Add .NET tools to PATH
+ENV PATH="${PATH}:/root/.dotnet/tools"
+
+# Install additional .NET development tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nuget \
+    mono-complete \
+    msbuild \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install common NuGet packages
+RUN dotnet tool install --global dotnet-format && \
+    dotnet tool install --global JetBrains.ReSharper.GlobalTools
+
+# Install C# development libraries
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libssl-dev \
+    libcurl4-openssl-dev \
+    libunwind8 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Windows Forms support (for WPF-like applications)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgtk2.0-0 \
+    libgtk-3-0 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+USER agent
+
+CMD ["/bin/bash"]

@@ -1,0 +1,135 @@
+ARG BASE_IMAGE=localhost/advanced-coding-agent-opencode:latest
+
+FROM ${BASE_IMAGE}
+
+USER root
+
+# Install Python and MLOps tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    build-essential \
+    git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install MLflow for experiment tracking
+RUN pip install --no-cache-dir mlflow[extras]
+
+# Install Kubeflow tools
+RUN pip install --no-cache-dir \
+    kfp \
+    kubeflow
+
+# Install DVC for data version control
+RUN pip install --no-cache-dir dvc[gs,s3,azure]
+
+# Install Prefect for workflow orchestration
+RUN pip install --no-cache-dir prefect[docker,kubernetes]
+
+# Install Dagster for data orchestration
+RUN pip install --no-cache-dir \
+    dagster \
+    dagster-cloud
+
+# Install Airflow for workflow management
+RUN pip install --no-cache-dir apache-airflow[celery,postgres,redis]
+
+# Install Weights & Biases for experiment tracking
+RUN pip install --no-cache-dir wandb
+
+# Install Comet for ML tracking
+RUN pip install --no-cache-dir comet-ml
+
+# Install Neptune for experiment tracking
+RUN pip install --no-cache-dir neptune-client
+
+# Install ML orchestration tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    make \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Kubernetes tools for MLOps
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
+
+# Install Helm for packaging
+RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# Install KServe for model serving
+RUN pip install --no-cache-dir kserve
+
+# Install Seldon Core for deployment
+RUN pip install --no-cache-dir seldon-core
+
+# Install Docker and container tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    docker.io \
+    docker-compose \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install model registry tools
+RUN pip install --no-cache-dir \
+    mlflow
+* clearml
+
+# Install monitoring tools
+RUN pip install --no-cache-dir \
+    prometheus-client \
+    grafana-api
+
+# Install hyperparameter optimization tools
+RUN pip install --no-cache-dir \
+    optuna \
+    hyperopt \
+    ray[tune]
+
+# Install distributed computing
+RUN pip install --no-cache-dir \
+    ray[default]
+
+# Install feature store tools
+RUN pip install --no-cache-dir feast
+
+# Install data lineage tools
+RUN pip install --no-cache-dir \
+    great_expectations
+
+# Install model monitoring
+RUN pip install --no-cache-dir \
+    evidently
+
+# Install CI/CD tools for ML
+RUN pip install --no-cache-dir \
+    github-action-validator
+
+# Install additional deployment tools
+RUN pip install --no-cache-dir \
+    bentoml \
+    cortex
+
+# Install cloud ML platforms
+RUN pip install --no-cache-dir \
+    azureml-sdk \
+    google-cloud-aiplatform
+
+# Install serverless for ML
+RUN npm install -g serverless
+
+# Install Terraform for infrastructure as code
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+    tee /etc/apt/sources.list.d/hashicorp.list && \
+    apt-get update && \
+    apt-get install -y terraform && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+USER agent
+
+CMD ["/bin/bash"]

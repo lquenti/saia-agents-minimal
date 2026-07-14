@@ -1,0 +1,93 @@
+ARG BASE_IMAGE=localhost/advanced-coding-agent-opencode:latest
+
+FROM ${BASE_IMAGE}
+
+USER root
+
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm awscliv2.zip
+
+# Install Azure CLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash && \
+    apt-get install -y --no-install-recommends azure-cli && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Google Cloud CLI
+RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz && \
+    tar xzf google-cloud-cli-linux-x86_64.tar.gz && \
+    ./google-cloud-sdk/install.sh --quiet && \
+    rm google-cloud-cli-linux-x86_64.tar.gz
+
+# Add Firebase CLI
+RUN npm install -g firebase-tools
+
+# Install eksctl for EKS cluster management
+RUN curl --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && \
+    mv /tmp/eksctl /usr/local/bin/
+
+# Install AWS SAM CLI for serverless applications
+RUN wget -q https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip && \
+    unzip aws-sam-cli-linux-x86_64.zip -d sam-installation && \
+    ./sam-installation/install && \
+    rm -rf aws-sam-cli-linux-x86_64.zip sam-installation
+
+# Install Serverless Framework
+RUN npm install -g serverless
+
+# Install Terraform
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+    tee /etc/apt/sources.list.d/hashicorp.list && \
+    apt-get update && \
+    apt-get install -y terraform && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Kubernetes tools
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
+
+# Install Helm
+RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# Install Docker and container tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    docker.io \
+    docker-compose \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Cloud monitoring and logging tools
+RUN npm install -g aws-cdk
+
+# Install AWS Elastic Beanstalk CLI
+RUN git clone https://github.com/aws/aws-elastic-beanstalk-cli-setup.git /tmp/eb && \
+    cd /tmp/eb && \
+    ./ebcli_installer.py && \
+    rm -rf /tmp/eb
+
+# Install additional cloud tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    jq \
+    yq \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Prometheus for cloud monitoring
+RUN wget -q https://github.com/prometheus/prometheus/releases/download/v2.45.0/prometheus-2.45.0.linux-amd64.tar.gz && \
+    tar xzf prometheus-2.45.0.linux-amd64.tar.gz && \
+    mv prometheus-2.45.0.linux-amd64/prometheus /usr/local/bin/ && \
+    mv prometheus-2.45.0.linux-amd64/promtool /usr/local/bin/ && \
+    rm -rf prometheus-2.45.0.linux-amd64.tar.gz
+
+# Configure Google Cloud SDK
+ENV PATH="/google-cloud-sdk/bin:${PATH}"
+
+USER agent
+
+CMD ["/bin/bash"]

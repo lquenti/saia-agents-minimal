@@ -1,0 +1,114 @@
+ARG BASE_IMAGE=localhost/advanced-coding-agent-opencode:latest
+
+FROM ${BASE_IMAGE}
+
+USER root
+
+# Install Python and ML libraries
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PyTorch with CUDA support
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# Install TensorFlow with GPU support
+RUN pip install --no-cache-dir tensorflow-gpu==2.13.0
+
+# Install deep learning frameworks
+RUN pip install --no-cache-dir \
+    keras \
+    fastai \
+    ignite \
+    pytorch-lightning
+
+# Install computer vision libraries
+RUN pip install --no-cache-dir \
+    opencv-python-headless \
+    pillow \
+    scikit-image \
+    albumentations \
+    imgaug
+
+# Install NLP and transformers
+RUN pip install --no-cache-dir \
+    transformers \
+    tokenizers \
+    datasets \
+    accelerate \
+    bitsandbytes \
+    peft
+
+# Install AI and ML tools
+RUN pip install --no-cache-dir \
+    langchain \
+    openai \
+    anthropic \
+    tiktoken
+
+# Install computer vision models
+RUN pip install --no-cache-dir \
+    timm \
+    efficientnet-pytorch \
+    pretrainedmodels
+
+# Install additional deep learning tools
+RUN pip install --no-cache-dir \
+    wandb \
+    mlflow \
+    comet-ml \
+    tensorboard
+
+# Install model optimization tools
+RUN pip install --no-cache-dir \
+    onnx \
+    onnxruntime-gpu \
+    tensorrt
+
+# Install distributed training tools
+RUN pip install --no-cache-dir \
+    torchx \
+    ray
+
+# Install reinforcement learning tools
+RUN pip install --no-cache-dir \
+    gymnasium \
+    stable-baselines3 \
+    ray[rllib]
+
+# Install audio processing tools
+RUN pip install --no-cache-dir \
+    librosa \
+    speechrecognition \
+    pyaudio
+
+# Install additional ML utilities
+RUN pip install --no-cache-dir \
+    albumentations \
+    imgaug \
+    kornia
+
+# Install GPU monitoring tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nvidia-smi \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install additional development tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    wget \
+    curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+USER agent
+
+CMD ["/bin/bash"]

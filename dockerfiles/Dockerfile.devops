@@ -1,0 +1,119 @@
+ARG BASE_IMAGE=localhost/advanced-coding-agent-opencode:latest
+
+FROM ${BASE_IMAGE}
+
+USER root
+
+# Install Docker and container tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    docker.io \
+    docker-compose \
+    containerd \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Kubernetes tools
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/ && \
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" && \
+    echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+
+# Install Helm package manager
+RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# Install Terraform for infrastructure as code
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+    tee /etc/apt/sources.list.d/hashicorp.list && \
+    apt-get update && \
+    apt-get install -y terraform && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Ansible for configuration management
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ansible \
+    ansible-lint \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Packer for machine image creation
+RUN apt-get update && apt-get install -y --no-install-recommends packer && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Vagrant for development environments
+RUN apt-get update && apt-get install -y --no-install-recommends vagrant && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install minikube for local Kubernetes development
+RUN curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && \
+    chmod +x minikube-linux-amd64 && \
+    mv minikube-linux-amd64 /usr/local/bin/minikube
+
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm awscliv2.zip
+
+# Install eksctl for EKS cluster management
+RUN curl --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && \
+    mv /tmp/eksctl /usr/local/bin/
+
+# Install AWS SAM CLI for serverless applications
+RUN wget -q https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip && \
+    unzip aws-sam-cli-linux-x86_64.zip -d sam-installation && \
+    ./sam-installation/install && \
+    rm -rf aws-sam-cli-linux-x86_64.zip sam-installation
+
+# Install Serverless Framework
+RUN npm install -g serverless
+
+# Install Jenkins CLI tools
+RUN apt-get update && apt-get install -y --no-install-recommends jenkins-cli && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install GitLab CI tools
+RUN curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | bash && \
+    apt-get install -y gitlab-runner && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install GitHub CLI
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
+    tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y gh && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install monitoring and logging tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    prometheus \
+    grafana \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install additional monitoring tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    jq \
+    yq \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install additional DevOps tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    vault \
+    consul \
+    nomad \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+USER agent
+
+CMD ["/bin/bash"]

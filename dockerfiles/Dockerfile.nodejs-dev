@@ -1,0 +1,76 @@
+ARG BASE_IMAGE=localhost/advanced-coding-agent-opencode:latest
+
+FROM ${BASE_IMAGE}
+
+USER root
+
+# Ensure Node.js is up to date and install additional package managers
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    yarn \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y --no-install-recommends nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install TypeScript and build tools
+RUN npm install -g typescript && \
+    npm install -g webpack && \
+    npm install -g webpack-cli && \
+    npm install -g vite && \
+    npm install -g parcel && \
+    npm install -g esbuild && \
+    npm install -g rollup
+
+# Install code quality tools
+RUN npm install -g eslint && \
+    npm install -g prettier && \
+    npm install -g @typescript-eslint/eslint-plugin && \
+    npm install -g @typescript-eslint/parser && \
+    npm install -g.Stylelint
+
+# Install testing frameworks
+RUN npm install -g jest && \
+    npm install -g mocha && \
+    npm install -g chai && \
+    npm install -g @types/node && \
+    npm install -g cypress && \
+    npm install -g playwright
+
+# Install package managers
+RUN npm install -g pnpm && \
+    npm install -g bun
+
+# Install framework CLIs
+RUN npm install -g @vue/cli && \
+    npm install -g create-react-app && \
+    npm install -g @angular/cli && \
+    npm install -g create-next-app && \
+    npm install -g create-svelte && \
+    npm install -g nuxt
+
+# Install backend frameworks
+RUN npm install -g express-generator && \
+    npm install -g nestjs-cli && \
+    npm install -g fastify-cli && \
+    npm install -g koa-generator
+
+# Install development tools
+RUN npm install -g nodemon && \
+    npm install -g pm2 && \
+    npm install -g http-server && \
+    npm install -g serve && \
+    npm install -g concurrently
+
+# Install additional Node.js system tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libgif-dev \
+    librsvg2-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+USER agent
+
+CMD ["/bin/bash"]

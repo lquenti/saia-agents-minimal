@@ -87,6 +87,29 @@ openclaude
 ```
 ---
 
+## 🐳 Docker Extensions
+
+**Build specialized coding environments** with our modular extension system! Choose from 20+ production-ready extensions for different development stacks.
+
+**📦 Available Extensions:**
+
+- **🌐 Web Development:** Node.js, Python Web, PHP/Laravel, Ruby/Rails
+- **💻 Systems Programming:** C/C++, Go, Rust, .NET/C#, Java/Maven
+- **🤖 AI/Machine Learning:** Python Data Science, Python ML, Deep Learning, NLP, MLOps
+- **📱 Mobile Development:** Flutter, React Native
+- **☁️ Cloud & DevOps:** DevOps Tools, Cloud Development
+- **🗄️ Databases:** Database Development
+- **🎮 Specialized:** Game Development, Embedded Systems, Blockchain/Web3, LaTeX
+
+**🔨 Build extensions:**
+```bash
+sudo ./build-opencode.sh  # Interactive menu with all extensions
+```
+
+**📖 [Complete Extension Guide →](docs/USAGE.md#docker-extensions-)**
+
+---
+
 ## 📚 Documentation
 
 **🌐 [View Documentation Online](https://gwdg.pages-ce.gwdg.de/coding-agents)**
@@ -94,7 +117,7 @@ openclaude
 | Guide | Description |
 |-------|-------------|
 | [**Project Structure**](docs/PROJECT_STRUCTURE.md) | Understanding the layout |
-| [**Usage Guide**](docs/USAGE.md) | How to use the agent |
+| [**Usage Guide**](docs/USAGE.md) | How to use the agent + Docker extensions guide |
 | [**Skills Reference**](docs/SKILLS.md) | Complete list of 46+ pre-installed skills |
 | [**Software Engineering Workflow**](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) | 5-phase disciplined development |
 

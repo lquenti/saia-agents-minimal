@@ -1,0 +1,43 @@
+ARG BASE_IMAGE=localhost/advanced-coding-agent-opencode:latest
+
+FROM ${BASE_IMAGE}
+
+USER root
+
+# Install Rust toolchain
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    build-essential \
+    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add Rust to PATH for current and future sessions
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Install Rust development tools
+RUN cargo install cargo-edit && \
+    cargo install cargo-watch && \
+    cargo install cargo-audit && \
+    cargo install sqlx-cli && \
+    cargo install diesel_cli --no-default-features --features postgres
+
+# Install additional Rust tools
+RUN rustup component add rust-analyzer rustfmt clippy && \
+    cargo install sccache
+
+# Install C libraries commonly used by Rust projects
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libssl-dev \
+    pkg-config \
+    libpq-dev \
+    libsqlite3-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV CC=/usr/bin/gcc
+ENV CXX=/usr/bin/g++
+
+USER agent
+
+CMD ["/bin/bash"]
