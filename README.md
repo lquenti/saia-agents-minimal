@@ -4,7 +4,7 @@
 > Choose your runtime: **OpenCode** or **OpenClaude**.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-green.svg)
 [![GitLab Pages](https://img.shields.io/badge/📚-documentation-blue)](https://gwdg.pages-ce.gwdg.de/coding-agents)
 
 ## 🎯 Overview
