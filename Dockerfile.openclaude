@@ -28,6 +28,11 @@ RUN if [ "${HOST_UID}" = "1000" ]; then \
         useradd -r -g agent -u ${HOST_UID} -d /home/agent -m agent; \
     fi
 
+# Configure GWDG mirror for Ubuntu packages
+RUN sed -i 's|http://archive.ubuntu.com/ubuntu/|http://ftp.gwdg.de/pub/linux/debian/ubuntu/ubuntu/|g' etc/apt/sources.list.d/ubuntu.sources && \
+    sed -i 's|http://security.ubuntu.com/ubuntu/|http://ftp.gwdg.de/pub/linux/debian/ubuntu/ubuntu/|g' etc/apt/sources.list.d/ubuntu.sources
+
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
