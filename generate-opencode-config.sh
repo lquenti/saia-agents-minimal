@@ -108,6 +108,7 @@ if [[ ! -f "${OPENCODE_DIR}/opencode.json" ]]; then
     }
   },
   "model": "${MODEL:-chat-ai-academiccloud-de/qwen3.5-122b-a10b}",
+  "share": "disabled",
   "small_model": "${SMALL_MODEL:-${MODEL:-chat-ai-academiccloud-de/qwen3.5-122b-a10b}}",
   "available_models": ${AVAILABLE_MODELS}
 }
