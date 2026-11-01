@@ -275,7 +275,7 @@ docker run -it --rm \
     --cap-add NET_BIND_SERVICE \
     --cap-add NET_RAW \
     --security-opt no-new-privileges:true \
-    --tmpfs /tmp:rw,nosuid,size=100m \
+    --tmpfs /tmp:rw,exec,nosuid,size=100m \
     --tmpfs /var/run:rw,noexec,nosuid,size=10m \
     --memory 4g \
     --memory-swap 4g \
