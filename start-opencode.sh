@@ -90,10 +90,9 @@ fi
 # Set up container and image names based on selection
 ACTUAL_IMAGE_NAME="${selected_image}"
 
-# Handle both image name formats
-if [[ "${ACTUAL_IMAGE_NAME}" != localhost/* ]]; then
-    ACTUAL_IMAGE_NAME="localhost/${ACTUAL_IMAGE_NAME}"
-fi
+# Docker resolves "localhost/name" as a registry at localhost, so keep the
+# plain local tag (the localhost/ prefix is a Podman-ism)
+ACTUAL_IMAGE_NAME="${ACTUAL_IMAGE_NAME#localhost/}"
 
 # Determine container name from image name
 IMAGE_NAME_ONLY="${selected_image%:*}"

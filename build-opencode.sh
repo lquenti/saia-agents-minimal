@@ -139,7 +139,7 @@ build_extension_image() {
 
     docker build \
         --build-arg HOST_UID=${HOST_UID} \
-        --build-arg BASE_IMAGE=localhost/${BASE_IMAGE_NAME}:latest \
+        --build-arg BASE_IMAGE=${BASE_IMAGE_NAME}:latest \
         -f "${ext_dockerfile}" \
         -t "${ext_image_name}:latest" \
         "${SCRIPT_DIR}"
