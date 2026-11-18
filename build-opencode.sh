@@ -19,6 +19,9 @@ BASE_IMAGE_NAME="advanced-coding-agent-opencode"
 # Load shared library functions
 source "${SCRIPT_DIR}/scripts/docker-lib.sh"
 
+# Decide whether docker needs sudo before anything calls it
+setup_docker_cmd
+
 # -----------------------------------------------------------------------------
 # Discover Extension Dockerfiles
 # -----------------------------------------------------------------------------
@@ -47,23 +50,6 @@ HOST_GID=${SUDO_GID:-$(id -g)}
 echo -e "${GREEN}✓ Building with host UID: ${HOST_UID}, GID: ${HOST_GID}${NC}"
 
 # -----------------------------------------------------------------------------
-# Check Root Privileges
-# -----------------------------------------------------------------------------
-if [[ "$(id -u)" != "0" ]]; then
-    echo -e "${RED}✗ ERROR: This script must be run with sudo${NC}"
-    echo -e "${YELLOW}  Please run: sudo ./build-opencode.sh${NC}"
-    exit 1
-fi
-
-# -----------------------------------------------------------------------------
-# Check Docker
-# -----------------------------------------------------------------------------
-if ! docker info &>/dev/null; then
-    echo -e "${RED}✗ ERROR: Docker is not running${NC}"
-    exit 1
-fi
-
-# -----------------------------------------------------------------------------
 # Check Base Dockerfile
 # -----------------------------------------------------------------------------
 if [[ ! -f "${DOCKERFILE}" ]]; then
@@ -87,7 +73,7 @@ build_base_image() {
     echo -e "${YELLOW}  Host UID/GID: ${HOST_UID}/${HOST_GID}${NC}"
     echo ""
 
-    docker build \
+    ${DOCKER} build \
         --build-arg HOST_UID=${HOST_UID} \
         -f "${DOCKERFILE}" \
         -t "${BASE_IMAGE_NAME}:latest" \
@@ -124,7 +110,7 @@ build_extension_image() {
     fi
     
     # Verify base image exists
-    if ! docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${BASE_IMAGE_NAME}:latest$\|^localhost/${BASE_IMAGE_NAME}:latest$"; then
+    if ! ${DOCKER} images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${BASE_IMAGE_NAME}:latest$\|^localhost/${BASE_IMAGE_NAME}:latest$"; then
         echo -e "${RED}✗ ERROR: Base image not found: ${BASE_IMAGE_NAME}:latest${NC}"
         echo -e "${YELLOW}  Building base image first...${NC}"
         if ! build_base_image; then
@@ -137,7 +123,7 @@ build_extension_image() {
     echo -e "${YELLOW}  Image: ${ext_image_name}:latest${NC}"
     echo ""
 
-    docker build \
+    ${DOCKER} build \
         --build-arg HOST_UID=${HOST_UID} \
         --build-arg BASE_IMAGE=localhost/${BASE_IMAGE_NAME}:latest \
         -f "${ext_dockerfile}" \
@@ -191,8 +177,8 @@ if [[ "${build_success}" == "true" ]]; then
     # Display built images (optional, doesn't fail if Docker not available)
     echo ""
     echo -e "${YELLOW}Built Images:${NC}"
-    if docker images &>/dev/null; then
-        docker images --format '{{.Repository}}:{{.Tag}}' | grep -E "(^|/)advanced-coding-agent-${RUNTIME}" | sed 's/^/  /' || echo -e "${YELLOW}  No ${RUNTIME} images found yet${NC}"
+    if ${DOCKER} images &>/dev/null; then
+        ${DOCKER} images --format '{{.Repository}}:{{.Tag}}' | grep -E "(^|/)advanced-coding-agent-${RUNTIME}" | sed 's/^/  /' || echo -e "${YELLOW}  No ${RUNTIME} images found yet${NC}"
     else
         echo -e "${YELLOW}  Docker not available to list images${NC}"
     fi

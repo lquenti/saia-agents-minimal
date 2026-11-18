@@ -21,6 +21,9 @@ RUNTIME="opencode"
 # Load shared library functions
 source "${SCRIPT_DIR}/scripts/docker-lib.sh"
 
+# Decide whether docker needs sudo before anything calls it
+setup_docker_cmd
+
 # -----------------------------------------------------------------------------
 # Display Start Menu and Get User Selection
 # -----------------------------------------------------------------------------
@@ -48,15 +51,6 @@ HOST_USER=$(getent passwd ${HOST_UID} | cut -d: -f1)
 echo -e "${GREEN}✓ Host user: ${HOST_USER} (UID: ${HOST_UID}, GID: ${HOST_GID})${NC}"
 
 # -----------------------------------------------------------------------------
-# Check Root Privileges
-# -----------------------------------------------------------------------------
-if [[ "$(id -u)" != "0" ]]; then
-    echo -e "${RED}✗ ERROR: This script must be run with sudo${NC}"
-    echo -e "${YELLOW}  Please run: sudo ./start-opencode.sh${NC}"
-    exit 1
-fi
-
-# -----------------------------------------------------------------------------
 # Load Environment
 # -----------------------------------------------------------------------------
 if [[ ! -f "${ENV_FILE}" ]]; then
@@ -76,14 +70,6 @@ fi
 
 if [[ -z "${MODEL}" ]]; then
     echo -e "${RED}✗ ERROR: MODEL not set in .env${NC}"
-    exit 1
-fi
-
-# -----------------------------------------------------------------------------
-# Check Docker
-# -----------------------------------------------------------------------------
-if ! docker info &>/dev/null; then
-    echo -e "${RED}✗ ERROR: Docker is not running${NC}"
     exit 1
 fi
 
@@ -185,6 +171,9 @@ OPENCODE_DIR="${SCRIPT_DIR}/.opencode"
 if [[ ! -f "${OPENCODE_DIR}/auth.json" ]] || [[ ! -f "${OPENCODE_DIR}/opencode.json" ]]; then
     echo -e "${YELLOW}⚠ Generating OpenCode config...${NC}"
     "${SCRIPT_DIR}/generate-opencode-config.sh" || exit 1
+    # Hand the generated config back to the invoking user if we ran under sudo,
+    # otherwise it stays root-owned and needs sudo to edit or regenerate
+    chown -R ${HOST_UID}:${HOST_GID} "${OPENCODE_DIR}"
     echo ""
 fi
 
@@ -247,7 +236,7 @@ echo ""
 echo -e "${GREEN}🚀 Starting OpenCode container...${NC}"
 echo ""
 
-docker run -it --rm \
+${DOCKER} run -it --rm \
     --name "${CONTAINER_NAME}" \
     --hostname coding-agent \
     --user agent \

@@ -21,6 +21,9 @@ RUNTIME="openclaude"
 # Load shared library functions
 source "${SCRIPT_DIR}/scripts/docker-lib.sh"
 
+# Decide whether docker needs sudo before anything calls it
+setup_docker_cmd
+
 # -----------------------------------------------------------------------------
 # Discover Available Images and Display Menu
 # -----------------------------------------------------------------------------
@@ -48,16 +51,6 @@ HOST_USER=$(getent passwd ${HOST_UID} | cut -d: -f1)
 echo -e "${GREEN}✓ Host user: ${HOST_USER} (UID: ${HOST_UID}, GID: ${HOST_GID})${NC}"
 
 # -----------------------------------------------------------------------------
-# Check Root Privileges
-# -----------------------------------------------------------------------------
-if [[ "$(id -u)" != "0" ]]; then
-    echo -e "${RED}✗ ERROR: This script must be run with sudo${NC}"
-    echo -e "${YELLOW}  Please run: sudo ./start-openclaude.sh${NC}"
-    echo -e "${YELLOW}  Docker requires elevated permissions for volume mounts${NC}"
-    exit 1
-fi
-
-# -----------------------------------------------------------------------------
 # Load Environment
 # -----------------------------------------------------------------------------
 if [[ -f "${ENV_FILE}" ]]; then
@@ -80,14 +73,6 @@ fi
 if [[ -z "${MODEL}" ]]; then
     echo -e "${RED}✗ ERROR: MODEL not set in .env${NC}"
     echo -e "${YELLOW}  Please set your model in .env file${NC}"
-    exit 1
-fi
-
-# -----------------------------------------------------------------------------
-# Check Docker
-# -----------------------------------------------------------------------------
-if ! docker info &>/dev/null; then
-    echo -e "${RED}✗ ERROR: Docker is not running${NC}"
     exit 1
 fi
 
@@ -268,7 +253,7 @@ echo ""
 echo -e "${GREEN}🚀 Starting OpenClaude container...${NC}"
 echo ""
 
-docker run -it --rm \
+${DOCKER} run -it --rm \
     --name "${CONTAINER_NAME}" \
     --hostname coding-agent \
     --user agent \
