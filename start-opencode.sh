@@ -76,10 +76,9 @@ fi
 # Set up container and image names based on selection
 ACTUAL_IMAGE_NAME="${selected_image}"
 
-# Handle both image name formats
-if [[ "${ACTUAL_IMAGE_NAME}" != localhost/* ]]; then
-    ACTUAL_IMAGE_NAME="localhost/${ACTUAL_IMAGE_NAME}"
-fi
+# Docker resolves "localhost/name" as a registry at localhost, so keep the
+# plain local tag (the localhost/ prefix is a Podman-ism)
+ACTUAL_IMAGE_NAME="${ACTUAL_IMAGE_NAME#localhost/}"
 
 # Determine container name from image name
 IMAGE_NAME_ONLY="${selected_image%:*}"
@@ -244,7 +243,7 @@ ${DOCKER} run -it --rm \
     --cap-add NET_BIND_SERVICE \
     --cap-add NET_RAW \
     --security-opt no-new-privileges:true \
-    --tmpfs /tmp:rw,nosuid,size=100m \
+    --tmpfs /tmp:rw,exec,nosuid,size=100m \
     --tmpfs /var/run:rw,noexec,nosuid,size=10m \
     --memory 4g \
     --memory-swap 4g \

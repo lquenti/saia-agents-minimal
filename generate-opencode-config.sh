@@ -81,38 +81,56 @@ if [[ ! -f "${OPENCODE_DIR}/opencode.json" ]]; then
     API_KEY="${OPENAI_API_KEY:-${OPENCODE_API_KEY}}"
     
     echo -e "${YELLOW}🔍 Fetching models from ${BASE_URL}/models...${NC}"
-    
+
+    DEFAULT_MODEL="qwen3.5-397b-a17b"
+
     MODELS_JSON=""
     if [[ -n "${API_KEY}" ]]; then
         MODELS_JSON=$(curl -s -X GET "${BASE_URL}/models" \
             -H "Authorization: Bearer ${API_KEY}" \
             -H "Content-Type: application/json" 2>/dev/null || true)
     fi
-    
-    if [[ -z "${MODELS_JSON}" ]]; then
-        echo -e "${YELLOW}⚠ Could not fetch models, using default${NC}"
-        AVAILABLE_MODELS='["chat-ai-academiccloud-de/qwen3.5-122b-a10b"]'
+
+    # OpenCode expects provider.<name>.models as an object map keyed by model id
+    MODELS_MAP=$(echo "${MODELS_JSON}" \
+        | jq -c '[.data[].id] | map({key: ., value: {name: .}}) | from_entries' 2>/dev/null \
+        || true)
+
+    if [[ -z "${MODELS_MAP}" || "${MODELS_MAP}" == "null" || "${MODELS_MAP}" == "{}" ]]; then
+        echo -e "${YELLOW}⚠ Could not fetch models, using default: ${DEFAULT_MODEL}${NC}"
+        MODELS_MAP=$(jq -cn --arg m "${DEFAULT_MODEL}" '{($m): {name: $m}}')
     else
-        AVAILABLE_MODELS=$(echo "${MODELS_JSON}" | jq -c '[.data[].id]' 2>/dev/null || echo '["chat-ai-academiccloud-de/qwen3.5-122b-a10b"]')
+        echo -e "${GREEN}✓ Discovered $(echo "${MODELS_MAP}" | jq 'length') models${NC}"
     fi
-    
-    cat > "${OPENCODE_DIR}/opencode.json" << EOF
-{
-  "provider": {
-    "${PROVIDER_NAME}": {
-      "type": "openai",
-      "options": {
-        "baseURL": "${BASE_URL}",
-        "apiKey": "${API_KEY}"
-      }
-    }
-  },
-  "model": "${MODEL:-chat-ai-academiccloud-de/qwen3.5-122b-a10b}",
-  "share": "disabled",
-  "small_model": "${SMALL_MODEL:-${MODEL:-chat-ai-academiccloud-de/qwen3.5-122b-a10b}}",
-  "available_models": ${AVAILABLE_MODELS}
-}
-EOF
+
+    # model/small_model must be "provider/model"; tolerate either form in .env
+    SELECTED_MODEL="${MODEL:-${DEFAULT_MODEL}}"
+    SELECTED_SMALL_MODEL="${SMALL_MODEL:-${SELECTED_MODEL}}"
+    SELECTED_MODEL="${PROVIDER_NAME}/${SELECTED_MODEL#${PROVIDER_NAME}/}"
+    SELECTED_SMALL_MODEL="${PROVIDER_NAME}/${SELECTED_SMALL_MODEL#${PROVIDER_NAME}/}"
+
+    jq -n \
+        --arg provider "${PROVIDER_NAME}" \
+        --arg baseURL "${BASE_URL}" \
+        --arg apiKey "${API_KEY}" \
+        --arg model "${SELECTED_MODEL}" \
+        --arg smallModel "${SELECTED_SMALL_MODEL}" \
+        --argjson models "${MODELS_MAP}" \
+        '{
+          "$schema": "https://opencode.ai/config.json",
+          provider: {
+            ($provider): {
+              npm: "@ai-sdk/openai-compatible",
+              name: $provider,
+              options: { baseURL: $baseURL, apiKey: $apiKey },
+              models: $models
+            }
+          },
+          model: $model,
+          small_model: $smallModel,
+          share: "disabled"
+        }' > "${OPENCODE_DIR}/opencode.json"
+
     echo -e "${GREEN}✓ Created opencode.json at .opencode/opencode.json${NC}"
 else
     echo -e "${GREEN}✓ opencode.json already exists${NC}"

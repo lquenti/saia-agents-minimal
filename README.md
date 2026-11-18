@@ -24,7 +24,7 @@ Secure, isolated Docker environment for AI coding agents with:
 
 ```bash
 git clone https://gitlab-ce.gwdg.de/gwdg/coding-agents.git
-cd advanced-coding-agent
+cd coding-agents
 
 # ⚠️ CRITICAL: Initialize submodules!
 # This project uses Git submodules for skills (addy-osmani, matt-pocock)
