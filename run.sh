@@ -8,19 +8,6 @@ CONTAINER=lquenti-saia-agents-minimal
 OPENCODE_DIR="$SCRIPT_DIR/.opencode"
 
 # Checks:
-# docker CLI must be on PATH
-command -v docker >/dev/null 2>&1 || { echo "docker: not found" >&2; exit 1; }
-
-# if the daemon is not reachable as this user, try sudo for the run
-if docker info >/dev/null 2>&1; then
-    DOCKER=docker
-else
-    DOCKER="sudo docker"
-fi
-
-# refuse root so files created in $PWD stay owned by you
-[ "$(id -u)" -ne 0 ] || { echo "do not run as root" >&2; exit 1; }
-
 # .env is required for the API key and model
 [ -f "$SCRIPT_DIR/.env" ] || { echo "no .env (cp .env.example .env)" >&2; exit 1; }
 
@@ -42,7 +29,7 @@ SHARE_DIR="$CURRENT_DIR/.agent-memory/share"
 mkdir -p "$SHARE_DIR/opencode"
 ln -sf ../../../../.opencode/auth.json "$SHARE_DIR/opencode/auth.json"
 
-exec $DOCKER run -it --rm \
+exec docker run -it --rm \
     --name "$CONTAINER" \
     --hostname coding-agent \
     --user agent \
