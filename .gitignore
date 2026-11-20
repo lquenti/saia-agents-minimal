@@ -1,70 +1,8 @@
-# Environment files (never commit secrets!)
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
-# Agent runtime directories (auto-generated during container runs)
 .opencode/
-
-# Agent memory (persistent across sessions - keep local only)
 .agent-memory/
-
-# Generated config files (contain secrets)
-.opencode/auth.json
-.opencode/opencode.json
-.local/share/opencode/auth.json
-
-# Docker volumes
-projects/
-memory/
-
-# Logs
-logs/
-*.log
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-
-# Build artifacts
-dist/
-build/
-*.egg-info/
-
-# Python
 __pycache__/
-*.py[cod]
-*$py.class
-.venv/
-venv/
-ENV/
-
-# Node
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Test coverage
-coverage/
-.nyc_output/
-
-# Test artifacts
-tests/__pycache__/
-tests/*.pyc
-tests/.pytest_cache/
-.coverage
-htmlcov/
-.pytest_cache/
+*.pyc
