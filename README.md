@@ -9,7 +9,7 @@
 Secure, isolated Docker environment for AI coding agents with:
 
 - ✅ **No docker-compose** - Simple shell scripts
-- ✅ **Persistent memory** - AGENTS.md + .agent-memory/
+- ✅ **Persistent memory** - .agent-memory/
 
 ---
 
@@ -51,31 +51,10 @@ Navigate to project folder and run.
 start-opencode
 ```
 
-> If no `AGENTS.md` exists in your project, the start script will offer to create one from a template.
-
 ### 5. Run Agent
 
 ```bash
 opencode
-```
-
----
-
-## 🧠 Persistent Memory
-
-Sessions are persistent per project via .agent-memory and **AGENTS.md**
-
-```markdown
-# AGENTS.md
-
-## Memory Usage
-CRITICAL: Use .agent-memory/ folder for persistent notes.
-- Read .agent-memory/session-notes.md at session start
-- Update with progress and decisions
-
-## Current State
-- Status: In progress
-- Last task: Implement feature X
 ```
 
 ---

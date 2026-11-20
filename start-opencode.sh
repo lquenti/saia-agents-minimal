@@ -119,40 +119,6 @@ else
 fi
 
 # -----------------------------------------------------------------------------
-# Setup AGENTS.md
-# -----------------------------------------------------------------------------
-if [[ ! -f "${CURRENT_DIR}/AGENTS.md" ]]; then
-    echo -e "${YELLOW}⚠ No AGENTS.md found${NC}"
-    echo -e "${YELLOW}  AGENTS.md provides persistent memory across sessions${NC}"
-    echo ""
-    echo -e "${YELLOW}Choose template:${NC}"
-    echo -e "  ${GREEN}1${NC}) Generic project"
-    echo -e "  ${GREEN}2${NC}) Python/uv project (ruff, mypy, pytest)"
-    echo -e "  ${GREEN}n${NC}) Skip"
-    echo ""
-    read -p "  Selection [1/2/n]: " -n 1 -r
-    echo
-    case $REPLY in
-        [1])
-            cp "${SCRIPT_DIR}/templates/AGENTS.md" "${CURRENT_DIR}/AGENTS.md"
-            chown ${HOST_UID}:${HOST_GID} "${CURRENT_DIR}/AGENTS.md"
-            echo -e "${GREEN}✓ Created AGENTS.md (owned by ${HOST_USER})${NC}"
-            ;;
-        [2])
-            cp "${SCRIPT_DIR}/templates/AGENTS.md-python" "${CURRENT_DIR}/AGENTS.md"
-            chown ${HOST_UID}:${HOST_GID} "${CURRENT_DIR}/AGENTS.md"
-            echo -e "${GREEN}✓ Created AGENTS.md (Python template, owned by ${HOST_USER})${NC}"
-            ;;
-        *)
-            echo -e "${YELLOW}  Skipping${NC}"
-            ;;
-    esac
-    echo ""
-else
-    echo -e "${GREEN}✓ AGENTS.md exists${NC}"
-fi
-
-# -----------------------------------------------------------------------------
 # Generate OpenCode Config
 # -----------------------------------------------------------------------------
 OPENCODE_DIR="${SCRIPT_DIR}/.opencode"

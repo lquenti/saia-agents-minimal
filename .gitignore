@@ -61,9 +61,6 @@ yarn-error.log*
 coverage/
 .nyc_output/
 
-# Project-specific files (templates are kept in git)
-AGENTS.md
-
 # Test artifacts
 tests/__pycache__/
 tests/*.pyc

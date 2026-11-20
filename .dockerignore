@@ -12,9 +12,6 @@ tests/
 *.test.*
 *.spec.*
 
-# Templates (not needed in container)
-templates/
-
 # Build artifacts
 dist/
 build/
