@@ -1,70 +1,41 @@
 #!/bin/bash
-# =============================================================================
-# Advanced Coding Agent - Run
-# =============================================================================
-# Runs OpenCode in an isolated container with the current directory mounted at
-# /home/agent/workspace. Your files stay yours; the container gets no more than
-# this directory, a tmpfs, and its config.
-# =============================================================================
-
+# Run OpenCode in docker with the current directory at /home/agent/workspace.
 set -e
 
-# -----------------------------------------------------------------------------
-# Configuration
-# -----------------------------------------------------------------------------
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-IMAGE_NAME="lquenti-saia-agents-minimal:latest"
-CONTAINER_NAME="lquenti-saia-agents-minimal"
-OPENCODE_DIR="${SCRIPT_DIR}/.opencode"
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+IMAGE=lquenti-saia-agents-minimal:latest
+CONTAINER=lquenti-saia-agents-minimal
+OPENCODE_DIR="$SCRIPT_DIR/.opencode"
 
-source "${SCRIPT_DIR}/scripts/docker-lib.sh"
-setup_docker_cmd
+command -v docker >/dev/null 2>&1 || { echo "docker: not found" >&2; exit 1; }
 
-# Match the host UID/GID so files created in the workspace keep your ownership
-HOST_UID=${SUDO_UID:-$(id -u)}
-HOST_GID=${SUDO_GID:-$(id -g)}
-
-# -----------------------------------------------------------------------------
-# Load Environment
-# -----------------------------------------------------------------------------
-if [[ ! -f "${SCRIPT_DIR}/.env" ]]; then
-    echo "ERROR: no .env file (copy .env.example to .env)" >&2
-    exit 1
+if docker info >/dev/null 2>&1; then
+    DOCKER=docker
+else
+    DOCKER="sudo docker"
 fi
+
+[ "$(id -u)" -ne 0 ] || { echo "do not run as root" >&2; exit 1; }
+[ -f "$SCRIPT_DIR/.env" ] || { echo "no .env (cp .env.example .env)" >&2; exit 1; }
 
 set -a
-source "${SCRIPT_DIR}/.env"
+. "$SCRIPT_DIR/.env"
 set +a
 
-: "${OPENCODE_API_KEY:?OPENCODE_API_KEY not set in .env}"
-: "${MODEL:?MODEL not set in .env}"
+[ -n "$OPENCODE_API_KEY" ] || { echo "OPENCODE_API_KEY not set" >&2; exit 1; }
+[ -n "$MODEL" ] || { echo "MODEL not set" >&2; exit 1; }
 
-# -----------------------------------------------------------------------------
-# Generate Config (discovers models from the endpoint) if missing
-# -----------------------------------------------------------------------------
-if [[ ! -f "${OPENCODE_DIR}/auth.json" || ! -f "${OPENCODE_DIR}/opencode.json" ]]; then
-    "${SCRIPT_DIR}/generate-opencode-config.sh"
-    if [[ "$(id -u)" -eq 0 ]]; then
-        chown -R "${HOST_UID}:${HOST_GID}" "${OPENCODE_DIR}"
-    fi
+if [ ! -f "$OPENCODE_DIR/auth.json" ] || [ ! -f "$OPENCODE_DIR/opencode.json" ]; then
+    "$SCRIPT_DIR/generate-opencode-config.sh"
 fi
 
-# -----------------------------------------------------------------------------
-# Per-project persistence
-# -----------------------------------------------------------------------------
-CURRENT_DIR="$(pwd)"
-MEMORY_SHARE_DIR="${CURRENT_DIR}/.agent-memory/share"
-mkdir -p "${MEMORY_SHARE_DIR}/opencode"
-if [[ "$(id -u)" -eq 0 ]]; then
-    chown -R "${HOST_UID}:${HOST_GID}" "${CURRENT_DIR}/.agent-memory"
-fi
-ln -sf ../../../../.opencode/auth.json "${MEMORY_SHARE_DIR}/opencode/auth.json"
+CURRENT_DIR=$(pwd)
+SHARE_DIR="$CURRENT_DIR/.agent-memory/share"
+mkdir -p "$SHARE_DIR/opencode"
+ln -sf ../../../../.opencode/auth.json "$SHARE_DIR/opencode/auth.json"
 
-# -----------------------------------------------------------------------------
-# Run
-# -----------------------------------------------------------------------------
-exec ${DOCKER} run -it --rm \
-    --name "${CONTAINER_NAME}" \
+exec $DOCKER run -it --rm \
+    --name "$CONTAINER" \
     --hostname coding-agent \
     --user agent \
     --cap-drop ALL \
@@ -73,17 +44,11 @@ exec ${DOCKER} run -it --rm \
     --security-opt no-new-privileges:true \
     --tmpfs /tmp:rw,exec,nosuid,size=100m \
     --tmpfs /var/run:rw,noexec,nosuid,size=10m \
-    --memory 4g \
-    --memory-swap 4g \
-    --cpus 2.0 \
-    -v "${OPENCODE_DIR}/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
-    -v "${OPENCODE_DIR}/auth.json:/home/agent/.opencode/auth.json:ro" \
-    -v "${CURRENT_DIR}:/home/agent/workspace:rw" \
-    -v "${MEMORY_SHARE_DIR}:/home/agent/workspace/.agent-memory/share:rw" \
-    -e NODE_ENV=production \
-    -e WORKSPACE=/home/agent/workspace \
-    -e OPENAI_API_KEY="${OPENCODE_API_KEY}" \
-    -e OPENAI_BASE_URL="${OPENAI_BASE_URL}" \
-    -e MAX_FILE_SIZE="${MAX_FILE_SIZE:-104857600}" \
-    -e LOG_LEVEL="${LOG_LEVEL:-info}" \
-    "${IMAGE_NAME}"
+    --memory 4g --memory-swap 4g --cpus 2.0 \
+    -v "$OPENCODE_DIR/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
+    -v "$OPENCODE_DIR/auth.json:/home/agent/.opencode/auth.json:ro" \
+    -v "$CURRENT_DIR:/home/agent/workspace:rw" \
+    -v "$SHARE_DIR:/home/agent/workspace/.agent-memory/share:rw" \
+    -e OPENAI_API_KEY="$OPENCODE_API_KEY" \
+    -e OPENAI_BASE_URL="$OPENAI_BASE_URL" \
+    "$IMAGE"
