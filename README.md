@@ -28,18 +28,18 @@ nano .env  # Set API key and MODEL
 ### 2. Build Image (Once)
 
 ```bash
-./build-opencode.sh
+./build.sh
 ```
 
 ### 3. Add to Shell
 
 ```bash
 # For Bash
-echo "alias start-opencode=\"$(pwd)/start-opencode.sh\"" >> ~/.bashrc
+echo "alias agent=\"$(pwd)/run.sh\"" >> ~/.bashrc
 source ~/.bashrc
 
 # For Zsh
-echo "alias start-opencode=\"$(pwd)/start-opencode.sh\"" >> ~/.zshrc
+echo "alias agent=\"$(pwd)/run.sh\"" >> ~/.zshrc
 source ~/.zshrc
 ```
 
@@ -48,7 +48,7 @@ source ~/.zshrc
 Navigate to project folder and run.
 
 ```bash
-start-opencode
+agent
 ```
 
 ### 5. Run Agent

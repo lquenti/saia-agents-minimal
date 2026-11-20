@@ -26,7 +26,7 @@ set +a
 [ -n "$MODEL" ] || { echo "MODEL not set" >&2; exit 1; }
 
 if [ ! -f "$OPENCODE_DIR/auth.json" ] || [ ! -f "$OPENCODE_DIR/opencode.json" ]; then
-    "$SCRIPT_DIR/generate-opencode-config.sh"
+    "$SCRIPT_DIR/configure.sh"
 fi
 
 CURRENT_DIR=$(pwd)
