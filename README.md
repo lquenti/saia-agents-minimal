@@ -12,7 +12,7 @@ Debian-based (Ubuntu, Mint, PopOS):
 
 ```bash
 sudo apt update
-sudo apt install docker.io git python3 curl
+sudo apt install docker.io git python3 curl nftables
 sudo systemctl enable --now docker
 sudo usermod -aG docker "$USER"
 ```
@@ -20,7 +20,7 @@ sudo usermod -aG docker "$USER"
 RHEL-based (Fedora):
 
 ```bash
-sudo dnf install moby-engine docker-cli git python3 curl
+sudo dnf install moby-engine docker-cli git python3 curl nftables
 sudo systemctl enable --now docker
 sudo usermod -aG docker "$USER"
 ```
@@ -42,6 +42,20 @@ $EDITOR .env
 # Add it as an alias:
 echo 'alias agent="/path/to/repo/run.sh"' >> ~/.bashrc
 ```
+
+## Ignore VPNs (eduVPN)
+
+By default the agent can reach everything your host can, including networks
+behind your eduVPN. To keep it out of them, run once after every boot:
+
+```bash
+sudo ./novpn.sh
+```
+
+The agent's traffic then bypasses eduVPN (WireGuard) and uses your normal
+internet connection. Traffic that would still go through a VPN interface
+(`eduVPN`, `LetsConnect`, `tun*`, `wg*`) is dropped. Undo with
+`sudo nft delete table inet saia_novpn`.
 
 ## Add Features
 
@@ -72,11 +86,18 @@ $ cat /etc/docker/daemon.json
 }
 ```
 
+### The agent has no internet while my VPN is on
+
+`novpn.sh` can only route around eduVPN's WireGuard connections. Any other VPN
+(or eduVPN using OpenVPN) is blocked instead, so disconnect it while using the
+agent.
+
 ## File Overview
 
 ```
 build.sh              build the image
 run.sh                start the container
+novpn.sh              keep the container's traffic out of VPNs (sudo)
 gen-config.py         generate .opencode/opencode.json
 docker/Dockerfile     image definition
 ```

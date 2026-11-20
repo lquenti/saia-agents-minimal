@@ -5,6 +5,9 @@ set -e
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 IMAGE=lquenti-saia-agents-minimal:latest
 CONTAINER=lquenti-saia-agents-minimal
+NETWORK=lquenti-saia-agents-minimal
+# must match BRIDGE in novpn.sh
+BRIDGE=br-saia-agent
 OPENCODE_DIR="$SCRIPT_DIR/.opencode"
 
 # Checks:
@@ -28,9 +31,16 @@ CURRENT_DIR=$(pwd)
 SHARE_DIR="$CURRENT_DIR/.agent-memory/share"
 mkdir -p "$SHARE_DIR/opencode"
 
+# own bridge with a fixed name, so novpn.sh can route around the VPN
+docker network inspect "$NETWORK" >/dev/null 2>&1 \
+    || docker network create -o "com.docker.network.bridge.name=$BRIDGE" "$NETWORK" >/dev/null
+
+# public DNS: the VPN's resolvers are not reachable when bypassing the VPN
 exec docker run -it --rm \
     --name "$CONTAINER" \
     --hostname coding-agent \
+    --network "$NETWORK" \
+    --dns 9.9.9.9 \
     --user agent \
     --cap-drop ALL \
     --cap-add NET_BIND_SERVICE \
