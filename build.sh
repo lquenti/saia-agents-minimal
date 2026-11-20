@@ -9,6 +9,7 @@ HOST_GID=${SUDO_GID:-$(id -g)}
 pushd "$(dirname "$0")/docker" >/dev/null
 docker build \
     --build-arg "HOST_UID=$HOST_UID" \
+    --build-arg "HOST_GID=$HOST_GID" \
     -f Dockerfile \
     -t "$IMAGE:latest" \
     "$@" \

@@ -1,7 +1,7 @@
 # OpenCode coding agent
-# Ubuntu 24.04 + standalone OpenCode binary
+# Debian 13 + standalone OpenCode binary
 
-FROM ubuntu:24.04
+FROM debian:13
 
 LABEL description="OpenCode coding agent environment"
 
@@ -9,22 +9,23 @@ LABEL description="OpenCode coding agent environment"
 # PRE-SETUP: DO NOT EDIT
 # -----------------------------------------------------------------------------
 
-# Host UID to match, so files written to the mounted workspace stay yours
+# Host UID/GID to match, so files written to the mounted workspace stay yours
 ARG HOST_UID=1000
-ENV HOST_UID=${HOST_UID}
+ARG HOST_GID=1000
+ENV HOST_UID=${HOST_UID} \
+    HOST_GID=${HOST_GID}
 ARG OPENCODE_VERSION=2.3.2
 # user creation
-RUN if [ "${HOST_UID}" = "1000" ]; then \
-        usermod -u 1000 -l agent -d /home/agent -m ubuntu && \
-        groupmod -g 1000 -n agent ubuntu && \
-        usermod -g agent agent; \
-    else \
-        groupadd -r -g 9999 agent && \
-        useradd -r -g agent -u "${HOST_UID}" -d /home/agent -m agent; \
-    fi
-# GWDG mirror (optional)
-RUN sed -i 's|http://archive.ubuntu.com/ubuntu/|http://ftp.gwdg.de/pub/linux/debian/ubuntu/ubuntu/|g' etc/apt/sources.list.d/ubuntu.sources && \
-    sed -i 's|http://security.ubuntu.com/ubuntu/|http://ftp.gwdg.de/pub/linux/debian/ubuntu/ubuntu/|g' etc/apt/sources.list.d/ubuntu.sources
+RUN groupadd -g "${HOST_GID}" agent && \
+    useradd -u "${HOST_UID}" -g agent -d /home/agent -m -s /bin/bash agent
+# GWDG mirror (optional); comment out to use the default Debian mirror
+RUN for f in /etc/apt/sources.list /etc/apt/sources.list.d/*.sources; do \
+        [ -f "$f" ] || continue; \
+        sed -i \
+            -e 's|https\?://deb.debian.org/debian|http://ftp.gwdg.de/pub/linux/debian/debian|g' \
+            -e 's|https\?://security.debian.org/debian-security|http://ftp.gwdg.de/pub/linux/debian/debian-security|g' \
+            "$f"; \
+    done
 # Install base packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
