@@ -61,10 +61,6 @@ yarn-error.log*
 coverage/
 .nyc_output/
 
-# Generated HTML (build output)
-public/
-*.html
-
 # Project-specific files (templates are kept in git)
 AGENTS.md
 

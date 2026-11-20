@@ -4,10 +4,8 @@
 .gitattributes
 
 # Documentation (not needed in container)
-docs/
 *.md
 !README.md
-!tools.md
 
 # Tests (not needed in container)
 tests/
@@ -17,11 +15,7 @@ tests/
 # Templates (not needed in container)
 templates/
 
-# Scripts (not needed in container - only generate-pages.py is used)
-scripts/*.js
-
 # Build artifacts
-public/
 dist/
 build/
 
@@ -48,7 +42,3 @@ logs/
 Dockerfile*
 .dockerignore
 docker-compose*.yml
-
-# CI/CD
-.gitlab-ci.yml
-.github/

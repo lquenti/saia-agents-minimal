@@ -3,8 +3,6 @@
 > An isolated, secure Docker environment for AI-assisted coding with **OpenCode**.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.1.2-green.svg)
-[![GitLab Pages](https://img.shields.io/badge/📚-documentation-blue)](https://gwdg.pages-ce.gwdg.de/coding-agents)
 
 ## 🎯 Overview
 
@@ -74,19 +72,6 @@ opencode
 
 ---
 
-## 📚 Documentation
-
-**🌐 [View Documentation Online](https://gwdg.pages-ce.gwdg.de/coding-agents)**
-
-| Guide | Description |
-|-------|-------------|
-| [**Project Structure**](docs/PROJECT_STRUCTURE.md) | Understanding the layout |
-| [**Usage Guide**](docs/USAGE.md) | How to use the agent |
-| [**Skills Reference**](docs/SKILLS.md) | Complete list of 46+ pre-installed skills |
-| [**Software Engineering Workflow**](docs/SOFTWARE_ENGINEERING_WORKFLOW.md) | 5-phase disciplined development |
-
----
-
 ## 🧠 Persistent Memory
 
 Sessions are persistent per project via .agent-memory and **AGENTS.md**
@@ -125,8 +110,6 @@ CRITICAL: Use .agent-memory/ folder for persistent notes.
 | `/ship` | Pre-launch checklist |
 | `/understand` | Codebase analysis & knowledge graph |
 
-**📖 Complete list:** [docs/SKILLS.md](docs/SKILLS.md)
-
 ---
 
 ## 🏭️ Software Engineering Workflow
@@ -140,8 +123,6 @@ Follow a **5-phase disciplined workflow**:
 4. Review & Simplify → /review, /code-simplify
 5. Ship → /ship
 ```
-
-**📖 Full workflow:** [docs/SOFTWARE_ENGINEERING_WORKFLOW.md](docs/SOFTWARE_ENGINEERING_WORKFLOW.md)
 
 ---
 
