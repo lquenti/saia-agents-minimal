@@ -1,7 +1,6 @@
 # Advanced Coding Agent 🦾
 
-> An isolated, secure Docker environment for AI-assisted coding.\
-> Choose your runtime: **OpenCode** or **OpenClaude**.
+> An isolated, secure Docker environment for AI-assisted coding with **OpenCode**.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.1.2-green.svg)
@@ -11,7 +10,6 @@
 
 Secure, isolated Docker environment for AI coding agents with:
 
-- ✅ **Multiple runtimes** - OpenCode or OpenClaude
 - ✅ **No docker-compose** - Simple shell scripts
 - ✅ **Pre-installed skills** - Matt Pocock + Addy Osmani + Understand-Anything
 - ✅ **Persistent memory** - AGENTS.md + .agent-memory/
@@ -43,11 +41,7 @@ nano .env  # Set API key and MODEL
 ### 2. Build Image (Once)
 
 ```bash
-# For OpenCode:
 ./build-opencode.sh
-
-# For OpenClaude:
-./build-openclaude.sh
 ```
 
 ### 3. Add to Shell
@@ -55,12 +49,10 @@ nano .env  # Set API key and MODEL
 ```bash
 # For Bash
 echo "alias start-opencode=\"$(pwd)/start-opencode.sh\"" >> ~/.bashrc
-echo "alias start-openclaude=\"$(pwd)/start-openclaude.sh\"" >> ~/.bashrc
 source ~/.bashrc
 
 # For Zsh
 echo "alias start-opencode=\"$(pwd)/start-opencode.sh\"" >> ~/.zshrc
-echo "alias start-openclaude=\"$(pwd)/start-openclaude.sh\"" >> ~/.zshrc
 source ~/.zshrc
 ```
 
@@ -69,11 +61,7 @@ source ~/.zshrc
 Navigate to project folder and run.
 
 ```bash
-# For OpenCode:
 start-opencode
-
-# For OpenClaude:
-start-openclaude
 ```
 
 > If no `AGENTS.md` exists in your project, the start script will offer to create one from a template.
@@ -81,9 +69,7 @@ start-openclaude
 ### 5. Run Agent
 
 ```bash
-opencode    
-# or 
-openclaude
+opencode
 ```
 ---
 
@@ -125,7 +111,7 @@ sudo ./build-opencode.sh  # Interactive menu with all extensions
 
 ## 🧠 Persistent Memory
 
-Sessions are persistent per project via .agent-memory and **AGENTS.md** (works for both runtimes)
+Sessions are persistent per project via .agent-memory and **AGENTS.md**
 
 ```markdown
 # AGENTS.md

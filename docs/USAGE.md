@@ -20,11 +20,7 @@ nano .env  # Set your API key and MODEL
 ### 2. Build Docker Image (Once)
 
 ```bash
-# For OpenCode:
 ./build-opencode.sh
-
-# For OpenClaude:
-./build-openclaude.sh
 ```
 
 ### 3. Add to Shell (Optional)
@@ -32,12 +28,10 @@ nano .env  # Set your API key and MODEL
 ```bash
 # Bash
 echo "alias start-opencode=\"$(pwd)/start-opencode.sh\"" >> ~/.bashrc
-echo "alias start-openclaude=\"$(pwd)/start-openclaude.sh\"" >> ~/.bashrc
 source ~/.bashrc
 
 # Zsh
 echo "alias start-opencode=\"sudo $(pwd)/start-opencode.sh\"" >> ~/.zshrc
-echo "alias start-openclaude=\"sudo $(pwd)/start-openclaude.sh\"" >> ~/.zshrc
 source ~/.zshrc
 ```
 
@@ -49,13 +43,11 @@ cd /path/to/your/project
 
 # Start the container
 sudo /path/to/advanced-coding-agent/start-opencode.sh
-# or
-sudo /path/to/advanced-coding-agent/start-openclaude.sh
 ```
 
 The start script will:
 - ✅ Create `.agent-memory/` directory
-- ✅ Set up `.gitignore` (excludes `.agent-memory/`, `.opencode/`/`.openclaude/`, `.npm/`)
+- ✅ Set up `.gitignore` (excludes `.agent-memory/`, `.opencode/`)
 - ✅ Offer to create `AGENTS.md` from template
 - ✅ Display project info and next steps
 
@@ -65,8 +57,6 @@ Inside the container:
 
 ```bash
 opencode
-# or
-openclaude
 ```
 
 ### 6. Exit
@@ -88,13 +78,9 @@ When you start a container, these files/directories are created in your project:
 your-project/
 ├── AGENTS.md              # Agent memory (created if missing)
 ├── .gitignore             # Auto-generated with exclusions
-├── .agent-memory/         # Persistent session data
-│   ├── opencode/          # OpenCode memory
-│   ├── npm/               # OpenClaude cache
-│   ├── skills/            # Custom Skills
-│   ├── openclaude/        # OpenClaude memory
-│   └── claude/            # OpenClaude memory
-└── .openclaude/           # OpenClaude memory, symlink to .agent-memory
+└── .agent-memory/         # Persistent session data
+    ├── opencode/          # OpenCode memory
+    └── skills/            # Custom Skills
 ```
 
 ---
@@ -195,7 +181,7 @@ How the skill works internally.
 
 ### Registering a Skill
 
-Add to `.agent-memory/claude/opencode.json` (or `.opencode/opencode.json`):
+Add to `.opencode/opencode.json`:
 
 ```json
 {
@@ -231,7 +217,6 @@ Run custom review with project-specific rules.
 
 Skills are mounted from:
 - **OpenCode:** `/home/agent/.opencode/workspace/skills/`
-- **OpenClaude:** `/home/agent/.openclaude/workspace/skills/`
 
 Your custom skills in `.agent-memory/share/skills/` are symlinked to these locations.
 
@@ -327,15 +312,14 @@ Persistent across all sessions for the project.
 
 ## Docker Extensions 🐳
 
-Docker extensions allow you to extend the base runtime images with additional tools, packages, and configurations for specific coding environments. Extensions are shared between both OpenCode and OpenClaude runtimes.
+Docker extensions allow you to extend the base runtime image with additional tools, packages, and configurations for specific coding environments.
 
 ### Understanding Extensions
 
 **What are Docker extensions?**
-Extensions are modular Dockerfiles that extend the base runtime images with additional functionality. Each extension is self-contained and can be built on top of either OpenCode or OpenClaude runtimes.
+Extensions are modular Dockerfiles that extend the base runtime image with additional functionality. Each extension is self-contained and builds on top of the OpenCode base image.
 
 **Key Features:**
-- ✅ **Runtime Sharing** - Extensions work with both OpenCode and OpenClaude runtimes
 - ✅ **Automatic Discovery** - Extensions are auto-discovered from `dockerfiles/Dockerfile.*` files
 - ✅ **Interactive Building** - Build scripts automatically discover and show available extensions
 - ✅ **Modular Design** - Each extension is focused on a specific environment or toolset
@@ -432,11 +416,7 @@ CMD ["/bin/bash"]
 Run the build script - your extension will be automatically discovered:
 
 ```bash
-# For OpenCode
 sudo ./build-opencode.sh
-
-# For OpenClaude
-sudo ./build-openclaude.sh
 ```
 
 **Interactive Menu Options:**
@@ -452,11 +432,7 @@ Select option 2 to build base image + your extension.
 Start a container with your extension:
 
 ```bash
-# For OpenCode
 sudo ./start-opencode.sh
-
-# For OpenClaude
-sudo ./start-openclaude.sh
 ```
 
 Select your extension image from the menu, then test inside the container:
@@ -477,7 +453,7 @@ jupyter --version
 Now you can work in your specialized coding environment:
 
 ```bash
-opencode  # or openclaude
+opencode
 
 # Ask the agent to help with your data science tasks
 "I need to analyze a CSV file using pandas"
@@ -1086,14 +1062,10 @@ sudo usermod -aG docker $USER
 ### Image not found
 ```bash
 ./build-opencode.sh
-# or
-./build-openclaude.sh
 ```
 
 ### API key not set
-Edit `.env` and set:
-- `OPENCODE_API_KEY` for OpenCode
-- `OPENCLAUDE_API_KEY` for OpenClaude
+Edit `.env` and set `OPENCODE_API_KEY`.
 
 ### Permission denied
 Scripts must be run with `sudo`:

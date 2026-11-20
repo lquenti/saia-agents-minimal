@@ -23,7 +23,7 @@ What should have happened?
 ## Environment
 - Docker version:
 - OS:
-- Agent: (OpenCode/OpenClaude)
+- Agent: OpenCode
 ```
 
 ### 2. Feature Requests

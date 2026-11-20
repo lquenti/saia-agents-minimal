@@ -11,12 +11,9 @@ advanced-coding-agent/
 ├── LICENSE                 # MIT License
 │
 ├── build-opencode.sh       # Build OpenCode Docker image
-├── build-openclaude.sh     # Build OpenClaude Docker image
 ├── start-opencode.sh       # Start OpenCode container
-├── start-openclaude.sh     # Start OpenClaude container
 │
 ├── Dockerfile.opencode     # OpenCode runtime definition
-├── Dockerfile.openclaude   # OpenClaude runtime definition
 │
 ├── docs/                   # Documentation
 │   ├── PROJECT_STRUCTURE.md    # This file
@@ -34,8 +31,7 @@ advanced-coding-agent/
 │   └── AGENTS.md-python    # Python project template
 │
 └── .agent-memory/          # Persistent session data (per-project)
-    ├── opencode/           # OpenCode session memory
-    └── claude/             # OpenClaude session memory
+    └── opencode/           # OpenCode session memory
 ```
 
 ## Key Directories
@@ -49,7 +45,6 @@ git submodule update --init --recursive
 ### `.agent-memory/` - Persistent Session Data
 Session-specific memory that persists across container runs:
 - `opencode/` - OpenCode runtime memory
-- `claude/` - OpenClaude runtime memory
 
 Created automatically by start scripts in your project folder.
 
@@ -70,17 +65,6 @@ Launch containers with proper mounts and configuration. Handles:
 
 ### `.env`
 Configuration file with API keys:
-- `OPENCODE_API_KEY` / `OPENCLAUDE_API_KEY`
+- `OPENCODE_API_KEY`
 - `MODEL` - LLM model to use
 - Optional: `OPENAI_BASE_URL`, `OPENAI_MODEL`
-
-## Runtime Differences
-
-| Feature | OpenCode | OpenClaude |
-|---------|----------|------------|
-| Base | Claude 3.5 Sonnet | Claude 3.5 Sonnet |
-| Config path | `.opencode/` | `.openclaude/` |
-| Memory path | `.agent-memory/opencode/` | `.agent-memory/claude/` |
-| Skills | Same | Same |
-
-Both runtimes share the same skills and workflow!

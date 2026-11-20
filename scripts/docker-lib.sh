@@ -45,7 +45,7 @@ setup_docker_cmd() {
 # Discover extension Dockerfiles for a given runtime
 # Returns array of discovered extensions
 # Usage: extensions=($(discover_extensions "opencode"))
-# Note: Extensions can now be shared between runtimes via BASE_IMAGE ARG
+# Note: Extensions build on the base image via the BASE_IMAGE ARG
 # -----------------------------------------------------------------------------
 discover_extensions() {
     local runtime="$1"
@@ -71,7 +71,6 @@ discover_extensions() {
             continue
         fi
         
-        # All extensions are now valid for all runtimes
         # The BASE_IMAGE will be provided via build argument
         extensions+=("${extension_name}")
     done
@@ -158,13 +157,10 @@ parse_image_name() {
     # Remove base prefix
     local base_name="${image_name#advanced-coding-agent-}"
     
-    # Extract runtime (opencode or openclaude)
+    # Extract runtime
     if [[ "${base_name}" =~ ^opencode ]]; then
         runtime="opencode"
         base_name="${base_name#opencode}"
-    elif [[ "${base_name}" =~ ^openclaude ]]; then
-        runtime="openclaude"
-        base_name="${base_name#openclaude}"
     else
         echo "unknown:unknown"
         return
@@ -219,7 +215,7 @@ display_build_menu() {
         echo -e "${YELLOW}⚠ No extension Dockerfiles found${NC}" >&2
         echo "" >&2
     else
-        echo -e "${BLUE}ℹ Extensions are available to both runtimes${NC}" >&2
+        echo -e "${BLUE}ℹ Extension images extend the base image${NC}" >&2
         echo "" >&2
     fi
     
