@@ -46,9 +46,9 @@ def main():
         sys.exit("no .env (cp .env.example .env)")
 
     env = load_env(env_file)
-    provider = env.get("PROVIDER_NAME") or "gwdg"
+    provider = "gwdg"
     base_url = env.get("OPENAI_BASE_URL") or "https://chat-ai.academiccloud.de/v1"
-    api_key = env.get("OPENAI_API_KEY") or env.get("OPENCODE_API_KEY")
+    api_key = env.get("OPENCODE_API_KEY")
 
     if not api_key:
         sys.exit("no API key in .env (set OPENCODE_API_KEY)")
@@ -70,10 +70,8 @@ def main():
             models = {DEFAULT_MODEL: {"name": DEFAULT_MODEL}}
 
         model = env.get("MODEL") or DEFAULT_MODEL
-        small = env.get("SMALL_MODEL") or model
         prefix = f"{provider}/"
         model = f"{provider}/{model.removeprefix(prefix)}"
-        small = f"{provider}/{small.removeprefix(prefix)}"
 
         config = {
             "$schema": "https://opencode.ai/config.json",
@@ -86,7 +84,6 @@ def main():
                 }
             },
             "model": model,
-            "small_model": small,
             "share": "disabled",
         }
         with open(config_file, "w") as f:
