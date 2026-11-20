@@ -47,6 +47,8 @@ echo 'alias agent="/path/to/repo/run.sh"' >> ~/.bashrc
 
 Just change the `./docker/Dockerfile` and rerun `./build.sh`!
 
+If you need inspiration you can check out [my personal branch](https://github.com/lquenti/saia-agents-minimal/tree/personal-use) as well.
+
 ## Debug
 
 ### My models are outdated
