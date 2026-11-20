@@ -1,41 +1,8 @@
-# Git
 .git
-.gitignore
-.gitattributes
-
-# Documentation (not needed in container)
-*.md
-!README.md
-
-# Tests (not needed in container)
-tests/
-*.test.*
-*.spec.*
-
-# Build artifacts
-dist/
-build/
-
-# Development
-node_modules/
 .env
 .env.*
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-logs/
-*.log
-
-# Docker
-Dockerfile*
-.dockerignore
-docker-compose*.yml
+.opencode/
+.agent-memory/
+node_modules/
+__pycache__/
+*.pyc
