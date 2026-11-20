@@ -36,7 +36,7 @@ exec docker run -it --rm \
     --cap-add NET_BIND_SERVICE \
     --cap-add NET_RAW \
     --security-opt no-new-privileges:true \
-    --tmpfs /tmp:rw,exec,nosuid,size=100m \
+    --tmpfs /tmp:rw,exec,nosuid,size=4g \
     --tmpfs /var/run:rw,noexec,nosuid,size=10m \
     --memory 4g --memory-swap 4g --cpus 2.0 \
     -v "$OPENCODE_DIR/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
