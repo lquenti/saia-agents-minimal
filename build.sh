@@ -1,16 +1,16 @@
 #!/bin/bash
 set -e
 
-SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
-DOCKERFILE="$SCRIPT_DIR/Dockerfile"
 IMAGE=lquenti-saia-agents-minimal
 
 HOST_UID=${SUDO_UID:-$(id -u)}
 HOST_GID=${SUDO_GID:-$(id -g)}
 
+pushd "$(dirname "$0")/docker" >/dev/null
 docker build \
     --build-arg "HOST_UID=$HOST_UID" \
-    -f "$DOCKERFILE" \
+    -f Dockerfile \
     -t "$IMAGE:latest" \
     "$@" \
-    "$SCRIPT_DIR"
+    .
+popd >/dev/null

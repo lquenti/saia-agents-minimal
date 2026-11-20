@@ -12,7 +12,7 @@ LABEL runtime="opencode"
 ARG HOST_UID=1000
 ENV HOST_UID=${HOST_UID}
 
-ARG OPENCODE_VERSION=1.19.6
+ARG OPENCODE_VERSION=2.3.2
 
 # Security: Run as non-root user
 # Ubuntu 24.04 already has 'ubuntu' user with UID 1000, which matches most Linux hosts
@@ -51,7 +51,7 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
     && mv /root/.local/bin/uv /usr/local/bin/ \
     && mv /root/.local/bin/uvx /usr/local/bin/
 
-# Install the standalone OpenCode v1 binary (no Node/npm)
+# Install the standalone OpenCode v2 binary (no Node/npm)
 RUN set -e; \
     case "$(uname -m)" in \
         x86_64) arch=x64 ;; \
@@ -70,8 +70,7 @@ USER agent
 # Set working directory (isolated workspace)
 WORKDIR /home/agent/workspace
 
-# Create agent configuration directories
-RUN mkdir -p /home/agent/.opencode
+# Create agent configuration directory
 RUN mkdir -p /home/agent/.config/opencode
 
 # Create safe workspace structure with proper ownership
@@ -84,7 +83,6 @@ RUN ln -sf /home/agent/workspace/.agent-memory/share /home/agent/.local/share
 # Set environment variables
 ENV HOME=/home/agent \
     WORKSPACE=/home/agent/workspace \
-    OPENCODE_HOME=/home/agent/.opencode \
     PATH="/home/agent/.local/bin:$PATH"
 
 # Default command - interactive bash shell

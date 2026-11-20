@@ -1,8 +1,0 @@
-.git
-.env
-.env.*
-.opencode/
-.agent-memory/
-node_modules/
-__pycache__/
-*.pyc

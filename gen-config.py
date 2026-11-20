@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write .opencode/auth.json and .opencode/opencode.json from .env."""
+"""Write .opencode/opencode.json from .env."""
 
 import json
 import os
@@ -55,12 +55,6 @@ def main():
 
     os.makedirs(out_dir, exist_ok=True)
 
-    auth_file = os.path.join(out_dir, "auth.json")
-    if not os.path.exists(auth_file):
-        with open(auth_file, "w") as f:
-            json.dump({provider: {"type": "api", "key": api_key}}, f, indent=2)
-            f.write("\n")
-
     config_file = os.path.join(out_dir, "opencode.json")
     if not os.path.exists(config_file):
         models = fetch_models(base_url, api_key)
@@ -75,11 +69,12 @@ def main():
 
         config = {
             "$schema": "https://opencode.ai/config.json",
-            "provider": {
+            "providers": {
                 provider: {
-                    "npm": "@ai-sdk/openai-compatible",
                     "name": provider,
-                    "options": {"baseURL": base_url, "apiKey": api_key},
+                    "env": ["SAIA_API_KEY"],
+                    "package": "@opencode/ai/providers/openai-compatible",
+                    "settings": {"baseURL": base_url},
                     "models": models,
                 }
             },

@@ -19,15 +19,14 @@ set +a
 [ -n "$OPENCODE_API_KEY" ] || { echo "OPENCODE_API_KEY not set" >&2; exit 1; }
 [ -n "$MODEL" ] || { echo "MODEL not set" >&2; exit 1; }
 
-# write auth.json/opencode.json (and discover models) if they are missing
-if [ ! -f "$OPENCODE_DIR/auth.json" ] || [ ! -f "$OPENCODE_DIR/opencode.json" ]; then
+# write opencode.json (and discover models) if it is missing
+if [ ! -f "$OPENCODE_DIR/opencode.json" ]; then
     python3 "$SCRIPT_DIR/gen-config.py"
 fi
 
 CURRENT_DIR=$(pwd)
 SHARE_DIR="$CURRENT_DIR/.agent-memory/share"
 mkdir -p "$SHARE_DIR/opencode"
-ln -sf ../../../../.opencode/auth.json "$SHARE_DIR/opencode/auth.json"
 
 exec docker run -it --rm \
     --name "$CONTAINER" \
@@ -41,9 +40,7 @@ exec docker run -it --rm \
     --tmpfs /var/run:rw,noexec,nosuid,size=10m \
     --memory 4g --memory-swap 4g --cpus 2.0 \
     -v "$OPENCODE_DIR/opencode.json:/home/agent/.config/opencode/opencode.json:ro" \
-    -v "$OPENCODE_DIR/auth.json:/home/agent/.opencode/auth.json:ro" \
     -v "$CURRENT_DIR:/home/agent/workspace:rw" \
     -v "$SHARE_DIR:/home/agent/workspace/.agent-memory/share:rw" \
-    -e OPENAI_API_KEY="$OPENCODE_API_KEY" \
-    -e OPENAI_BASE_URL="$OPENAI_BASE_URL" \
+    -e SAIA_API_KEY="$OPENCODE_API_KEY" \
     "$IMAGE"
