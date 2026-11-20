@@ -1,68 +1,70 @@
-# Advanced Coding Agent 🦾
+# YOUR Personal SAIA Environment
 
-> An isolated, secure Docker environment for AI-assisted coding with **OpenCode**.
+Rather than having yet another convoluted everything-container, this one is meant to be edited by you, depending on what you need, without anything more.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+The main features are
+- Automatic [SAIA](https://saia.gwdg.de/) support, even with auto-generated models list
+- Isolates the environment, only mounts in your current working directory
 
-## 🎯 Overview
+## Requirements
 
-Secure, isolated Docker environment for AI coding agents with:
-
-- ✅ **No docker-compose** - Simple shell scripts
-- ✅ **Persistent memory** - .agent-memory/
-
----
-
-## 🚀 Quick Start
-
-### 1. Clone & Configure
+Debian-based (Ubuntu, Mint, PopOS):
 
 ```bash
-git clone https://gitlab-ce.gwdg.de/gwdg/coding-agents.git
-cd coding-agents
+sudo apt update
+sudo apt install docker.io git python3 curl
+sudo systemctl enable --now docker
+sudo usermod -aG docker "$USER"
+```
 
+RHEL-based (Fedora):
+
+```bash
+sudo dnf install moby-engine docker-cli git python3 curl
+sudo systemctl enable --now docker
+sudo usermod -aG docker "$USER"
+```
+
+Log out and back in after `usermod` (or run `newgrp docker`).
+
+## Setup and Build
+
+```bash
 cp .env.example .env
-nano .env  # Set API key and MODEL
-```
+$EDITOR .env
 
-### 2. Build Image (Once)
-
-```bash
 ./build.sh
+
+# Extra args go to docker build:
+# ./build.sh --no-cache
+# ./build.sh --build-arg OPENCODE_VERSION=2.3.2
+
+# Add it as an alias:
+echo 'alias agent="/path/to/repo/run.sh"' >> ~/.bashrc
 ```
 
-### 3. Add to Shell
+## Add Features
+
+Just change the `./docker/Dockerfile` and rerun `./build.sh`!
+
+## Debug
+
+### My models are outdated
+
+run.sh writes `.opencode/opencode.json` in the repo directory from `.env` on
+first run. The model list is read from `OPENAI_BASE_URL/models.` To
+regenerate:
 
 ```bash
-# For Bash
-echo "alias agent=\"$(pwd)/run.sh\"" >> ~/.bashrc
-source ~/.bashrc
-
-# For Zsh
-echo "alias agent=\"$(pwd)/run.sh\"" >> ~/.zshrc
-source ~/.zshrc
+rm .opencode/opencode.json
+./run.sh
 ```
 
-### 4. Start Container
+## File Overview
 
-Navigate to project folder and run.
-
-```bash
-agent
 ```
-
-### 5. Run Agent
-
-```bash
-opencode
+build.sh              build the image
+run.sh                start the container
+gen-config.py         generate .opencode/opencode.json
+docker/Dockerfile     image definition
 ```
-
----
-
-## 🤝 Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) for details.
