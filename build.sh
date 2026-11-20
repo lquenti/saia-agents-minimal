@@ -2,7 +2,7 @@
 set -e
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
-DOCKERFILE="$SCRIPT_DIR/Dockerfile.opencode"
+DOCKERFILE="$SCRIPT_DIR/Dockerfile"
 IMAGE=lquenti-saia-agents-minimal
 
 HOST_UID=${SUDO_UID:-$(id -u)}
