@@ -60,6 +60,16 @@ rm .opencode/opencode.json
 ./run.sh
 ```
 
+### The build takes forever on the GWDG Openstack
+
+The MTU is most likely too big. Set it to 1450 in your docker config
+```bash
+$ cat /etc/docker/daemon.json
+{
+  "mtu": 1450
+}
+```
+
 ## File Overview
 
 ```
