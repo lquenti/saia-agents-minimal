@@ -13,7 +13,7 @@ set -e
 # -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOCKERFILE="${SCRIPT_DIR}/Dockerfile.opencode"
-IMAGE_NAME="advanced-coding-agent-opencode"
+IMAGE_NAME="lquenti-saia-agents-minimal"
 
 source "${SCRIPT_DIR}/scripts/docker-lib.sh"
 setup_docker_cmd
