@@ -7,7 +7,7 @@
 # eduVPN's own packets. Anything that would still leave through a VPN
 # interface (eduVPN via OpenVPN, wg-quick, ...) is dropped.
 #
-# Undo: sudo nft delete table inet saia_novpn
+# Undo: sudo ./novpn-undo.sh
 set -e
 
 [ "$(id -u)" -eq 0 ] || { echo "run with sudo" >&2; exit 1; }

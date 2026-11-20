@@ -55,7 +55,7 @@ sudo ./novpn.sh
 The agent's traffic then bypasses eduVPN (WireGuard) and uses your normal
 internet connection. Traffic that would still go through a VPN interface
 (`eduVPN`, `LetsConnect`, `tun*`, `wg*`) is dropped. Undo with
-`sudo nft delete table inet saia_novpn`.
+`sudo ./novpn-undo.sh`.
 
 ## Add Features
 
@@ -98,6 +98,7 @@ agent.
 build.sh              build the image
 run.sh                start the container
 novpn.sh              keep the container's traffic out of VPNs (sudo)
+novpn-undo.sh         remove the novpn.sh rules (sudo)
 gen-config.py         generate .opencode/opencode.json
 docker/Dockerfile     image definition
 ```
