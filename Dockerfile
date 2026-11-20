@@ -5,13 +5,14 @@ FROM ubuntu:24.04
 
 # Labels
 LABEL description="OpenCode coding agent environment"
-LABEL version="1.0.0"
 LABEL runtime="opencode"
 
 # Build argument for host user ID (defaults to 1000 if not provided)
 # This is used to match container user UID with host user for proper file ownership
 ARG HOST_UID=1000
 ENV HOST_UID=${HOST_UID}
+
+ARG OPENCODE_VERSION=1.19.6
 
 # Security: Run as non-root user
 # Ubuntu 24.04 already has 'ubuntu' user with UID 1000, which matches most Linux hosts
@@ -45,19 +46,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js 22 from NodeSource
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
 # Install uv (Python package manager)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
     && mv /root/.local/bin/uv /usr/local/bin/ \
     && mv /root/.local/bin/uvx /usr/local/bin/
 
-# Install opencode CLI via npm
-RUN npm install -g opencode-ai
+# Install the standalone OpenCode v1 binary (no Node/npm)
+RUN set -e; \
+    case "$(uname -m)" in \
+        x86_64) arch=x64 ;; \
+        aarch64|arm64) arch=arm64 ;; \
+        *) echo "unsupported arch: $(uname -m)" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSL -o /tmp/opencode.tar.gz \
+        "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-${arch}.tar.gz"; \
+    tar -xzf /tmp/opencode.tar.gz -C /usr/local/bin; \
+    rm /tmp/opencode.tar.gz; \
+    chmod 755 /usr/local/bin/opencode
 
 # Switch to non-root user
 USER agent
@@ -77,8 +82,7 @@ RUN mkdir -p /home/agent/.local
 RUN ln -sf /home/agent/workspace/.agent-memory/share /home/agent/.local/share
 
 # Set environment variables
-ENV NODE_ENV=production \
-    HOME=/home/agent \
+ENV HOME=/home/agent \
     WORKSPACE=/home/agent/workspace \
     OPENCODE_HOME=/home/agent/.opencode \
     PATH="/home/agent/.local/bin:$PATH"
