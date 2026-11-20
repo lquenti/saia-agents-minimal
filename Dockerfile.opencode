@@ -4,7 +4,7 @@
 FROM ubuntu:24.04
 
 # Labels
-LABEL description="OpenCode coding agent environment with pre-installed skills"
+LABEL description="OpenCode coding agent environment"
 LABEL version="1.0.0"
 LABEL runtime="opencode"
 
@@ -67,24 +67,14 @@ WORKDIR /home/agent/workspace
 
 # Create agent configuration directories
 RUN mkdir -p /home/agent/.opencode
+RUN mkdir -p /home/agent/.config/opencode
 
 # Create safe workspace structure with proper ownership
 RUN mkdir -p /home/agent/workspace/.agent-memory/share
 
 RUN mkdir -p /home/agent/.local
 
-RUN mkdir -p /home/agent/.config/opencode/skills
-
 RUN ln -sf /home/agent/workspace/.agent-memory/share /home/agent/.local/share
-
-RUN ln -sf /home/agent/workspace/.agent-memory/skills /home/agent/.config/opencode/skills
-
-# Pre-install essential skills from curated repos
-# Matt Pocock's skills - engineering best practices
-# Addy Osmani's agent-skills - production-grade workflows
-# Copy pre-installed skills
-COPY --chown=agent:agent skills/matt-pocock /home/agent/.opencode/skills/matt-pocock
-COPY --chown=agent:agent skills/addy-osmani /home/agent/.opencode/skills/addy-osmani
 
 # Set environment variables
 ENV NODE_ENV=production \

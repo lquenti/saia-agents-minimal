@@ -1,6 +1,0 @@
-[submodule "skills/matt-pocock"]
-	path = skills/matt-pocock
-	url = https://github.com/mattpocock/skills.git
-[submodule "skills/addy-osmani"]
-	path = skills/addy-osmani
-	url = https://github.com/addyosmani/agent-skills.git

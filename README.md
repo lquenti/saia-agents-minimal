@@ -9,7 +9,6 @@
 Secure, isolated Docker environment for AI coding agents with:
 
 - ✅ **No docker-compose** - Simple shell scripts
-- ✅ **Pre-installed skills** - Matt Pocock + Addy Osmani + Understand-Anything
 - ✅ **Persistent memory** - AGENTS.md + .agent-memory/
 
 ---
@@ -21,16 +20,6 @@ Secure, isolated Docker environment for AI coding agents with:
 ```bash
 git clone https://gitlab-ce.gwdg.de/gwdg/coding-agents.git
 cd coding-agents
-
-# ⚠️ CRITICAL: Initialize submodules!
-# This project uses Git submodules for skills (addy-osmani, matt-pocock)
-# Without this step, the skills directories will be empty!
-
-git submodule update --init --recursive
-
-# Verify submodules are loaded:
-ls -la skills/addy-osmani  # Should contain files, not just a .git file
-ls -la skills/matt-pocock  # Should contain files, not just a .git file
 
 cp .env.example .env
 nano .env  # Set API key and MODEL
@@ -87,41 +76,6 @@ CRITICAL: Use .agent-memory/ folder for persistent notes.
 ## Current State
 - Status: In progress
 - Last task: Implement feature X
-```
-
----
-
-## 🧠 Pre-Installed Skills
-
-**Production-grade skills** from Matt Pocock and Addy Osmani.
-
-### Key Skills
-
-| Skill | Command | Purpose |
-|-------|---------|---------|
-| `/interview-me` | Extract requirements one question at a time |
-| `/grill-with-docs` | Build shared language + CONTEXT.md |
-| `/spec` | Write PRD before any code |
-| `/plan` | Break into small, verifiable tasks |
-| `/test` | TDD with 80/15/5 test pyramid |
-| `/build` | Thin vertical slices |
-| `/review` | Five-axis code review |
-| `/code-simplify` | Reduce complexity |
-| `/ship` | Pre-launch checklist |
-| `/understand` | Codebase analysis & knowledge graph |
-
----
-
-## 🏭️ Software Engineering Workflow
-
-Follow a **5-phase disciplined workflow**:
-
-```
-1. Shared Understanding → /interview-me, /grill-with-docs, /spec
-2. Module & Interface Design → /plan, /api-and-interface-design
-3. Test-Driven Implementation → /test, /build
-4. Review & Simplify → /review, /code-simplify
-5. Ship → /ship
 ```
 
 ---
