@@ -12,39 +12,16 @@ LABEL description="OpenCode coding agent environment"
 # Host UID/GID to match, so files written to the mounted workspace stay yours
 ARG HOST_UID=1000
 ARG HOST_GID=1000
-ENV HOST_UID=${HOST_UID} \
-    HOST_GID=${HOST_GID}
+ENV HOST_UID=${HOST_UID} HOST_GID=${HOST_GID}
 ARG OPENCODE_VERSION=2.3.2
 # user creation
-RUN groupadd -g "${HOST_GID}" agent && \
-    useradd -u "${HOST_UID}" -g agent -d /home/agent -m -s /bin/bash agent
+RUN groupadd -g "${HOST_GID}" agent && useradd -u "${HOST_UID}" -g agent -d /home/agent -m -s /bin/bash agent
 # GWDG mirror (optional); comment out to use the default Debian mirror
-RUN for f in /etc/apt/sources.list /etc/apt/sources.list.d/*.sources; do \
-        [ -f "$f" ] || continue; \
-        sed -i \
-            -e 's|https\?://deb.debian.org/debian|http://ftp.gwdg.de/pub/linux/debian/debian|g' \
-            -e 's|https\?://security.debian.org/debian-security|http://ftp.gwdg.de/pub/linux/debian/debian-security|g' \
-            "$f"; \
-    done
+RUN for f in /etc/apt/sources.list /etc/apt/sources.list.d/*.sources; do [ -f "$f" ] || continue; sed -i -e 's|https\?://deb.debian.org/debian|http://ftp.gwdg.de/pub/linux/debian/debian|g' -e 's|https\?://security.debian.org/debian-security|http://ftp.gwdg.de/pub/linux/debian/debian-security|g' "$f"; done
 # Install base packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates \
-        curl \
-        git \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl git && apt-get clean && rm -rf /var/lib/apt/lists/*
 # Setup opencode 2 (globally)
-RUN set -e; \
-    case "$(uname -m)" in \
-        x86_64) arch=x64 ;; \
-        aarch64|arm64) arch=arm64 ;; \
-        *) echo "unsupported arch: $(uname -m)" >&2; exit 1 ;; \
-    esac; \
-    curl -fsSL -o /tmp/opencode.tar.gz \
-        "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-${arch}.tar.gz"; \
-    tar -xzf /tmp/opencode.tar.gz -C /usr/local/bin; \
-    rm /tmp/opencode.tar.gz; \
-    chmod 755 /usr/local/bin/opencode
+RUN set -e; case "$(uname -m)" in x86_64) arch=x64 ;; aarch64|arm64) arch=arm64 ;; *) echo "unsupported arch: $(uname -m)" >&2; exit 1 ;; esac; curl -fsSL -o /tmp/opencode.tar.gz "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-${arch}.tar.gz"; tar -xzf /tmp/opencode.tar.gz -C /usr/local/bin; rm /tmp/opencode.tar.gz; chmod 755 /usr/local/bin/opencode
 
 # =============================================================================
 # YOUR TOOLS
@@ -68,13 +45,8 @@ RUN set -e; \
 USER agent
 WORKDIR /home/agent/workspace
 
-RUN mkdir -p /home/agent/.config/opencode \
-             /home/agent/workspace/.agent-memory/share \
-             /home/agent/.local && \
-    ln -sf /home/agent/workspace/.agent-memory/share /home/agent/.local/share
+RUN mkdir -p /home/agent/.config/opencode /home/agent/workspace/.agent-memory/share /home/agent/.local && ln -sf /home/agent/workspace/.agent-memory/share /home/agent/.local/share
 
-ENV HOME=/home/agent \
-    WORKSPACE=/home/agent/workspace \
-    PATH="/home/agent/.local/bin:$PATH"
+ENV HOME=/home/agent WORKSPACE=/home/agent/workspace PATH="/home/agent/.local/bin:$PATH"
 
 CMD ["/bin/bash"]
