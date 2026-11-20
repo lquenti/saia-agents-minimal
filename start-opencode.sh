@@ -5,8 +5,7 @@
 # Starts the OpenCode container with:
 # - Current directory mounted as workspace
 # - Session state persisted in .agent-memory/share/
-# - Auth config mounted from .opencode/local/auth.json
-# - Interactive menu to select from available images
+# - Auth config mounted from .opencode/auth.json
 # =============================================================================
 
 set -e
@@ -16,7 +15,7 @@ set -e
 # -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env"
-RUNTIME="opencode"
+IMAGE_NAME="advanced-coding-agent-opencode:latest"
 
 # Load shared library functions
 source "${SCRIPT_DIR}/scripts/docker-lib.sh"
@@ -25,20 +24,10 @@ source "${SCRIPT_DIR}/scripts/docker-lib.sh"
 setup_docker_cmd
 
 # -----------------------------------------------------------------------------
-# Display Start Menu and Get User Selection
+# Select Image
 # -----------------------------------------------------------------------------
-available_images=($(discover_built_images "${RUNTIME}"))
-
-# Display start menu and get user selection
-selected_image=$(display_start_menu "${RUNTIME}" "${available_images[@]}")
-
-if [[ "${selected_image}" == "exit" ]]; then
-    echo -e "${YELLOW}Start cancelled${NC}"
-    exit 0
-fi
-
-# Display what was selected
-echo -e "${GREEN}✓ Selection: ${selected_image}${NC}"
+selected_image="${IMAGE_NAME}"
+echo -e "${GREEN}✓ Image: ${selected_image}${NC}"
 echo ""
 
 # -----------------------------------------------------------------------------
